@@ -189,7 +189,7 @@ export let postSetting = (req: Request, res: Response) => {
 
 	// If unsuccessful set status to 500
 	if (!response.success) {
-		res.status(500);
+		res.status(400);
 	}
 
 	// Send out JSON'd data

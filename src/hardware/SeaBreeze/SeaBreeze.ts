@@ -135,9 +135,22 @@ export class SeaBreeze implements IHardware {
 		let wasSet: boolean = false;
 
 		if (key === "integration_time") {
-			SeaBreezeAPI.Instance.SetIntegrationTime(this.id, +value);
-			this._integrationTime = +value;
-			wasSet = true;
+		
+			if (+value) {
+				const success = SeaBreezeAPI.Instance.SetIntegrationTime(this.id, +value);
+
+				if (success) {
+					this._integrationTime = +value;
+					wasSet = true;
+				}
+				else {
+					response.data = SeaBreezeAPI.Instance.LastErrorString;
+					wasSet = false;
+				}
+			}
+			else {
+				response.data = "Integration time cannot be set to " + value;
+			}
 		}
 		else if (key === "boxcar") {
 			this._boxcar = +value;
@@ -147,14 +160,12 @@ export class SeaBreeze implements IHardware {
 			this._scanAverage = +value;
 			wasSet = true;
 		}
-
-		if (!wasSet) {
-			response.data = "Unable to find setting " + key;
+		else {
+			wasSet = false;
+			response.data =  "Unable to find setting " + key;
 		}
 
 		response.success = wasSet;
-
-
 		return response;
 	}
 
