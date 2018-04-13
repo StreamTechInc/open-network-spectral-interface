@@ -68,7 +68,7 @@ export interface IHardware {
 	/**
 	 * Closes Device
 	 */
-	closeDevice(): boolean;
+	closeDevice(): HardwareResponse;
 }
 
 export class HardwareFactory {

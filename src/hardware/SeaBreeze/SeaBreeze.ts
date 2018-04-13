@@ -112,6 +112,7 @@ export class SeaBreeze implements IHardware {
 		const response: HardwareResponse = new HardwareResponse();
 
 		if (this.model == undefined || this.model.settings == undefined) {
+			response.success = false;
 			response.data = "Model info not set for device ID " + this.serial;
 		}
 		else {
@@ -122,6 +123,7 @@ export class SeaBreeze implements IHardware {
 				response.data = foundSetting;
 			}
 			else {
+				response.success = false;
 				response.data = "Unable to find setting " + key;
 			}
 		}
@@ -182,18 +184,28 @@ export class SeaBreeze implements IHardware {
 			response.data = spectrum;
 		}
 		else {
+			response.success = false;
 			response.data = SeaBreezeAPI.Instance.LastErrorString;
 		}
 
 		return response;
 	}
 
-	public closeDevice(): boolean {
+	public closeDevice(): HardwareResponse {
+		const response: HardwareResponse = new HardwareResponse();
+
+		// Since we don't get a response from this, assume success
 		SeaBreezeAPI.Instance.Shutdown();
 
-		return true;
+		response.success = true;
+		response.data = "Devices shutdown";
+
+		return response;
 	}
 
+	/** 
+	 * Private Functions
+	 */
 	private processCapture(spectrum: SpectrumDataModel[]): SpectrumDataModel[] {
 		const processedSpectrum = spectrum;
 
@@ -236,5 +248,4 @@ export class SeaBreeze implements IHardware {
 
 		return processedSpectrum;
 	}
-
 }
