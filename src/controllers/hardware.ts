@@ -90,7 +90,7 @@ export let getAllSettingsForDevice = (req: Request, res: Response) => {
 		response.data = "No devices connected";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
 		res.status(400);
 	}
@@ -132,7 +132,7 @@ export let getSetting = (req: Request, res: Response) => {
 		response.data = "No devices connected";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
 		res.status(400);
 	}
@@ -187,7 +187,7 @@ export let postSetting = (req: Request, res: Response) => {
 		response.data = "Error occurred while trying to set value";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
 		res.status(400);
 	}
@@ -227,7 +227,7 @@ export let getCapture = (req: Request, res: Response) => {
 		response.data = "No devices connected";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
 		res.status(400);
 	}
