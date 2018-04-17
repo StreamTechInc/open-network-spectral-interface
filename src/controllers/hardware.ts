@@ -90,9 +90,9 @@ export let getAllSettingsForDevice = (req: Request, res: Response) => {
 		response.data = "No devices connected";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
-		res.status(500);
+		res.status(400);
 	}
 
 	// Send out JSON'd data
@@ -132,9 +132,9 @@ export let getSetting = (req: Request, res: Response) => {
 		response.data = "No devices connected";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
-		res.status(500);
+		res.status(400);
 	}
 
 	// Send out JSON'd data
@@ -187,7 +187,7 @@ export let postSetting = (req: Request, res: Response) => {
 		response.data = "Error occurred while trying to set value";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
 		res.status(400);
 	}
@@ -227,9 +227,9 @@ export let getCapture = (req: Request, res: Response) => {
 		response.data = "No devices connected";
 	}
 
-	// If unsuccessful set status to 500
+	// If unsuccessful set status to 400
 	if (!response.success) {
-		res.status(500);
+		res.status(400);
 	}
 
 	// Send out JSON'd data
@@ -247,11 +247,19 @@ export let getStatus = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start getStatus/" + id);
 
+	const response: HardwareResponse = new HardwareResponse();	
+	response.success = false;
+	response.data = "Not implemented";
+
 	// TODO: fill out the rest
 
 	Logger.Instance.WriteDebug("End getStatus/" + id);
 
-	res.send("Device ID: " + id);
+	if (!response.success) {
+		res.status(500);
+	}
+
+	res.send(JSON.stringify(response));
 };
 
 /**
@@ -263,11 +271,19 @@ export let getFrameAcquisition = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start getFrameAcquisition/" + id);
 
+	const response: HardwareResponse = new HardwareResponse();	
+	response.success = false;
+	response.data = "Not implemented";
+
 	// TODO: fill out the rest
 
 	Logger.Instance.WriteDebug("End getFrameAcquisition/" + id);
+	
+	if (!response.success) {
+		res.status(500);
+	}
 
-	res.send("Device ID: " + id);
+	res.send(JSON.stringify(response));
 };
 
 /**
@@ -279,11 +295,19 @@ export let postFrameAcquisition = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start postFrameAcquisition/" + id);
 
+	const response: HardwareResponse = new HardwareResponse();	
+	response.success = false;
+	response.data = "Not implemented";
+
 	// TODO: fill out the rest
 
 	Logger.Instance.WriteDebug("End postFrameAcquisition/" + id);
 
-	res.send("Device ID: " + id);
+	if (!response.success) {
+		res.status(500);
+	}
+
+	res.send(JSON.stringify(response));
 };
 
 /**
@@ -295,11 +319,19 @@ export let deleteFrameAcquisition = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start deleteFrameAcquisition/" + id);
 
+	const response: HardwareResponse = new HardwareResponse();	
+	response.success = false;
+	response.data = "Not implemented";
+
 	// TODO: fill out the rest
 
 	Logger.Instance.WriteDebug("End deleteFrameAcquisition/" + id);
 
-	res.send("Device ID: " + id);
+	if (!response.success) {
+		res.status(500);
+	}
+
+	res.send(JSON.stringify(response));
 };
 
 /**
@@ -311,12 +343,19 @@ export let getStream = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start getStream/" + id);
 
+	const response: HardwareResponse = new HardwareResponse();	
+	response.success = false;
+	response.data = "Not implemented";
+
 	// TODO: fill out the rest
 
 	Logger.Instance.WriteDebug("End getStream/" + id);
 
+	if (!response.success) {
+		res.status(500);
+	}
 
-	res.send("Device ID: " + id);
+	res.send(JSON.stringify(response));
 };
 
 /**
@@ -328,15 +367,25 @@ export let postStream = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start postStream/" + id);
 
-	// TODO: fill out the rest
+	const response: HardwareResponse = new HardwareResponse();	
+	response.success = false;
+	response.data = "Not implemented";
 
+	// TODO: fill out the rest
 	Logger.Instance.WriteDebug("End postStream/" + id);
 
-	res.send("Device ID: " + id);
+	if (!response.success) {
+		res.status(500);
+	}
+
+	res.send(JSON.stringify(response));
 };
 
+/**
+ * GET / id
+ * Shutdown the device
+ */
 export let shutdown = (req: Request, res: Response) => {
-	console.log(hardware);
 	if (hardware && hardware.length > 0) {
 		hardware.forEach((element: IHardware) => {
 			element.closeDevice();
