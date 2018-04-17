@@ -3,61 +3,48 @@
 */
 
 import { Request, Response } from "express";
-import { SeaBreeze } from "../hardware/SeaBreeze/SeaBreeze";
 import { HardwareModel } from "../models/hardwareModel";
-import { IHardware } from "../hardware/IHardware";
-import { HardwareFactory } from "../hardware/IHardware";
-import { SeaBreezeInitializer } from "../hardware/SeaBreeze/SeaBreezeInitializer";
 import * as Common from "../common/common";
 import { Logger } from "../common/logger";
 import { HardwareSettingModel } from "../models/hardwareSettingModel";
-import { HardwareResponse } from "../hardware/hardwareResponse";
-
-let hardware: Array<IHardware>;
+import { IHardware } from "../interfaces/IHardware";
+import { HardwareTypes } from "../modules/HardwareTypes";
+import { HardwareResponse } from "../models/hardwareResponse";
 
 /**
  * GET /
- * Return unique device ids of all hardware attached
+ * Return unique device ids, serial and model numbers of all hardware attached
  */
 export let getAttachedHardware = (req: Request, res: Response) => {
 	Logger.Instance.WriteDebug("Start getAttachedHardware");
-	let message: string = "";
+
+	const hardwareResponse: HardwareResponse = new HardwareResponse();
+	hardwareResponse.success = true;
 
 	try {
-		if (hardware === undefined) {
-			hardware = new Array<IHardware>();
-		}
-	
-		// Remove any uninitialized devices from array
-		hardware = Common.RemoveUninitialized(hardware);
-	
-		// Use the SeaBreezeInitializer to find and init all seabreeze devices
-		const seaBreezeInitializer = new SeaBreezeInitializer();
-		const sbDevices = seaBreezeInitializer.getAllDevices(hardware);
-	
-		sbDevices.forEach(device => {
-			hardware.push(device);
-		});
-	
-		/**
-		 * Add Other Initializers here
-		 */	
+		const hardware = new Array<IHardware>();
 		
+		HardwareTypes.Instance.AvailableHardwareTypes.forEach((element) => {
+			const tempArray = element.GetDevices();
+
+			tempArray.forEach((iHardware) => {
+				hardware.push(iHardware);
+			});
+		});
+
 		if (hardware.length == 0) {
-			message = JSON.stringify("No devices found.");
+			hardwareResponse.data = "No devices found.";
 		}
 		else {
-			message = JSON.stringify(hardware);
+			hardwareResponse.data = hardware;
 		}
-		Logger.Instance.WriteDebug(message);
-		res.send(message);
 	} catch (error) {
-		console.error("/hardware error:" + JSON.stringify(error.message));
-		message = JSON.stringify({ error: error });
-		res.send(message);
+		hardwareResponse.data = error;
+		hardwareResponse.success = false;
+		res.status(400);
 	}
 
-	Logger.Instance.WriteDebug("End getAttachedHardware");
+	res.send(JSON.stringify(hardwareResponse));
 };
 
 /**
@@ -70,33 +57,38 @@ export let getAllSettingsForDevice = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start getAllSettingsForDevice/" + id);
 
-	// Init a new response with success = false
-	let response: HardwareResponse = new HardwareResponse();
+	const hardwareResponse: HardwareResponse = new HardwareResponse();
+	hardwareResponse.success = true;
 
-	// Check to make sure we have devices attached, set message accordingly if not
-	if (hardware != undefined && hardware.length > 0) {
-		// Try and find the device, check and log accordingly
-		const device = Common.findDeviceById(hardware, id);
+	try {
+		let device: IHardware;
+
+		for (let index = 0; index < HardwareTypes.Instance.AvailableHardwareTypes.length; index++) {
+			const element = HardwareTypes.Instance.AvailableHardwareTypes[index];
+			
+			const tempDevice = element.GetDeviceById(id);
+
+			if (tempDevice) {
+				device = tempDevice;
+				break;
+			}
+		}
 
 		if (device) {
-			// Get settings if device found, set response to this one
-			response = device.getSettings();
+			hardwareResponse.data = device.GetProperties();
 		}
 		else {
-			response.data = "Unable to find device";
+			hardwareResponse.data = "No device found with ID: " + id;
+			hardwareResponse.success = false;
 		}
-	}
-	else {
-		response.data = "No devices connected";
-	}
 
-	// If unsuccessful set status to 400
-	if (!response.success) {
+	} catch (error) {
+		hardwareResponse.data = error;
+		hardwareResponse.success = false;
 		res.status(400);
 	}
 
-	// Send out JSON'd data
-	res.send(JSON.stringify(response));
+	res.send(JSON.stringify(hardwareResponse));
 
 	Logger.Instance.WriteDebug("End getAllSettingsForDevice/" + id);
 };
@@ -113,24 +105,24 @@ export let getSetting = (req: Request, res: Response) => {
 	Logger.Instance.WriteDebug("Start getAllSetting/" + id + "/" + settingId);
 
 	// Init a new response with success = false
-	let response: HardwareResponse = new HardwareResponse();
+	const response: HardwareResponse = new HardwareResponse();
 
 	// Check to make sure we have devices attached, set message accordingly if not
-	if (hardware != undefined && hardware.length > 0) {
-		// Try and find the device, check and log accordingly
-		const device = Common.findDeviceById(hardware, id);
+	// if (hardware != undefined && hardware.length > 0) {
+	// 	// Try and find the device, check and log accordingly
+	// 	const device = Common.findDeviceById(hardware, id);
 
-		if (device) {
-			// Get desired setting if device found, set response to this one
-			response = device.getSettingValue(settingId);
-		}
-		else {
-			response.data = "Unable to find device";
-		}
-	}
-	else {
-		response.data = "No devices connected";
-	}
+	// 	if (device) {
+	// 		// Get desired setting if device found, set response to this one
+	// 		response.data = device.GetProperty(settingId);
+	// 	}
+	// 	else {
+	// 		response.data = "Unable to find device";
+	// 	}
+	// }
+	// else {
+	// 	response.data = "No devices connected";
+	// }
 
 	// If unsuccessful set status to 400
 	if (!response.success) {
@@ -155,7 +147,7 @@ export let postSetting = (req: Request, res: Response) => {
 	Logger.Instance.WriteDebug("Start postSetting/" + id + "/" + settingId);
 
 	// Init a new response with success = false
-	let response: HardwareResponse = new HardwareResponse();
+	const response: HardwareResponse = new HardwareResponse();
 
 	try {
 		// Get the JSON data from body
@@ -163,21 +155,21 @@ export let postSetting = (req: Request, res: Response) => {
 
 		if (body) {
 			// Check to make sure we have devices attached, set message accordingly if not
-			if (hardware != undefined && hardware.length > 0) {
-				// Try and find the device, check and log accordingly
-				const device = Common.findDeviceById(hardware, id);
+			// if (hardware != undefined && hardware.length > 0) {
+			// 	// Try and find the device, check and log accordingly
+			// 	const device = Common.findDeviceById(hardware, id);
 
-				if (device) {
-					// Try to set desired setting if device found, set response to this one
-					response = device.setSettingValue(settingId, body.value);
-				}
-				else {
-					response.data = "Unable to find device";
-				}
-			}
-			else {
-				response.data = "No devices connected";
-			}
+			// 	if (device) {
+			// 		// Try to set desired setting if device found, set response to this one
+			// 		response.data = device.SetProperty(undefined);
+			// 	}
+			// 	else {
+			// 		response.data = "Unable to find device";
+			// 	}
+			// }
+			// else {
+			// 	response.data = "No devices connected";
+			// }
 		}
 		else {
 			response.data = "Unable to read data as HardwareSettingModel";
@@ -208,24 +200,24 @@ export let getCapture = (req: Request, res: Response) => {
 	Logger.Instance.WriteDebug("Start getCapture/" + id);
 
 	// Init a new response with success = false
-	let response: HardwareResponse = new HardwareResponse();
+	const response: HardwareResponse = new HardwareResponse();
 
 	// Check to make sure we have devices attached, set message accordingly if not
-	if (hardware != undefined && hardware.length > 0) {
-		// Try and find the device, check and log accordingly
-		const device = Common.findDeviceById(hardware, id);
+	// if (hardware != undefined && hardware.length > 0) {
+	// 	// Try and find the device, check and log accordingly
+	// 	const device = Common.findDeviceById(hardware, id);
 
-		if (device) {
-			// Try to set desired setting if device found, set response to this one
-			response = device.capture();
-		}
-		else {
-			response.data = "Unable to find device";
-		}
-	}
-	else {
-		response.data = "No devices connected";
-	}
+	// 	if (device) {
+	// 		// Try to set desired setting if device found, set response to this one
+	// 		response.data = device.Capture();
+	// 	}
+	// 	else {
+	// 		response.data = "Unable to find device";
+	// 	}
+	// }
+	// else {
+	// 	response.data = "No devices connected";
+	// }
 
 	// If unsuccessful set status to 400
 	if (!response.success) {
@@ -247,7 +239,7 @@ export let getStatus = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start getStatus/" + id);
 
-	const response: HardwareResponse = new HardwareResponse();	
+	const response: HardwareResponse = new HardwareResponse();
 	response.success = false;
 	response.data = "Not implemented";
 
@@ -271,14 +263,14 @@ export let getFrameAcquisition = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start getFrameAcquisition/" + id);
 
-	const response: HardwareResponse = new HardwareResponse();	
+	const response: HardwareResponse = new HardwareResponse();
 	response.success = false;
 	response.data = "Not implemented";
 
 	// TODO: fill out the rest
 
 	Logger.Instance.WriteDebug("End getFrameAcquisition/" + id);
-	
+
 	if (!response.success) {
 		res.status(500);
 	}
@@ -295,7 +287,7 @@ export let postFrameAcquisition = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start postFrameAcquisition/" + id);
 
-	const response: HardwareResponse = new HardwareResponse();	
+	const response: HardwareResponse = new HardwareResponse();
 	response.success = false;
 	response.data = "Not implemented";
 
@@ -319,7 +311,7 @@ export let deleteFrameAcquisition = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start deleteFrameAcquisition/" + id);
 
-	const response: HardwareResponse = new HardwareResponse();	
+	const response: HardwareResponse = new HardwareResponse();
 	response.success = false;
 	response.data = "Not implemented";
 
@@ -343,7 +335,7 @@ export let getStream = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start getStream/" + id);
 
-	const response: HardwareResponse = new HardwareResponse();	
+	const response: HardwareResponse = new HardwareResponse();
 	response.success = false;
 	response.data = "Not implemented";
 
@@ -367,7 +359,7 @@ export let postStream = (req: Request, res: Response) => {
 
 	Logger.Instance.WriteDebug("Start postStream/" + id);
 
-	const response: HardwareResponse = new HardwareResponse();	
+	const response: HardwareResponse = new HardwareResponse();
 	response.success = false;
 	response.data = "Not implemented";
 
@@ -386,11 +378,11 @@ export let postStream = (req: Request, res: Response) => {
  * Shutdown the device
  */
 export let shutdown = (req: Request, res: Response) => {
-	if (hardware && hardware.length > 0) {
-		hardware.forEach((element: IHardware) => {
-			element.closeDevice();
-		});
-	}
+	// if (hardware && hardware.length > 0) {
+	// 	hardware.forEach((element: IHardware) => {
+	// 		element.closeDevice();
+	// 	});
+	// }
 
 	res.send(true);
 };

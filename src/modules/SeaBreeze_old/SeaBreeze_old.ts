@@ -6,22 +6,23 @@
 import fs = require("fs");
 import { HardwareModel } from "../../models/hardwareModel";
 import { HardwareSettingModel } from "../../models/hardwareSettingModel";
-import { IHardware } from "../IHardware";
-import { SeaBreezeAPI } from "./SeaBreezeAPI";
 import { Logger } from "../../common/logger";
 import * as Common from "../../common/common";
-import { HardwareResponse } from "../hardwareResponse";
 import { SpectrumDataModel } from "../../models/SpectrumDataModel";
+import { IHardware } from "../../interfaces/IHardware";
+import { SeaBreezeAPI } from "../SeaBreeze/SeaBreezeAPI";
+import { HardwareResponse } from "../../models/hardwareResponse";
 
 
-export class SeaBreeze implements IHardware {
+export class SeaBreeze {
 	/**
 	 * Variables and Properties
 	 */
 	public model: HardwareModel = undefined;
-	public id: number;
+	public id: string;
 	public serial: string;
 	public message: string;
+	public modelName: string;
 
 	private _boxcar: number = 0;
 	private _scanAverage: number = 0;
@@ -37,12 +38,12 @@ export class SeaBreeze implements IHardware {
 		try {
 			Logger.Instance.WriteDebug("Begin initializing SeaBreeze device id: " + this.id);
 
-			if (SeaBreezeAPI.Instance.OpenDevice(this.id)) {
-				this.serial = SeaBreezeAPI.Instance.GetSerialNumber(this.id);
+			if (SeaBreezeAPI.Instance.OpenDevice(+this.id)) {
+				this.serial = SeaBreezeAPI.Instance.GetSerialNumber(+this.id);
 				Logger.Instance.WriteDebug("Got serial number device id: " + this.id);
 
 				if (this.serial != "NONE") {
-					const modelNumber = SeaBreezeAPI.Instance.GetModelNumber(this.id);
+					const modelNumber = SeaBreezeAPI.Instance.GetModelNumber(+this.id);
 					Logger.Instance.WriteDebug("Got model number device id: " + this.id);
 
 					if (modelNumber != undefined && modelNumber != "NONE") {
@@ -139,7 +140,7 @@ export class SeaBreeze implements IHardware {
 		if (key === "integration_time") {
 		
 			if (+value) {
-				const success = SeaBreezeAPI.Instance.SetIntegrationTime(this.id, +value);
+				const success = SeaBreezeAPI.Instance.SetIntegrationTime(+this.id, +value);
 
 				if (success) {
 					this._integrationTime = +value;
@@ -174,7 +175,7 @@ export class SeaBreeze implements IHardware {
 	public capture(): HardwareResponse {
 		const response: HardwareResponse = new HardwareResponse();
 
-		let spectrum = SeaBreezeAPI.Instance.GetSpectrum(this.id);
+		let spectrum = SeaBreezeAPI.Instance.GetSpectrum(+this.id);
 
 		if (spectrum.length > 0) {
 
@@ -211,7 +212,7 @@ export class SeaBreeze implements IHardware {
 
 		if (this._scanAverage > 1) {
 			for (let i = 1; i < this._scanAverage; i++) {
-				const tempSpectrum = SeaBreezeAPI.Instance.GetSpectrum(this.id);
+				const tempSpectrum = SeaBreezeAPI.Instance.GetSpectrum(+this.id);
 
 				for (let j = 0; j < SeaBreezeAPI.Instance.pixels; j++) {
 					processedSpectrum[j].measuredValue += tempSpectrum[j].measuredValue;

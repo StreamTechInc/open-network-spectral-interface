@@ -1,8 +1,8 @@
 /**
  * Class to handle all common functions
  */
-import { IHardware } from "../hardware/IHardware";
 import { HardwareSettingModel } from "../models/hardwareSettingModel";
+import { IHardware } from "../interfaces/IHardware";
 
 export let RemoveUninitialized = (array: Array<IHardware>): Array<IHardware> => {
 	const tempArray = new Array<IHardware>();
