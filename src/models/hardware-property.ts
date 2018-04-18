@@ -7,8 +7,8 @@ export class HardwareProperty implements IProperty {
 	dataType: string;
 	maxValue: number;
 	minValue: number;
-	increment: string;
-	maxLength: string;
+	increment: number;
+	maxLength: number;
 	possibleEnumValues: any;
 	order: number;
 }

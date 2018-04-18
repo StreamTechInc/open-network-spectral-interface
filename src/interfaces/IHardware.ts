@@ -26,7 +26,7 @@ export interface IHardware {
 	/**
 	 * Set a setting with desired value
 	 */
-	SetProperty(property: IProperty): IProperty;
+	SetProperty(property: IProperty): IProperty | Error;
 
 	/**
 	 * Capture an exposure with current settings

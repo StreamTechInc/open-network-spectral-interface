@@ -10,6 +10,7 @@ import { HardwareSettingModel } from "../models/hardwareSettingModel";
 import { IHardware } from "../interfaces/IHardware";
 import { HardwareTypes } from "../modules/HardwareTypes";
 import { HardwareResponse } from "../models/hardwareResponse";
+import { IProperty } from "../interfaces/IProperty";
 
 /**
  * GET /
@@ -23,7 +24,7 @@ export let getAttachedHardware = (req: Request, res: Response) => {
 
 	try {
 		const hardware = new Array<IHardware>();
-		
+
 		HardwareTypes.Instance.AvailableHardwareTypes.forEach((element) => {
 			const tempArray = element.GetDevices();
 
@@ -65,7 +66,7 @@ export let getAllSettingsForDevice = (req: Request, res: Response) => {
 
 		for (let index = 0; index < HardwareTypes.Instance.AvailableHardwareTypes.length; index++) {
 			const element = HardwareTypes.Instance.AvailableHardwareTypes[index];
-			
+
 			const tempDevice = element.GetDeviceById(id);
 
 			if (tempDevice) {
@@ -102,37 +103,51 @@ export let getSetting = (req: Request, res: Response) => {
 	const id = req.params.id;
 	const settingId = req.params.settingId;
 
-	Logger.Instance.WriteDebug("Start getAllSetting/" + id + "/" + settingId);
+	Logger.Instance.WriteDebug("Start getSetting/" + id + "/" + settingId);
 
 	// Init a new response with success = false
-	const response: HardwareResponse = new HardwareResponse();
+	const hardwareResponse: HardwareResponse = new HardwareResponse();
+	hardwareResponse.success = true;
 
-	// Check to make sure we have devices attached, set message accordingly if not
-	// if (hardware != undefined && hardware.length > 0) {
-	// 	// Try and find the device, check and log accordingly
-	// 	const device = Common.findDeviceById(hardware, id);
+	try {
+		let device: IHardware;
 
-	// 	if (device) {
-	// 		// Get desired setting if device found, set response to this one
-	// 		response.data = device.GetProperty(settingId);
-	// 	}
-	// 	else {
-	// 		response.data = "Unable to find device";
-	// 	}
-	// }
-	// else {
-	// 	response.data = "No devices connected";
-	// }
+		for (let index = 0; index < HardwareTypes.Instance.AvailableHardwareTypes.length; index++) {
+			const element = HardwareTypes.Instance.AvailableHardwareTypes[index];
 
-	// If unsuccessful set status to 400
-	if (!response.success) {
+			const tempDevice = element.GetDeviceById(id);
+
+			if (tempDevice) {
+				device = tempDevice;
+				break;
+			}
+		}
+
+		if (device) {
+			const tempProp = device.GetProperty(settingId);
+
+			if (tempProp) {
+				hardwareResponse.data = tempProp;
+			}
+			else {
+				hardwareResponse.data = "Property " + settingId + " does not exist or an error has occurred";
+				hardwareResponse.success = false;
+			}
+		}
+		else {
+			hardwareResponse.data = "No device found with ID: " + id;
+			hardwareResponse.success = false;
+		}
+
+	} catch (error) {
+		hardwareResponse.data = error;
+		hardwareResponse.success = false;
 		res.status(400);
 	}
 
-	// Send out JSON'd data
-	res.send(JSON.stringify(response));
+	res.send(JSON.stringify(hardwareResponse));
 
-	Logger.Instance.WriteDebug("End getAllSetting/" + id + "/" + settingId);
+	Logger.Instance.WriteDebug("End getSetting/" + id + "/" + settingId);
 };
 
 /**
@@ -147,45 +162,55 @@ export let postSetting = (req: Request, res: Response) => {
 	Logger.Instance.WriteDebug("Start postSetting/" + id + "/" + settingId);
 
 	// Init a new response with success = false
-	const response: HardwareResponse = new HardwareResponse();
+	const hardwareResponse: HardwareResponse = new HardwareResponse();
+	hardwareResponse.success = true;
 
 	try {
 		// Get the JSON data from body
-		const body: HardwareSettingModel = req.body;
+		const body: IProperty = req.body;
 
 		if (body) {
-			// Check to make sure we have devices attached, set message accordingly if not
-			// if (hardware != undefined && hardware.length > 0) {
-			// 	// Try and find the device, check and log accordingly
-			// 	const device = Common.findDeviceById(hardware, id);
+			let device: IHardware;
 
-			// 	if (device) {
-			// 		// Try to set desired setting if device found, set response to this one
-			// 		response.data = device.SetProperty(undefined);
-			// 	}
-			// 	else {
-			// 		response.data = "Unable to find device";
-			// 	}
-			// }
-			// else {
-			// 	response.data = "No devices connected";
-			// }
+			for (let index = 0; index < HardwareTypes.Instance.AvailableHardwareTypes.length; index++) {
+				const element = HardwareTypes.Instance.AvailableHardwareTypes[index];
+
+				const tempDevice = element.GetDeviceById(id);
+
+				if (tempDevice) {
+					device = tempDevice;
+					break;
+				}
+			}
+
+			if (device) {
+				const setResponse = device.SetProperty(body);
+
+				if (setResponse instanceof Error) {
+					hardwareResponse.data = setResponse.message;
+					hardwareResponse.success = false;
+				}
+				else {
+					hardwareResponse.data = setResponse;
+				}
+			}
+			else {
+				hardwareResponse.data = "No device found with ID: " + id;
+				hardwareResponse.success = false;
+			}
 		}
 		else {
-			response.data = "Unable to read data as HardwareSettingModel";
+			hardwareResponse.data = "Unable to read data as HardwareSettingModel";
+			hardwareResponse.success = false;
 		}
 	} catch (error) {
-		Logger.Instance.WriteError(error);
-		response.data = "Error occurred while trying to set value";
-	}
-
-	// If unsuccessful set status to 400
-	if (!response.success) {
+		hardwareResponse.data = error;
+		hardwareResponse.success = false;
 		res.status(400);
 	}
 
 	// Send out JSON'd data
-	res.send(JSON.stringify(response));
+	res.send(JSON.stringify(hardwareResponse));
 
 	Logger.Instance.WriteDebug("End postSetting/" + id + "/" + settingId);
 };
