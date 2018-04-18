@@ -31,7 +31,7 @@ export interface IHardware {
 	/**
 	 * Capture an exposure with current settings
 	 */
-	Capture(): Array<ICaptureData>;
+	Capture(): Array<ICaptureData> | Error;
 
 	/**
 	 * Return camera status

@@ -235,23 +235,43 @@ export let getCapture = (req: Request, res: Response) => {
 
 	// Init a new response with success = false
 	const hardwareResponse: HardwareResponse = new HardwareResponse();
+	hardwareResponse.success = true;
 
-	// Check to make sure we have devices attached, set message accordingly if not
-	// if (hardware != undefined && hardware.length > 0) {
-	// 	// Try and find the device, check and log accordingly
-	// 	const device = Common.findDeviceById(hardware, id);
+	try {
+		let device: IHardware;
 
-	// 	if (device) {
-	// 		// Try to set desired setting if device found, set response to this one
-	// 		response.data = device.Capture();
-	// 	}
-	// 	else {
-	// 		response.data = "Unable to find device";
-	// 	}
-	// }
-	// else {
-	// 	response.data = "No devices connected";
-	// }
+		for (let index = 0; index < HardwareTypes.Instance.AvailableHardwareTypes.length; index++) {
+			const element = HardwareTypes.Instance.AvailableHardwareTypes[index];
+
+			const tempDevice = element.GetDeviceById(id);
+
+			if (tempDevice) {
+				device = tempDevice;
+				break;
+			}
+		}
+
+		if (device) {
+			const captureResponse = device.Capture();
+
+			if (captureResponse instanceof Error) {
+				hardwareResponse.success = false;
+				hardwareResponse.data = captureResponse.message;
+			}
+			else {
+				hardwareResponse.data = captureResponse;
+			}
+		}
+		else {
+			hardwareResponse.data = "No device found with ID: " + id;
+			hardwareResponse.success = false;
+		}
+
+	} catch (error) {
+		hardwareResponse.data = error;
+		hardwareResponse.success = false;
+		res.status(400);
+	}
 
 	// Send out JSON'd data
 	res.send(JSON.stringify(hardwareResponse));

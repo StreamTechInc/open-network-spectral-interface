@@ -1,5 +1,4 @@
 import { IHardware } from "../../interfaces/IHardware";
-import { ICaptureData } from "../../interfaces/ICaptureData";
 import { IStatus } from "../../interfaces/IStatus";
 import { ISubscription } from "../../interfaces/ISubscription";
 import { Guid } from "guid-typescript";
@@ -7,6 +6,7 @@ import { Logger } from "../../common/logger";
 import { HardwareProperty } from "../../models/hardware-property";
 import { SeaBreezeAPI } from "./SeaBreezeAPI";
 import { Helpers } from "../../common/helpers";
+import { CaptureData } from "../../models/capture-data";
 
 export class SeaBreezeDevice implements IHardware {
 	/**
@@ -38,9 +38,9 @@ export class SeaBreezeDevice implements IHardware {
 	public GetProperties(): Array<HardwareProperty> {
 		let properties: Array<HardwareProperty> = Array<HardwareProperty>();
 		try {
-			properties.push(this.getIntegrationTimeProperty());
-			properties.push(this.getBoxcarProperty());
-			properties.push(this.getScanAverageProperty());
+			properties.push(this.GetIntegrationTimeProperty());
+			properties.push(this.GetBoxcarProperty());
+			properties.push(this.GetScanAverageProperty());
 
 		} catch (error) {
 			Logger.Instance.WriteError(error);
@@ -56,13 +56,13 @@ export class SeaBreezeDevice implements IHardware {
 		try {
 			switch (key) {
 				case "integration_time":
-					property = this.getIntegrationTimeProperty();
+					property = this.GetIntegrationTimeProperty();
 					break;
 				case "boxcar":
-					property = this.getBoxcarProperty();
+					property = this.GetBoxcarProperty();
 					break;
 				case "scan_average":
-					property = this.getScanAverageProperty();
+					property = this.GetScanAverageProperty();
 					break;
 				default:
 					property = undefined;
@@ -82,13 +82,13 @@ export class SeaBreezeDevice implements IHardware {
 		try {
 			switch (setting.id) {
 				case "integration_time":
-					property = this.setIntegrationTimeProperty(+setting.value);
+					property = this.SetIntegrationTimeProperty(+setting.value);
 					break;
 				case "boxcar":
-					property = this.setBoxcarProperty(+setting.value);
+					property = this.SetBoxcarProperty(+setting.value);
 					break;
 				case "scan_average":
-					property = this.setScanAverageProperty(+setting.value);
+					property = this.SetScanAverageProperty(+setting.value);
 					break;
 				default:
 					property = undefined;
@@ -96,14 +96,30 @@ export class SeaBreezeDevice implements IHardware {
 			}
 		} catch (error) {
 			Logger.Instance.WriteError(error);
-			property = undefined;
+			property = error;
 		}
 
 		return property;
 	}
 
-	public Capture(): Array<ICaptureData> {
-		return undefined;
+	public Capture(): Array<CaptureData> | Error {
+		let capturedData: Array<CaptureData> | Error = new Array<CaptureData>();
+
+		try {
+			capturedData = SeaBreezeAPI.Instance.GetSpectrum(this.apiID);
+
+			if (capturedData && capturedData.length > 0) {
+				capturedData = this.ProcessCapture(capturedData);
+			}
+			else {
+				capturedData = new Error(SeaBreezeAPI.Instance.LastErrorString);
+			}
+		} catch (error) {
+			Logger.Instance.WriteError(error);
+			capturedData = error;
+		}
+
+		return capturedData;
 	}
 
 	public GetStatus(): IStatus {
@@ -134,7 +150,7 @@ export class SeaBreezeDevice implements IHardware {
 	 * Private Functions
 	 */
 	//#region Property Helpers
-	private getIntegrationTimeProperty(): HardwareProperty {
+	private GetIntegrationTimeProperty(): HardwareProperty {
 		let property: HardwareProperty = new HardwareProperty();
 
 		try {
@@ -166,8 +182,8 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setIntegrationTimeProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.getIntegrationTimeProperty();
+	private SetIntegrationTimeProperty(newValue: number): HardwareProperty | Error {
+		let property: HardwareProperty | Error = this.GetIntegrationTimeProperty();
 
 		try {
 			if (SeaBreezeAPI.Instance.SetIntegrationTime(this.apiID, newValue)) {
@@ -187,7 +203,7 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private getBoxcarProperty(): HardwareProperty {
+	private GetBoxcarProperty(): HardwareProperty {
 		let property: HardwareProperty = new HardwareProperty();
 
 		try {
@@ -210,8 +226,8 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setBoxcarProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.getBoxcarProperty();
+	private SetBoxcarProperty(newValue: number): HardwareProperty | Error {
+		let property: HardwareProperty | Error = this.GetBoxcarProperty();
 
 		try {
 			this._boxcar = newValue;
@@ -224,7 +240,7 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private getScanAverageProperty(): HardwareProperty {
+	private GetScanAverageProperty(): HardwareProperty {
 		let property: HardwareProperty = new HardwareProperty();
 
 		try {
@@ -247,8 +263,8 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setScanAverageProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.getScanAverageProperty();
+	private SetScanAverageProperty(newValue: number): HardwareProperty | Error {
+		let property: HardwareProperty | Error = this.GetScanAverageProperty();
 
 		try {
 			this._scanAverage = newValue;
@@ -262,5 +278,50 @@ export class SeaBreezeDevice implements IHardware {
 	}
 	//#endregion
 
+	//#region Capture Helpers
+	private ProcessCapture(spectrum: Array<CaptureData>): Array<CaptureData> {
+		const processedSpectrum = spectrum;
 
+		if (this._scanAverage > 1) {
+			for (let i = 1; i < this._scanAverage; i++) {
+				const tempSpectrum = SeaBreezeAPI.Instance.GetSpectrum(+this.id);
+
+				for (let j = 0; j < SeaBreezeAPI.Instance.pixels; j++) {
+					processedSpectrum[j].measuredValue += tempSpectrum[j].measuredValue;
+				}
+			}
+
+			for (let i = 0; i < SeaBreezeAPI.Instance.pixels; i++) {
+				processedSpectrum[i].measuredValue = processedSpectrum[i].measuredValue / this._scanAverage;
+			}
+		}
+
+		if (this._boxcar > 0) {
+			// Refer to seabreeze sample app for how this process was determined
+			const smoothed: Array<number> = new Array<number>(SeaBreezeAPI.Instance.pixels);
+			const boxcarLimit: number = SeaBreezeAPI.Instance.pixels - this._boxcar - 1;
+			const boxcarRange: number = 2 * this._boxcar + 1;
+
+			let sum: number;
+
+			for (let i = this._boxcar; i <= boxcarLimit; i++) {
+				sum = processedSpectrum[i].measuredValue;
+
+				for (let j = 1; j <= this._boxcar; j++) {
+					sum += processedSpectrum[i - j].measuredValue + processedSpectrum[i + j].measuredValue;
+				}
+
+				smoothed[i] = sum / boxcarRange;
+			}
+
+			for (let i = this._boxcar; i <= boxcarLimit; i++) {
+				processedSpectrum[i].measuredValue = smoothed[i];
+			}
+		}
+
+		return processedSpectrum;
+	}
+
+
+	//#endregion
 }
