@@ -82,13 +82,13 @@ export class SeaBreezeDevice implements IHardware {
 		try {
 			switch (setting.id) {
 				case "integration_time":
-					property = this.setIntegrationTimeProperty(setting.value);
+					property = this.setIntegrationTimeProperty(+setting.value);
 					break;
 				case "boxcar":
-					property = this.setBoxcarProperty(setting.value);
+					property = this.setBoxcarProperty(+setting.value);
 					break;
 				case "scan_average":
-					property = this.setScanAverageProperty(setting.value);
+					property = this.setScanAverageProperty(+setting.value);
 					break;
 				default:
 					property = undefined;
@@ -141,7 +141,7 @@ export class SeaBreezeDevice implements IHardware {
 			// Fill out some known values
 			property.id = "integration_time";
 			property.userReadableName = "Integration Time";
-			property.dataType = "number";
+			property.dataType = "double";
 			property.order = 1;
 			property.increment = 0.1;
 
@@ -166,49 +166,22 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setIntegrationTimeProperty(newValue: string): HardwareProperty | Error {
-		let property: HardwareProperty | Error = undefined;
+	private setIntegrationTimeProperty(newValue: number): HardwareProperty | Error {
+		let property: HardwareProperty | Error = this.getIntegrationTimeProperty();
 
 		try {
-			// Get property for comparison
-			const compareProp = this.getIntegrationTimeProperty();
-
-			Logger.Instance.WriteDebug("Testing data type");
-			// Test data type: must be a number
-			if (+newValue) {
-				const numberValue = +newValue;
-
-				Logger.Instance.WriteDebug("Testing min/max");
-				// Test min/max
-				if (Helpers.Instance.TestMinMax(numberValue, compareProp.minValue, compareProp.maxValue)) {
-
-					Logger.Instance.WriteDebug("Testing increment");
-					// Test increment
-					if (Helpers.Instance.TestIncrement(numberValue, compareProp.increment)) {
-						if (SeaBreezeAPI.Instance.SetIntegrationTime(this.apiID, numberValue)) {
-							Logger.Instance.WriteDebug("Prop set");
-							this._integrationTime = numberValue;
-							compareProp.value = numberValue.toString();
-							property = compareProp;
-						}
-						else {
-							property = new Error("Integration failed to set. Error: " + SeaBreezeAPI.Instance.LastErrorString);
-						}
-					}
-					else {
-						property = new Error("Value not incremented by set value.");
-					}
-				}
-				else {
-					property = new Error("Value outside of bounds.");
-				}
+			if (SeaBreezeAPI.Instance.SetIntegrationTime(this.apiID, newValue)) {
+				Logger.Instance.WriteDebug("Prop set");
+				this._integrationTime = newValue;
+				property.value = this._integrationTime.toString();
 			}
 			else {
-				property = new Error("Incorrect data format. Expected a number.");
+				property = new Error("Integration failed to set. Error: " + SeaBreezeAPI.Instance.LastErrorString);
 			}
+
 		} catch (error) {
 			Logger.Instance.WriteError(error);
-			property = undefined;
+			property = error;
 		}
 
 		return property;
@@ -237,7 +210,7 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setBoxcarProperty(newValue: string): HardwareProperty {
+	private setBoxcarProperty(newValue: number): HardwareProperty {
 		return undefined;
 	}
 
@@ -264,7 +237,7 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setScanAverageProperty(newValue: string): HardwareProperty {
+	private setScanAverageProperty(newValue: number): HardwareProperty {
 		return undefined;
 	}
 	//#endregion

@@ -11,6 +11,7 @@ import { IHardware } from "../interfaces/IHardware";
 import { HardwareTypes } from "../modules/HardwareTypes";
 import { HardwareResponse } from "../models/hardwareResponse";
 import { IProperty } from "../interfaces/IProperty";
+import { Helpers } from "../common/helpers";
 
 /**
  * GET /
@@ -162,7 +163,7 @@ export let postSetting = (req: Request, res: Response) => {
 	Logger.Instance.WriteDebug("Start postSetting/" + id + "/" + settingId);
 
 	// Init a new response with success = false
-	const hardwareResponse: HardwareResponse = new HardwareResponse();
+	let hardwareResponse: HardwareResponse = new HardwareResponse();
 	hardwareResponse.success = true;
 
 	try {
@@ -184,14 +185,22 @@ export let postSetting = (req: Request, res: Response) => {
 			}
 
 			if (device) {
-				const setResponse = device.SetProperty(body);
+				const comparerProperty = device.GetProperty(settingId);
+				const validationResult = Helpers.Instance.ValidateProperty(comparerProperty, body);
 
-				if (setResponse instanceof Error) {
-					hardwareResponse.data = setResponse.message;
-					hardwareResponse.success = false;
+				if (validationResult.success) {
+					const setResponse = device.SetProperty(body);
+
+					if (setResponse instanceof Error) {
+						hardwareResponse.data = setResponse.message;
+						hardwareResponse.success = false;
+					}
+					else {
+						hardwareResponse.data = setResponse;
+					}
 				}
 				else {
-					hardwareResponse.data = setResponse;
+					hardwareResponse = validationResult;
 				}
 			}
 			else {
@@ -225,7 +234,7 @@ export let getCapture = (req: Request, res: Response) => {
 	Logger.Instance.WriteDebug("Start getCapture/" + id);
 
 	// Init a new response with success = false
-	const response: HardwareResponse = new HardwareResponse();
+	const hardwareResponse: HardwareResponse = new HardwareResponse();
 
 	// Check to make sure we have devices attached, set message accordingly if not
 	// if (hardware != undefined && hardware.length > 0) {
@@ -244,13 +253,8 @@ export let getCapture = (req: Request, res: Response) => {
 	// 	response.data = "No devices connected";
 	// }
 
-	// If unsuccessful set status to 400
-	if (!response.success) {
-		res.status(400);
-	}
-
 	// Send out JSON'd data
-	res.send(JSON.stringify(response));
+	res.send(JSON.stringify(hardwareResponse));
 
 	Logger.Instance.WriteDebug("End getCapture/" + id);
 };
