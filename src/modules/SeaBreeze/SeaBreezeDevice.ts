@@ -210,8 +210,18 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setBoxcarProperty(newValue: number): HardwareProperty {
-		return undefined;
+	private setBoxcarProperty(newValue: number): HardwareProperty | Error {
+		let property: HardwareProperty | Error = this.getBoxcarProperty();
+
+		try {
+			this._boxcar = newValue;
+			property.value = newValue.toString();
+		} catch (error) {
+			Logger.Instance.WriteError(error);
+			property = error;
+		}
+
+		return property;
 	}
 
 	private getScanAverageProperty(): HardwareProperty {
@@ -237,8 +247,18 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	private setScanAverageProperty(newValue: number): HardwareProperty {
-		return undefined;
+	private setScanAverageProperty(newValue: number): HardwareProperty | Error {
+		let property: HardwareProperty | Error = this.getScanAverageProperty();
+
+		try {
+			this._scanAverage = newValue;
+			property.value = this._scanAverage.toString();
+		} catch (error) {
+			Logger.Instance.WriteError(error);
+			property = error;
+		}
+
+		return property;
 	}
 	//#endregion
 
