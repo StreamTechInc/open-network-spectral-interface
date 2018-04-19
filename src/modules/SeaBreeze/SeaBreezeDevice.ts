@@ -6,7 +6,7 @@ import { Logger } from "../../common/logger";
 import { HardwareProperty } from "../../models/hardware-property";
 import { SeaBreezeAPI } from "./SeaBreezeAPI";
 import { Helpers } from "../../common/helpers";
-import { CaptureData } from "../../models/capture-data";
+import { SeaBreezeCaptureData } from "./models/seabreeze-capture-data";
 
 export class SeaBreezeDevice implements IHardware {
 	/**
@@ -102,8 +102,8 @@ export class SeaBreezeDevice implements IHardware {
 		return property;
 	}
 
-	public Capture(): Array<CaptureData> | Error {
-		let capturedData: Array<CaptureData> | Error = new Array<CaptureData>();
+	public Capture(): Array<SeaBreezeCaptureData> | Error {
+		let capturedData: Array<SeaBreezeCaptureData> | Error = new Array<SeaBreezeCaptureData>();
 
 		try {
 			capturedData = SeaBreezeAPI.Instance.GetSpectrum(this.apiID);
@@ -279,7 +279,7 @@ export class SeaBreezeDevice implements IHardware {
 	//#endregion
 
 	//#region Capture Helpers
-	private ProcessCapture(spectrum: Array<CaptureData>): Array<CaptureData> {
+	private ProcessCapture(spectrum: Array<SeaBreezeCaptureData>): Array<SeaBreezeCaptureData> {
 		const processedSpectrum = spectrum;
 
 		if (this._scanAverage > 1) {

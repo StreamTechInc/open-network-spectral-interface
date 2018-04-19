@@ -7,8 +7,8 @@ import * as ref from "ref";
 import * as refArray from "ref-array";
 import { Logger } from "../../common/logger";
 import { errno } from "ffi";
-import { CaptureData } from "../../models/capture-data";
 import { Helpers } from "../../common/helpers";
+import { SeaBreezeCaptureData } from "./models/seabreeze-capture-data";
 
 export class SeaBreezeAPI {
 	/**
@@ -211,8 +211,8 @@ export class SeaBreezeAPI {
 		return wavelengths;
 	}
 
-	public GetSpectrum(id: number): Array<CaptureData> {
-		const spectrumData: Array<CaptureData> = new Array<CaptureData>();
+	public GetSpectrum(id: number): Array<SeaBreezeCaptureData> {
+		const spectrumData: Array<SeaBreezeCaptureData> = new Array<SeaBreezeCaptureData>();
 		let spectrum: Array<number> = new Array<number>();
 		const numberOfSpectrometerFeatures = this.getNumberOfSpectrometerFeatures(id);
 		const spectrometerFeatures = this.getSpectrometerFeatures(id, numberOfSpectrometerFeatures);
@@ -227,7 +227,7 @@ export class SeaBreezeAPI {
 				const wavelengths = this.GetWavelength(id);
 
 				for (let index = 0; index < spectrum.length; index++) {
-					const spectrumDataModel: CaptureData = new CaptureData();
+					const spectrumDataModel: SeaBreezeCaptureData = new SeaBreezeCaptureData();
 					spectrumDataModel.wavelength = wavelengths[index];
 					spectrumDataModel.measuredValue = spectrum[index];
 
