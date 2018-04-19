@@ -47,9 +47,9 @@ app.use(function (err: any, req: any, res: any, next: any) {
 
 // hardwareController
 app.get("/hardware", hardwareController.getAttachedHardware);
-app.get("/hardware/:id/setting", hardwareController.getAllSettingsForDevice);
-app.get("/hardware/:id/setting/:settingId", hardwareController.getSetting);
-app.post("/hardware/:id/setting/:settingId", hardwareController.postSetting);
+app.get("/hardware/:id/setting", hardwareController.getAllPropertiesForDevice);
+app.get("/hardware/:id/setting/:settingId", hardwareController.getProperty);
+app.post("/hardware/:id/setting/:settingId", hardwareController.postProperty);
 app.get("/hardware/:id/capture", hardwareController.getCapture);
 app.get("/hardware/:id/status", hardwareController.getStatus);
 app.get("/hardware/:id/frame-acquisition", hardwareController.getFrameAcquisition);

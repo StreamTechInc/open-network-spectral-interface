@@ -50,7 +50,7 @@ export let getAttachedHardware = (req: Request, res: Response) => {
  * GET / id
  * Return all settings for the specified device id
  */
-export let getAllSettingsForDevice = (req: Request, res: Response) => {
+export let getAllPropertiesForDevice = (req: Request, res: Response) => {
 	// Get ID from route parameters
 	const id = req.params.id;
 
@@ -96,7 +96,7 @@ export let getAllSettingsForDevice = (req: Request, res: Response) => {
  * GET / id, settingId
  * Return value for specific setting
  */
-export let getSetting = (req: Request, res: Response) => {
+export let getProperty = (req: Request, res: Response) => {
 	// Get ID and SettingID from route parameters
 	const id = req.params.id;
 	const settingId = req.params.settingId;
@@ -152,7 +152,7 @@ export let getSetting = (req: Request, res: Response) => {
  * POST / id, settingId
  * Set a value for specific setting
  */
-export let postSetting = (req: Request, res: Response) => {
+export let postProperty = (req: Request, res: Response) => {
 	// Get ID and SettingID from route parameters
 	const id = req.params.id;
 	const settingId = req.params.settingId;
