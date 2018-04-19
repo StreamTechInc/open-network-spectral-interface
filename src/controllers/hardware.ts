@@ -3,13 +3,10 @@
 */
 
 import { Request, Response } from "express";
-import { HardwareModel } from "../models/hardwareModel";
-import * as Common from "../common/common";
 import { Logger } from "../common/logger";
-import { HardwareSettingModel } from "../models/hardwareSettingModel";
 import { IHardware } from "../interfaces/IHardware";
 import { HardwareTypes } from "../modules/HardwareTypes";
-import { HardwareResponse } from "../models/hardwareResponse";
+import { HardwareResponse } from "../models/hardware-response";
 import { IProperty } from "../interfaces/IProperty";
 import { Helpers } from "../common/helpers";
 

@@ -1,5 +1,5 @@
 import { IProperty } from "../interfaces/IProperty";
-import { HardwareResponse } from "../models/hardwareResponse";
+import { HardwareResponse } from "../models/hardware-response";
 
 export class Helpers {
 	/**
@@ -88,4 +88,20 @@ export class Helpers {
 		return (value >= min && value <= max);
 	}
 
+	/** 
+	 * String Helpers
+	 */
+	public ConvertByteArrayToString = (buffer: Buffer): string => {
+		let returnString = "";
+
+		for (let index = 0; index < buffer.length; index++) {
+			const value = buffer[index];
+
+			if (value > 0) {
+				returnString += String.fromCharCode(value);
+			}
+		}
+
+		return returnString;
+	};
 }

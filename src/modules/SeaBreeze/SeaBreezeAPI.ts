@@ -5,10 +5,10 @@
 import * as ffi from "ffi";
 import * as ref from "ref";
 import * as refArray from "ref-array";
-import * as common from "../../common/common";
 import { Logger } from "../../common/logger";
 import { errno } from "ffi";
 import { CaptureData } from "../../models/capture-data";
+import { Helpers } from "../../common/helpers";
 
 export class SeaBreezeAPI {
 	/**
@@ -174,7 +174,7 @@ export class SeaBreezeAPI {
 			const output = this.functions.sbapi_get_serial_number(id, serialNumberFeatures[0], error, buffer, maxLength);
 
 			if (this.CheckError("sbapi_get_serial_number", ref.deref(error))) {
-				serial = common.convertByteArrayToString(buffer);
+				serial = Helpers.Instance.ConvertByteArrayToString(buffer);
 			}
 			else {
 				serial = "NONE";
@@ -252,7 +252,7 @@ export class SeaBreezeAPI {
 		const output = this.functions.sbapi_get_device_type(id, error, buffer, 20);
 
 		if (this.CheckError("sbapi_get_device_type", ref.deref(error))) {
-			model = common.convertByteArrayToString(buffer);
+			model = Helpers.Instance.ConvertByteArrayToString(buffer);
 		}
 		else {
 			model = "NONE";
