@@ -5,6 +5,7 @@ import { Logger } from "../../common/logger";
 import { IStatus } from "../../interfaces/IStatus";
 import { ISubscription } from "../../interfaces/ISubscription";
 import { SoftSpecCaptureData } from "./models/softspec-capture-data";
+import { Helpers } from "../../common/helpers";
 
 export class SoftSpecDevice implements IHardware {
 	/**
@@ -18,9 +19,6 @@ export class SoftSpecDevice implements IHardware {
 	/**
 	 * Private Member Variables
 	 */
-	private _boxcar: number = 1;
-	private _scanAverage: number = 1;
-	private _integrationTime: number = 0;
 	private _scanFileName: string = "";
 
 	/**
@@ -29,7 +27,7 @@ export class SoftSpecDevice implements IHardware {
 	constructor() {
 		this.id = Guid.create();
 		this.modelName = "SoftSpec";
-		
+
 		// Generate a serial number based of seconds and milliseconds
 		const date = new Date();
 		this.serial = "SS-" + date.getSeconds() + "-" + date.getMilliseconds(); 
@@ -41,9 +39,6 @@ export class SoftSpecDevice implements IHardware {
 	public GetProperties(): Array<HardwareProperty> {
 		let properties: Array<HardwareProperty> = Array<HardwareProperty>();
 		try {
-			properties.push(this.GetIntegrationTimeProperty());
-			properties.push(this.GetBoxcarProperty());
-			properties.push(this.GetScanAverageProperty());
 			properties.push(this.GetScanFilenameProperty());
 		} catch (error) {
 			Logger.Instance.WriteError(error);
@@ -58,15 +53,6 @@ export class SoftSpecDevice implements IHardware {
 
 		try {
 			switch (key) {
-				case "integration_time":
-					property = this.GetIntegrationTimeProperty();
-					break;
-				case "boxcar":
-					property = this.GetBoxcarProperty();
-					break;
-				case "scan_average":
-					property = this.GetScanAverageProperty();
-					break;
 				case "scan_filename":
 					property = this.GetScanFilenameProperty();
 					break;
@@ -87,15 +73,6 @@ export class SoftSpecDevice implements IHardware {
 
 		try {
 			switch (setting.id) {
-				case "integration_time":
-					property = this.SetIntegrationTimeProperty(+setting.value);
-					break;
-				case "boxcar":
-					property = this.SetBoxcarProperty(+setting.value);
-					break;
-				case "scan_average":
-					property = this.SetScanAverageProperty(+setting.value);
-					break;
 				case "scan_filename":
 					property = this.SetScanFilenameProperty(setting.value);
 					break;
@@ -115,6 +92,35 @@ export class SoftSpecDevice implements IHardware {
 		let capturedData: Array<SoftSpecCaptureData> | Error = new Array<SoftSpecCaptureData>();
 
 		try {
+			const filename = this.GetScanFilenameProperty();
+
+			if (filename && filename.value) {
+				const fileReturn = Helpers.Instance.ReadFile("./src/modules/SoftSpec/scan files/" + filename.value);
+
+				if (fileReturn.success) {
+					const randomCaptureData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
+
+					fileReturn.data.forEach((element: SoftSpecCaptureData) => {
+						// Make a new random measured value that is +/- 0.5% of the sample data
+						const min: number = element.measuredValue - (element.measuredValue * 0.005);
+						const max: number = element.measuredValue + (element.measuredValue * 0.005);
+
+						const newValue: SoftSpecCaptureData = new SoftSpecCaptureData();
+						newValue.wavelength = element.wavelength;
+						newValue.measuredValue = Helpers.Instance.Random(min, max);
+
+						randomCaptureData.push(newValue);
+					});
+
+					capturedData = fileReturn.data;
+				}
+				else {
+					capturedData = new Error(fileReturn.data);
+				}
+			}
+			else {
+				capturedData = new Error("No filename set for scan data");
+			}
 
 		} catch (error) {
 			Logger.Instance.WriteError(error);
@@ -152,118 +158,6 @@ export class SoftSpecDevice implements IHardware {
 	 * Private Functions
 	 */
 	//#region Property Helpers
-	private GetIntegrationTimeProperty(): HardwareProperty {
-		let property: HardwareProperty = new HardwareProperty();
-
-		try {
-			// Fill out some known values
-			property.id = "integration_time";
-			property.userReadableName = "Integration Time";
-			property.dataType = "int";
-			property.order = 1;
-			property.increment = 1;
-			property.minValue = 250;
-			property.maxValue = 200000;
-
-			// Get Current Value
-			property.value = this._integrationTime.toString();
-
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
-
-		return property;
-	}
-
-	private SetIntegrationTimeProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.GetIntegrationTimeProperty();
-
-		try {
-			this._integrationTime = newValue;
-			property.value = newValue.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
-
-		return property;
-	}
-
-	private GetBoxcarProperty(): HardwareProperty {
-		let property: HardwareProperty = new HardwareProperty();
-
-		try {
-			// Fill out some known values
-			property.id = "boxcar";
-			property.userReadableName = "Boxcar";
-			property.dataType = "int";
-			property.order = 2;
-			property.increment = 1;
-			property.minValue = 1;
-			property.maxValue = 10;
-
-			// Get Current Value
-			property.value = this._boxcar.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
-
-		return property;
-	}
-
-	private SetBoxcarProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.GetBoxcarProperty();
-
-		try {
-			this._boxcar = newValue;
-			property.value = newValue.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
-
-		return property;
-	}
-
-	private GetScanAverageProperty(): HardwareProperty {
-		let property: HardwareProperty = new HardwareProperty();
-
-		try {
-			// Fill out some known values
-			property.id = "scan_average";
-			property.userReadableName = "Scan Averaging";
-			property.dataType = "int";
-			property.order = 3;
-			property.increment = 1;
-			property.minValue = 1;
-			property.maxValue = 10;
-
-			// Get Current Value
-			property.value = this._scanAverage.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
-
-		return property;
-	}
-
-	private SetScanAverageProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.GetScanAverageProperty();
-
-		try {
-			this._scanAverage = newValue;
-			property.value = this._scanAverage.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
-
-		return property;
-	}
-
 	private GetScanFilenameProperty(): HardwareProperty {
 		let property: HardwareProperty = new HardwareProperty();
 
@@ -276,7 +170,7 @@ export class SoftSpecDevice implements IHardware {
 			property.maxLength = 100;
 
 			// Get Current Value
-			property.value = this._boxcar.toString();
+			property.value = this._scanFileName.toString();
 		} catch (error) {
 			Logger.Instance.WriteError(error);
 			property = undefined;

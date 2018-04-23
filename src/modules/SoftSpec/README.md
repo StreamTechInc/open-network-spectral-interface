@@ -4,9 +4,7 @@ This module is a software spectrometer to be used when needing to a spectrometer
 
 ## Dependencies
 
-Applications:
-
-package.json:
+SoftSpec modules does not require any special packages or applications.
 
 ## Installation
 
@@ -30,4 +28,5 @@ tslint -c tslint.json -p tsconfig.json
 
 ## How to use
 
-TODO: provide instructions on how to use SoftSpec
+The SoftSpec device has a property named 'scan_filename'. The purpose is to indicate what JSON file to read sample data from. Any new sample data can be added the 'scan files' directory.
+When capture is called the scan files directory will be searched for a matching file and return slightly modified values.

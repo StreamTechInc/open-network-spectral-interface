@@ -1,5 +1,7 @@
 import { IProperty } from "../interfaces/IProperty";
 import { HardwareResponse } from "../models/hardware-response";
+import { Logger } from "./logger";
+import * as fs from "fs";
 
 export class Helpers {
 	/**
@@ -44,8 +46,19 @@ export class Helpers {
 						isValid.success = false;
 					}
 				}
+				else if (existingProperty.dataType === "string") {
+					if (newProperty.value.length <= existingProperty.maxLength) {
+						isValid.success = true;
+					}
+					else {
+						isValid.data = "Value length exceeds max length";
+						isValid.success = false;
+					}
+				}
 				else {
-					// Finish validation if bool, enum or string here
+					// Finish validating enum and bool
+					// just have success for now
+					isValid.success = true;
 				}
 			}
 			else {
@@ -74,6 +87,10 @@ export class Helpers {
 		}
 		else if (expectedType === "bool") {
 			// TODO: validate bool
+		}
+		else if (expectedType === "string") {
+			// Must be string 
+			isValid = true;
 		}
 
 		return isValid;
@@ -104,4 +121,40 @@ export class Helpers {
 
 		return returnString;
 	};
+
+	/**
+	 * File Helpers
+	 */
+	public ReadFile(filename: string): HardwareResponse {
+		const fileResponse: HardwareResponse = new HardwareResponse();
+		fileResponse.success = false;
+
+		try {
+			if (filename === undefined || filename.length === 0) {
+				fileResponse.data = "No filename provided";
+				Logger.Instance.WriteDebug(fileResponse.data);
+			}
+			else {
+				if (!fs.existsSync(filename)) {
+					fileResponse.data = 'File "' + filename + '" does not exist';
+					Logger.Instance.WriteDebug(fileResponse.data);
+				}
+				else {
+					fileResponse.data = JSON.parse(fs.readFileSync(filename, "utf8"));
+					fileResponse.success = true;
+				}
+			}
+		} catch (error) {
+			fileResponse.data = error;
+		}
+
+		return fileResponse;
+	}
+
+	/**
+	 * Number Helpers
+	 */
+	public Random(min: number, max: number) {
+		return (Math.random() * (max - min + 1)) + min;
+	}
 }

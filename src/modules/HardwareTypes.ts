@@ -3,6 +3,7 @@ import { IHardwareType } from "../interfaces/IHardwareType";
 /* Start Module Imports */
 
 import { SeaBreezeHardware } from "./SeaBreeze/SeaBreezeHardware";
+import { SoftSpecHardware } from "./SoftSpec/SoftSpecHardware";
 
 /* End Module Imports */
 
@@ -29,6 +30,7 @@ export class HardwareTypes {
 		/* Start IHardwareType Initialization */
 
 		this.AvailableHardwareTypes.push(new SeaBreezeHardware());
+		this.AvailableHardwareTypes.push(new SoftSpecHardware());
 
 		/* End IHardwareType Initialization */
 	}
