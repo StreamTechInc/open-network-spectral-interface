@@ -5,10 +5,10 @@
 import * as ffi from "ffi";
 import * as ref from "ref";
 import * as refArray from "ref-array";
-import * as common from "../../common/common";
 import { Logger } from "../../common/logger";
-import { SpectrumDataModel } from "../../models/SpectrumDataModel";
 import { errno } from "ffi";
+import { Helpers } from "../../common/helpers";
+import { SeaBreezeCaptureData } from "./models/seabreeze-capture-data";
 
 export class SeaBreezeAPI {
 	/**
@@ -174,7 +174,7 @@ export class SeaBreezeAPI {
 			const output = this.functions.sbapi_get_serial_number(id, serialNumberFeatures[0], error, buffer, maxLength);
 
 			if (this.CheckError("sbapi_get_serial_number", ref.deref(error))) {
-				serial = common.convertByteArrayToString(buffer);
+				serial = Helpers.Instance.ConvertByteArrayToString(buffer);
 			}
 			else {
 				serial = "NONE";
@@ -211,8 +211,8 @@ export class SeaBreezeAPI {
 		return wavelengths;
 	}
 
-	public GetSpectrum(id: number): Array<SpectrumDataModel> {
-		const spectrumData: Array<SpectrumDataModel> = new Array<SpectrumDataModel>();
+	public GetSpectrum(id: number): Array<SeaBreezeCaptureData> {
+		const spectrumData: Array<SeaBreezeCaptureData> = new Array<SeaBreezeCaptureData>();
 		let spectrum: Array<number> = new Array<number>();
 		const numberOfSpectrometerFeatures = this.getNumberOfSpectrometerFeatures(id);
 		const spectrometerFeatures = this.getSpectrometerFeatures(id, numberOfSpectrometerFeatures);
@@ -227,7 +227,7 @@ export class SeaBreezeAPI {
 				const wavelengths = this.GetWavelength(id);
 
 				for (let index = 0; index < spectrum.length; index++) {
-					const spectrumDataModel: SpectrumDataModel = new SpectrumDataModel();
+					const spectrumDataModel: SeaBreezeCaptureData = new SeaBreezeCaptureData();
 					spectrumDataModel.wavelength = wavelengths[index];
 					spectrumDataModel.measuredValue = spectrum[index];
 
@@ -252,7 +252,7 @@ export class SeaBreezeAPI {
 		const output = this.functions.sbapi_get_device_type(id, error, buffer, 20);
 
 		if (this.CheckError("sbapi_get_device_type", ref.deref(error))) {
-			model = common.convertByteArrayToString(buffer);
+			model = Helpers.Instance.ConvertByteArrayToString(buffer);
 		}
 		else {
 			model = "NONE";
