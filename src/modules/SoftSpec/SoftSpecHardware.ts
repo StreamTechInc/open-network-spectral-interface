@@ -1,20 +1,28 @@
 import { IHardwareType } from "../../interfaces/IHardwareType";
 import { SoftSpecDevice } from "./SoftSpecDevice";
 import { Logger } from "../../common/logger";
+import { Helpers } from "../../common/helpers";
 
 export class SoftSpecHardware implements IHardwareType {
 
-	private _numConnectdDevices: number = 1;
+	private _specsFilePath: string = "./src/modules/SoftSpec/spectrometers/";
 	private _devices: Array<SoftSpecDevice> = new Array<SoftSpecDevice>();
 
 	public GetDevices(): Array<SoftSpecDevice> {
-		Logger.Instance.WriteDebug("Start SeaBreezeHardware.GetDevices");
+		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
 
 		try {
-			const numDeviceToCreate = this._numConnectdDevices - this._devices.length;
+			const response = Helpers.Instance.ReadFilesInDirectory(this._specsFilePath);
 
-			for (let index = 0; index < numDeviceToCreate; index++) {
-				this._devices.push(new SoftSpecDevice());
+			if (response && response.success) {
+				response.data.forEach((device: SoftSpecDevice) => {
+					if (!this.CheckIfDeviceExists(device.serial)) {
+						const tempDevice: SoftSpecDevice = new SoftSpecDevice();
+						tempDevice.modelName = device.modelName;
+						tempDevice.serial = device.serial;
+						this._devices.push(tempDevice);
+					}
+				});
 			}
 		} catch (error) {
 			Logger.Instance.WriteError(error);
@@ -48,4 +56,17 @@ export class SoftSpecHardware implements IHardwareType {
 		this._devices = new Array<SoftSpecDevice>();
 		return true;
 	}
+
+	private CheckIfDeviceExists(serial: string): boolean {
+		let exists = false;
+
+		this._devices.forEach((element) => {
+			if (element.serial === serial) {
+				exists = true;
+			}
+		});
+
+		return exists;
+	}
+
 }
