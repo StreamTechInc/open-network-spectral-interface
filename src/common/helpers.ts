@@ -151,6 +151,33 @@ export class Helpers {
 		return fileResponse;
 	}
 
+	public ReadFilesInDirectory(filepath: string): HardwareResponse {
+		const fileResponse: HardwareResponse = new HardwareResponse();
+		fileResponse.success = false;
+
+		try {
+			if (filepath === undefined || filepath.length === 0) {
+				fileResponse.data = "No filepath provided.";
+			}
+			else {
+				const fileDataArray = new Array();
+				fs.readdirSync(filepath).forEach(file => {
+					const response = this.ReadFile(filepath + file);
+					if (response.success) {
+						fileDataArray.push(response.data);
+					}
+				});
+
+				fileResponse.data = fileDataArray;
+				fileResponse.success = true;
+			}
+		} catch (error) {
+			fileResponse.data = error;
+		}
+
+		return fileResponse;
+	}
+
 	/**
 	 * Number Helpers
 	 */

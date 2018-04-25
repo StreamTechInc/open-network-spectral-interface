@@ -19,18 +19,13 @@ export class SoftSpecDevice implements IHardware {
 	/**
 	 * Private Member Variables
 	 */
-	private _scanFileName: string = "";
+	private _scanFileName: string = "0_percent.json";
 
 	/**
 	 * Constructor
 	 */
 	constructor() {
 		this.id = Guid.create();
-		this.modelName = "SoftSpec";
-
-		// Generate a serial number based of seconds and milliseconds
-		const date = new Date();
-		this.serial = "SS-" + date.getSeconds() + "-" + date.getMilliseconds(); 
 	}
 
 	/**
