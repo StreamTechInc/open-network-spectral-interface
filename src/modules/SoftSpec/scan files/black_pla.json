@@ -1,0 +1,2050 @@
+[
+	{
+		"wavelength": 899.452372,
+		"measuredValue": 3633.174240387201
+	},
+	{
+		"wavelength": 901.075428107941,
+		"measuredValue": 4151.8042484538855
+	},
+	{
+		"wavelength": 902.6983284211278,
+		"measuredValue": 4302.797795106211
+	},
+	{
+		"wavelength": 904.3210729236065,
+		"measuredValue": 4064.732454961011
+	},
+	{
+		"wavelength": 905.9436615994226,
+		"measuredValue": 3488.0545845657434
+	},
+	{
+		"wavelength": 907.5660944326227,
+		"measuredValue": 3407.2022048937883
+	},
+	{
+		"wavelength": 909.1883714072519,
+		"measuredValue": 3465.250067222372
+	},
+	{
+		"wavelength": 910.8104925073565,
+		"measuredValue": 4542.245227211616
+	},
+	{
+		"wavelength": 912.4324577169822,
+		"measuredValue": 4000.4651788115084
+	},
+	{
+		"wavelength": 914.0542670201752,
+		"measuredValue": 4464.502554450121
+	},
+	{
+		"wavelength": 915.6759204009811,
+		"measuredValue": 3046.8217262705025
+	},
+	{
+		"wavelength": 917.2974178434457,
+		"measuredValue": 4013.249529443399
+	},
+	{
+		"wavelength": 918.9187593316151,
+		"measuredValue": 3673.945953213229
+	},
+	{
+		"wavelength": 920.5399448495351,
+		"measuredValue": 4195.685668190374
+	},
+	{
+		"wavelength": 922.1609743812519,
+		"measuredValue": 3389.580532401183
+	},
+	{
+		"wavelength": 923.7818479108108,
+		"measuredValue": 3636.974993277763
+	},
+	{
+		"wavelength": 925.4025654222581,
+		"measuredValue": 3565.1062113471367
+	},
+	{
+		"wavelength": 927.0231268996397,
+		"measuredValue": 4217.799139553644
+	},
+	{
+		"wavelength": 928.6435323270013,
+		"measuredValue": 3442.100026888949
+	},
+	{
+		"wavelength": 930.2637816883887,
+		"measuredValue": 4084.772788383974
+	},
+	{
+		"wavelength": 931.8838749678479,
+		"measuredValue": 3671.181769292821
+	},
+	{
+		"wavelength": 933.503812149425,
+		"measuredValue": 4506.310836246303
+	},
+	{
+		"wavelength": 935.1235932171656,
+		"measuredValue": 3516.3874697499327
+	},
+	{
+		"wavelength": 936.7432181551159,
+		"measuredValue": 4007.37563861253
+	},
+	{
+		"wavelength": 938.3626869473213,
+		"measuredValue": 3471.12395805324
+	},
+	{
+		"wavelength": 939.9819995778281,
+		"measuredValue": 4143.511696692659
+	},
+	{
+		"wavelength": 941.601156030682,
+		"measuredValue": 3270.7206238236085
+	},
+	{
+		"wavelength": 943.220156289929,
+		"measuredValue": 4193.267007260017
+	},
+	{
+		"wavelength": 944.8390003396149,
+		"measuredValue": 3858.800752890562
+	},
+	{
+		"wavelength": 946.4576881637855,
+		"measuredValue": 4337.695617101371
+	},
+	{
+		"wavelength": 948.0762197464869,
+		"measuredValue": 3335.333422963162
+	},
+	{
+		"wavelength": 949.6945950717649,
+		"measuredValue": 3904.4097875773055
+	},
+	{
+		"wavelength": 951.3128141236654,
+		"measuredValue": 3765.1640225867163
+	},
+	{
+		"wavelength": 952.9308768862342,
+		"measuredValue": 4409.909922022049
+	},
+	{
+		"wavelength": 954.5487833435171,
+		"measuredValue": 3283.85049744555
+	},
+	{
+		"wavelength": 956.1665334795604,
+		"measuredValue": 4029.834632965851
+	},
+	{
+		"wavelength": 957.7841272784094,
+		"measuredValue": 3633.174240387201
+	},
+	{
+		"wavelength": 959.4015647241106,
+		"measuredValue": 4266.172358160796
+	},
+	{
+		"wavelength": 961.0188458007093,
+		"measuredValue": 3597.2398494218874
+	},
+	{
+		"wavelength": 962.6359704922519,
+		"measuredValue": 3594.8211884915304
+	},
+	{
+		"wavelength": 964.252938782784,
+		"measuredValue": 3889.897821995159
+	},
+	{
+		"wavelength": 965.8697506563515,
+		"measuredValue": 4023.960742134983
+	},
+	{
+		"wavelength": 967.4864060970003,
+		"measuredValue": 4026.3794030653403
+	},
+	{
+		"wavelength": 969.1029050887764,
+		"measuredValue": 4161.824415165367
+	},
+	{
+		"wavelength": 970.7192476157255,
+		"measuredValue": 4050.9115353589673
+	},
+	{
+		"wavelength": 972.3354336618936,
+		"measuredValue": 4064.732454961011
+	},
+	{
+		"wavelength": 973.9514632113265,
+		"measuredValue": 3377.832750739446
+	},
+	{
+		"wavelength": 975.5673362480703,
+		"measuredValue": 3570.9801021780045
+	},
+	{
+		"wavelength": 977.1830527561707,
+		"measuredValue": 3439.681365958591
+	},
+	{
+		"wavelength": 978.7986127196738,
+		"measuredValue": 3686.039257865017
+	},
+	{
+		"wavelength": 980.414016122625,
+		"measuredValue": 4080.972035493412
+	},
+	{
+		"wavelength": 982.0292629490707,
+		"measuredValue": 4386.414358698575
+	},
+	{
+		"wavelength": 983.6443531830564,
+		"measuredValue": 4424.767410594246
+	},
+	{
+		"wavelength": 985.2592868086283,
+		"measuredValue": 4127.272116160258
+	},
+	{
+		"wavelength": 986.8740638098321,
+		"measuredValue": 3681.8929819844047
+	},
+	{
+		"wavelength": 988.4886841707139,
+		"measuredValue": 4115.524334498521
+	},
+	{
+		"wavelength": 990.1031478753192,
+		"measuredValue": 4050.5660123689163
+	},
+	{
+		"wavelength": 991.7174549076943,
+		"measuredValue": 4379.158375907502
+	},
+	{
+		"wavelength": 993.3316052518848,
+		"measuredValue": 3761.708792686206
+	},
+	{
+		"wavelength": 994.9455988919367,
+		"measuredValue": 3804.20812046249
+	},
+	{
+		"wavelength": 996.559435811896,
+		"measuredValue": 4237.839472976607
+	},
+	{
+		"wavelength": 998.1731159958083,
+		"measuredValue": 4260.98951331003
+	},
+	{
+		"wavelength": 999.7866394277198,
+		"measuredValue": 4047.1107824684054
+	},
+	{
+		"wavelength": 1001.400006091676,
+		"measuredValue": 3865.7112126915836
+	},
+	{
+		"wavelength": 1003.0132159717232,
+		"measuredValue": 3832.1954826566275
+	},
+	{
+		"wavelength": 1004.626269051907,
+		"measuredValue": 4136.946759881688
+	},
+	{
+		"wavelength": 1006.2391653162736,
+		"measuredValue": 4460.010755579457
+	},
+	{
+		"wavelength": 1007.8519047488685,
+		"measuredValue": 4059.8951331002954
+	},
+	{
+		"wavelength": 1009.4644873337377,
+		"measuredValue": 3971.7867706372676
+	},
+	{
+		"wavelength": 1011.0769130549273,
+		"measuredValue": 3882.2963162140354
+	},
+	{
+		"wavelength": 1012.689181896483,
+		"measuredValue": 4182.901317558483
+	},
+	{
+		"wavelength": 1014.3012938424507,
+		"measuredValue": 4461.7383705297125
+	},
+	{
+		"wavelength": 1015.9132488768762,
+		"measuredValue": 3879.877655283679
+	},
+	{
+		"wavelength": 1017.5250469838056,
+		"measuredValue": 4073.3705297122883
+	},
+	{
+		"wavelength": 1019.1366881472848,
+		"measuredValue": 3680.5108900242
+	},
+	{
+		"wavelength": 1020.7481723513594,
+		"measuredValue": 4181.173702608227
+	},
+	{
+		"wavelength": 1022.3594995800754,
+		"measuredValue": 3926.177735950525
+	},
+	{
+		"wavelength": 1023.9706698174789,
+		"measuredValue": 4177.0274267276145
+	},
+	{
+		"wavelength": 1025.5816830476156,
+		"measuredValue": 3972.823339607421
+	},
+	{
+		"wavelength": 1027.1925392545313,
+		"measuredValue": 4181.173702608227
+	},
+	{
+		"wavelength": 1028.8032384222718,
+		"measuredValue": 4305.56197902662
+	},
+	{
+		"wavelength": 1030.4137805348837,
+		"measuredValue": 4067.4966388814196
+	},
+	{
+		"wavelength": 1032.024165576412,
+		"measuredValue": 4397.47109438021
+	},
+	{
+		"wavelength": 1033.6343935309028,
+		"measuredValue": 4313.163484807744
+	},
+	{
+		"wavelength": 1035.2444643824024,
+		"measuredValue": 4386.068835708524
+	},
+	{
+		"wavelength": 1036.8543781149567,
+		"measuredValue": 4261.33503630008
+	},
+	{
+		"wavelength": 1038.464134712611,
+		"measuredValue": 3589.638343640763
+	},
+	{
+		"wavelength": 1040.0737341594115,
+		"measuredValue": 3125.2554450121
+	},
+	{
+		"wavelength": 1041.683176439404,
+		"measuredValue": 3961.075557945684
+	},
+	{
+		"wavelength": 1043.2924615366346,
+		"measuredValue": 4389.524065609035
+	},
+	{
+		"wavelength": 1044.901589435149,
+		"measuredValue": 5072.623016940038
+	},
+	{
+		"wavelength": 1046.510560118993,
+		"measuredValue": 4246.8230707179355
+	},
+	{
+		"wavelength": 1048.119373572213,
+		"measuredValue": 4096.175047055661
+	},
+	{
+		"wavelength": 1049.7280297788543,
+		"measuredValue": 4036.0540467867704
+	},
+	{
+		"wavelength": 1051.3365287229626,
+		"measuredValue": 4033.9809088464644
+	},
+	{
+		"wavelength": 1052.9448703885848,
+		"measuredValue": 3810.7730572734604
+	},
+	{
+		"wavelength": 1054.553054759766,
+		"measuredValue": 4020.1599892444206
+	},
+	{
+		"wavelength": 1056.1610818205522,
+		"measuredValue": 3622.117504705566
+	},
+	{
+		"wavelength": 1057.7689515549891,
+		"measuredValue": 4019.468943264319
+	},
+	{
+		"wavelength": 1059.3766639471235,
+		"measuredValue": 3420.3320785157302
+	},
+	{
+		"wavelength": 1060.984218981,
+		"measuredValue": 3947.600161333692
+	},
+	{
+		"wavelength": 1062.5916166406653,
+		"measuredValue": 3539.5375100833553
+	},
+	{
+		"wavelength": 1064.1988569101652,
+		"measuredValue": 4078.898897553105
+	},
+	{
+		"wavelength": 1065.8059397735453,
+		"measuredValue": 3569.9435332078515
+	},
+	{
+		"wavelength": 1067.4128652148515,
+		"measuredValue": 4079.2444205431566
+	},
+	{
+		"wavelength": 1069.01963321813,
+		"measuredValue": 4382.613605808013
+	},
+	{
+		"wavelength": 1070.6262437674268,
+		"measuredValue": 4081.317558483463
+	},
+	{
+		"wavelength": 1072.2326968467871,
+		"measuredValue": 3714.717666039258
+	},
+	{
+		"wavelength": 1073.8389924402575,
+		"measuredValue": 3303.199784888411
+	},
+	{
+		"wavelength": 1075.4451305318835,
+		"measuredValue": 3878.841086313525
+	},
+	{
+		"wavelength": 1077.051111105711,
+		"measuredValue": 3879.5321322936275
+	},
+	{
+		"wavelength": 1078.656934145786,
+		"measuredValue": 3868.475396611992
+	},
+	{
+		"wavelength": 1080.2625996361544,
+		"measuredValue": 3341.5528367840816
+	},
+	{
+		"wavelength": 1081.868107560862,
+		"measuredValue": 4160.442323205163
+	},
+	{
+		"wavelength": 1083.4734579039546,
+		"measuredValue": 4204.669265931702
+	},
+	{
+		"wavelength": 1085.0786506494783,
+		"measuredValue": 4731.591825759612
+	},
+	{
+		"wavelength": 1086.6836857814792,
+		"measuredValue": 3642.5033611185804
+	},
+	{
+		"wavelength": 1088.2885632840023,
+		"measuredValue": 4152.8408174240385
+	},
+	{
+		"wavelength": 1089.8932831410943,
+		"measuredValue": 3863.638074751277
+	},
+	{
+		"wavelength": 1091.497845336801,
+		"measuredValue": 4164.588599085776
+	},
+	{
+		"wavelength": 1093.1022498551679,
+		"measuredValue": 3488.400107555795
+	},
+	{
+		"wavelength": 1094.7064966802413,
+		"measuredValue": 3511.550147889218
+	},
+	{
+		"wavelength": 1096.3105857960668,
+		"measuredValue": 3581.3457918795375
+	},
+	{
+		"wavelength": 1097.9145171866905,
+		"measuredValue": 3179.8480774401723
+	},
+	{
+		"wavelength": 1099.5182908361583,
+		"measuredValue": 4134.528098951331
+	},
+	{
+		"wavelength": 1101.1219067285156,
+		"measuredValue": 4073.3705297122883
+	},
+	{
+		"wavelength": 1102.7253648478088,
+		"measuredValue": 4954.799677332617
+	},
+	{
+		"wavelength": 1104.3286651780836,
+		"measuredValue": 4259.607421349825
+	},
+	{
+		"wavelength": 1105.931807703386,
+		"measuredValue": 4321.801559559021
+	},
+	{
+		"wavelength": 1107.5347924077619,
+		"measuredValue": 4090.9922022048936
+	},
+	{
+		"wavelength": 1109.1376192752568,
+		"measuredValue": 4198.795375100834
+	},
+	{
+		"wavelength": 1110.7402882899173,
+		"measuredValue": 3801.7894595321322
+	},
+	{
+		"wavelength": 1112.3427994357885,
+		"measuredValue": 3704.0064533476743
+	},
+	{
+		"wavelength": 1113.9451526969167,
+		"measuredValue": 3897.499327776284
+	},
+	{
+		"wavelength": 1115.547348057348,
+		"measuredValue": 4522.895939768754
+	},
+	{
+		"wavelength": 1117.1493855011279,
+		"measuredValue": 4264.099220220489
+	},
+	{
+		"wavelength": 1118.7512650123024,
+		"measuredValue": 4034.671954826566
+	},
+	{
+		"wavelength": 1120.3529865749172,
+		"measuredValue": 4219.526754503899
+	},
+	{
+		"wavelength": 1121.9545501730188,
+		"measuredValue": 4035.70852379672
+	},
+	{
+		"wavelength": 1123.5559557906522,
+		"measuredValue": 3881.259747243883
+	},
+	{
+		"wavelength": 1125.157203411864,
+		"measuredValue": 3629.71901048669
+	},
+	{
+		"wavelength": 1126.7582930206997,
+		"measuredValue": 4257.534283409519
+	},
+	{
+		"wavelength": 1128.3592246012056,
+		"measuredValue": 4340.8053240118315
+	},
+	{
+		"wavelength": 1129.959998137427,
+		"measuredValue": 4398.162140360312
+	},
+	{
+		"wavelength": 1131.5606136134102,
+		"measuredValue": 4104.813121806937
+	},
+	{
+		"wavelength": 1133.161071013201,
+		"measuredValue": 4083.736219413821
+	},
+	{
+		"wavelength": 1134.7613703208453,
+		"measuredValue": 3859.1462758806133
+	},
+	{
+		"wavelength": 1136.361511520389,
+		"measuredValue": 3616.2436138746975
+	},
+	{
+		"wavelength": 1137.9614945958779,
+		"measuredValue": 3993.900242000538
+	},
+	{
+		"wavelength": 1139.561319531358,
+		"measuredValue": 3766.20059155687
+	},
+	{
+		"wavelength": 1141.160986310875,
+		"measuredValue": 4366.3740252756115
+	},
+	{
+		"wavelength": 1142.760494918475,
+		"measuredValue": 3992.8636730303842
+	},
+	{
+		"wavelength": 1144.3598453382035,
+		"measuredValue": 4149.040064533477
+	},
+	{
+		"wavelength": 1145.959037554107,
+		"measuredValue": 4033.635385856413
+	},
+	{
+		"wavelength": 1147.5580715502308,
+		"measuredValue": 4105.5041677870395
+	},
+	{
+		"wavelength": 1149.1569473106213,
+		"measuredValue": 4128.9997311105135
+	},
+	{
+		"wavelength": 1150.7556648193242,
+		"measuredValue": 3924.104598010217
+	},
+	{
+		"wavelength": 1152.354224060385,
+		"measuredValue": 3983.880075289056
+	},
+	{
+		"wavelength": 1153.95262501785,
+		"measuredValue": 3790.3872008604462
+	},
+	{
+		"wavelength": 1155.5508676757652,
+		"measuredValue": 3837.3783275073947
+	},
+	{
+		"wavelength": 1157.148952018176,
+		"measuredValue": 4241.98574885722
+	},
+	{
+		"wavelength": 1158.7468780291285,
+		"measuredValue": 3966.949448776553
+	},
+	{
+		"wavelength": 1160.3446456926688,
+		"measuredValue": 4281.720892713095
+	},
+	{
+		"wavelength": 1161.942254992843,
+		"measuredValue": 3779.675988168863
+	},
+	{
+		"wavelength": 1163.539705913696,
+		"measuredValue": 4178.409518687819
+	},
+	{
+		"wavelength": 1165.1369984392745,
+		"measuredValue": 3673.600430223178
+	},
+	{
+		"wavelength": 1166.7341325536245,
+		"measuredValue": 3870.2030115622474
+	},
+	{
+		"wavelength": 1168.3311082407913,
+		"measuredValue": 4893.296585103522
+	},
+	{
+		"wavelength": 1169.927925484821,
+		"measuredValue": 4256.843237429416
+	},
+	{
+		"wavelength": 1171.5245842697595,
+		"measuredValue": 4393.670341489647
+	},
+	{
+		"wavelength": 1173.1210845796531,
+		"measuredValue": 3320.475934390965
+	},
+	{
+		"wavelength": 1174.7174263985469,
+		"measuredValue": 3680.165367034149
+	},
+	{
+		"wavelength": 1176.3136097104875,
+		"measuredValue": 3920.6493681097068
+	},
+	{
+		"wavelength": 1177.9096344995205,
+		"measuredValue": 4305.56197902662
+	},
+	{
+		"wavelength": 1179.5055007496915,
+		"measuredValue": 4953.763108362463
+	},
+	{
+		"wavelength": 1181.1012084450467,
+		"measuredValue": 4339.768755041678
+	},
+	{
+		"wavelength": 1182.6967575696322,
+		"measuredValue": 3814.9193331540737
+	},
+	{
+		"wavelength": 1184.2921481074934,
+		"measuredValue": 3536.082280182845
+	},
+	{
+		"wavelength": 1185.8873800426768,
+		"measuredValue": 3545.756923904275
+	},
+	{
+		"wavelength": 1187.4824533592275,
+		"measuredValue": 4107.231782737294
+	},
+	{
+		"wavelength": 1189.0773680411921,
+		"measuredValue": 3417.9134175853724
+	},
+	{
+		"wavelength": 1190.672124072616,
+		"measuredValue": 3838.414896477548
+	},
+	{
+		"wavelength": 1192.2667214375451,
+		"measuredValue": 3125.946490992202
+	},
+	{
+		"wavelength": 1193.8611601200257,
+		"measuredValue": 4748.5224522721155
+	},
+	{
+		"wavelength": 1195.4554401041032,
+		"measuredValue": 4238.184995966658
+	},
+	{
+		"wavelength": 1197.0495613738242,
+		"measuredValue": 4423.385318634041
+	},
+	{
+		"wavelength": 1198.6435239132336,
+		"measuredValue": 3414.458187684862
+	},
+	{
+		"wavelength": 1200.2373277063782,
+		"measuredValue": 3627.300349556333
+	},
+	{
+		"wavelength": 1201.8309727373032,
+		"measuredValue": 3934.4702877117506
+	},
+	{
+		"wavelength": 1203.424458990055,
+		"measuredValue": 4183.937886528636
+	},
+	{
+		"wavelength": 1205.0177864486789,
+		"measuredValue": 3911.3202473783276
+	},
+	{
+		"wavelength": 1206.6109550972212,
+		"measuredValue": 4120.361656359236
+	},
+	{
+		"wavelength": 1208.2039649197282,
+		"measuredValue": 4510.1115891368645
+	},
+	{
+		"wavelength": 1209.7968159002448,
+		"measuredValue": 4872.910728690508
+	},
+	{
+		"wavelength": 1211.3895080228176,
+		"measuredValue": 4771.326969615488
+	},
+	{
+		"wavelength": 1212.9820412714926,
+		"measuredValue": 3943.7994084431302
+	},
+	{
+		"wavelength": 1214.574415630315,
+		"measuredValue": 4001.8472707717133
+	},
+	{
+		"wavelength": 1216.166631083331,
+		"measuredValue": 4012.2129604732454
+	},
+	{
+		"wavelength": 1217.7586876145865,
+		"measuredValue": 4427.877117504705
+	},
+	{
+		"wavelength": 1219.3505852081278,
+		"measuredValue": 3994.9368109706907
+	},
+	{
+		"wavelength": 1220.9423238480001,
+		"measuredValue": 3849.126109169131
+	},
+	{
+		"wavelength": 1222.5339035182494,
+		"measuredValue": 3993.554719010486
+	},
+	{
+		"wavelength": 1224.1253242029222,
+		"measuredValue": 4723.644796988438
+	},
+	{
+		"wavelength": 1225.716585886064,
+		"measuredValue": 4730.555256789459
+	},
+	{
+		"wavelength": 1227.3076885517205,
+		"measuredValue": 3853.272385049744
+	},
+	{
+		"wavelength": 1228.8986321839375,
+		"measuredValue": 3517.424038720086
+	},
+	{
+		"wavelength": 1230.4894167667617,
+		"measuredValue": 3361.938693197096
+	},
+	{
+		"wavelength": 1232.0800422842378,
+		"measuredValue": 3797.98870664157
+	},
+	{
+		"wavelength": 1233.6705087204125,
+		"measuredValue": 3625.918257596128
+	},
+	{
+		"wavelength": 1235.2608160593318,
+		"measuredValue": 4313.509007797795
+	},
+	{
+		"wavelength": 1236.850964285041,
+		"measuredValue": 3867.784350631891
+	},
+	{
+		"wavelength": 1238.4409533815863,
+		"measuredValue": 4641.755848346329
+	},
+	{
+		"wavelength": 1240.0307833330135,
+		"measuredValue": 3399.9462221027156
+	},
+	{
+		"wavelength": 1241.6204541233687,
+		"measuredValue": 3772.074482387738
+	},
+	{
+		"wavelength": 1243.2099657366975,
+		"measuredValue": 3555.431567625706
+	},
+	{
+		"wavelength": 1244.7993181570457,
+		"measuredValue": 4138.328851841893
+	},
+	{
+		"wavelength": 1246.3885113684598,
+		"measuredValue": 4099.630276956171
+	},
+	{
+		"wavelength": 1247.977545354985,
+		"measuredValue": 3411.348480774402
+	},
+	{
+		"wavelength": 1249.5664201006675,
+		"measuredValue": 3503.9486421080933
+	},
+	{
+		"wavelength": 1251.1551355895533,
+		"measuredValue": 4237.839472976607
+	},
+	{
+		"wavelength": 1252.743691805688,
+		"measuredValue": 3890.2433449852106
+	},
+	{
+		"wavelength": 1254.3320887331176,
+		"measuredValue": 3787.6230169400374
+	},
+	{
+		"wavelength": 1255.920326355888,
+		"measuredValue": 4084.7727883839743
+	},
+	{
+		"wavelength": 1257.5084046580455,
+		"measuredValue": 4326.293358429685
+	},
+	{
+		"wavelength": 1259.096323623635,
+		"measuredValue": 4551.228824952944
+	},
+	{
+		"wavelength": 1260.6840832367031,
+		"measuredValue": 3991.136058080129
+	},
+	{
+		"wavelength": 1262.2716834812957,
+		"measuredValue": 4387.450927668729
+	},
+	{
+		"wavelength": 1263.8591243414583,
+		"measuredValue": 4506.310836246303
+	},
+	{
+		"wavelength": 1265.4464058012375,
+		"measuredValue": 4469.685399300887
+	},
+	{
+		"wavelength": 1267.033527844678,
+		"measuredValue": 3972.1322936273186
+	},
+	{
+		"wavelength": 1268.6204904558272,
+		"measuredValue": 4087.191449314332
+	},
+	{
+		"wavelength": 1270.2072936187296,
+		"measuredValue": 3911.665770368379
+	},
+	{
+		"wavelength": 1271.7939373174318,
+		"measuredValue": 4509.7660661468135
+	},
+	{
+		"wavelength": 1273.3804215359794,
+		"measuredValue": 3955.201667114816
+	},
+	{
+		"wavelength": 1274.9667462584187,
+		"measuredValue": 3858.4552299005104
+	},
+	{
+		"wavelength": 1276.5529114687954,
+		"measuredValue": 3784.5133100295775
+	},
+	{
+		"wavelength": 1278.138917151155,
+		"measuredValue": 3942.7628394729763
+	},
+	{
+		"wavelength": 1279.7247632895442,
+		"measuredValue": 4261.680559290132
+	},
+	{
+		"wavelength": 1281.310449868008,
+		"measuredValue": 4221.254369454155
+	},
+	{
+		"wavelength": 1282.8959768705924,
+		"measuredValue": 4274.810432912073
+	},
+	{
+		"wavelength": 1284.481344281344,
+		"measuredValue": 4029.834632965851
+	},
+	{
+		"wavelength": 1286.066552084308,
+		"measuredValue": 3814.2282871739712
+	},
+	{
+		"wavelength": 1287.6516002635308,
+		"measuredValue": 3998.392040871202
+	},
+	{
+		"wavelength": 1289.2364888030577,
+		"measuredValue": 3993.9002420005377
+	},
+	{
+		"wavelength": 1290.8212176869354,
+		"measuredValue": 3907.1739714977143
+	},
+	{
+		"wavelength": 1292.4057868992088,
+		"measuredValue": 4112.414627588062
+	},
+	{
+		"wavelength": 1293.990196423924,
+		"measuredValue": 3897.8448507663356
+	},
+	{
+		"wavelength": 1295.5744462451278,
+		"measuredValue": 3837.7238504974453
+	},
+	{
+		"wavelength": 1297.158536346865,
+		"measuredValue": 3875.3858564130146
+	},
+	{
+		"wavelength": 1298.7424667131822,
+		"measuredValue": 3908.556063457919
+	},
+	{
+		"wavelength": 1300.326237328125,
+		"measuredValue": 3963.148695885991
+	},
+	{
+		"wavelength": 1301.9098481757392,
+		"measuredValue": 3399.6006991126646
+	},
+	{
+		"wavelength": 1303.4932992400709,
+		"measuredValue": 3417.9134175853724
+	},
+	{
+		"wavelength": 1305.0765905051658,
+		"measuredValue": 3959.347942995429
+	},
+	{
+		"wavelength": 1306.6597219550697,
+		"measuredValue": 4186.356547458994
+	},
+	{
+		"wavelength": 1308.2426935738288,
+		"measuredValue": 4067.4966388814196
+	},
+	{
+		"wavelength": 1309.8255053454889,
+		"measuredValue": 3362.629739177198
+	},
+	{
+		"wavelength": 1311.4081572540958,
+		"measuredValue": 3949.3277762839475
+	},
+	{
+		"wavelength": 1312.9906492836951,
+		"measuredValue": 3710.2258671685936
+	},
+	{
+		"wavelength": 1314.5729814183335,
+		"measuredValue": 4413.7106749126115
+	},
+	{
+		"wavelength": 1316.1551536420561,
+		"measuredValue": 3573.398763108362
+	},
+	{
+		"wavelength": 1317.7371659389091,
+		"measuredValue": 4197.758806130681
+	},
+	{
+		"wavelength": 1319.319018292938,
+		"measuredValue": 3581.3457918795375
+	},
+	{
+		"wavelength": 1320.9007106881895,
+		"measuredValue": 4061.2772250605
+	},
+	{
+		"wavelength": 1322.4822431087089,
+		"measuredValue": 4520.131755848347
+	},
+	{
+		"wavelength": 1324.063615538542,
+		"measuredValue": 4540.51761226136
+	},
+	{
+		"wavelength": 1325.6448279617352,
+		"measuredValue": 4108.95939768755
+	},
+	{
+		"wavelength": 1327.225880362334,
+		"measuredValue": 3634.5563323474053
+	},
+	{
+		"wavelength": 1328.806772724384,
+		"measuredValue": 4397.125571390159
+	},
+	{
+		"wavelength": 1330.3875050319318,
+		"measuredValue": 4776.164291476202
+	},
+	{
+		"wavelength": 1331.968077269023,
+		"measuredValue": 4213.65286367303
+	},
+	{
+		"wavelength": 1333.5484894197034,
+		"measuredValue": 3918.9217531594513
+	},
+	{
+		"wavelength": 1335.1287414680187,
+		"measuredValue": 3423.096262436138
+	},
+	{
+		"wavelength": 1336.708833398015,
+		"measuredValue": 3736.8311374025275
+	},
+	{
+		"wavelength": 1338.2887651937383,
+		"measuredValue": 3508.440440978758
+	},
+	{
+		"wavelength": 1339.8685368392344,
+		"measuredValue": 3778.9849421887607
+	},
+	{
+		"wavelength": 1341.4481483185489,
+		"measuredValue": 4293.123151384781
+	},
+	{
+		"wavelength": 1343.0275996157284,
+		"measuredValue": 4290.358967464373
+	},
+	{
+		"wavelength": 1344.6068907148178,
+		"measuredValue": 3811.809626243614
+	},
+	{
+		"wavelength": 1346.1860215998638,
+		"measuredValue": 3641.466792148427
+	},
+	{
+		"wavelength": 1347.764992254912,
+		"measuredValue": 3568.9069642376985
+	},
+	{
+		"wavelength": 1349.3438026640083,
+		"measuredValue": 3375.414089809088
+	},
+	{
+		"wavelength": 1350.9224528111984,
+		"measuredValue": 4097.557139015865
+	},
+	{
+		"wavelength": 1352.5009426805284,
+		"measuredValue": 4007.37563861253
+	},
+	{
+		"wavelength": 1354.079272256044,
+		"measuredValue": 4503.201129335844
+	},
+	{
+		"wavelength": 1355.6574415217917,
+		"measuredValue": 4030.1801559559026
+	},
+	{
+		"wavelength": 1357.2354504618163,
+		"measuredValue": 3844.634310298467
+	},
+	{
+		"wavelength": 1358.813299060165,
+		"measuredValue": 4047.1107824684054
+	},
+	{
+		"wavelength": 1360.3909873008824,
+		"measuredValue": 3684.3116429147617
+	},
+	{
+		"wavelength": 1361.968515168015,
+		"measuredValue": 4097.902662005916
+	},
+	{
+		"wavelength": 1363.5458826456088,
+		"measuredValue": 3721.6281258402796
+	},
+	{
+		"wavelength": 1365.1230897177095,
+		"measuredValue": 3777.9483732186072
+	},
+	{
+		"wavelength": 1366.7001363683635,
+		"measuredValue": 3887.4791610648026
+	},
+	{
+		"wavelength": 1368.2770225816157,
+		"measuredValue": 4642.10137133638
+	},
+	{
+		"wavelength": 1369.8537483415125,
+		"measuredValue": 4072.3339607421353
+	},
+	{
+		"wavelength": 1371.4303136320998,
+		"measuredValue": 4009.794299542888
+	},
+	{
+		"wavelength": 1373.0067184374236,
+		"measuredValue": 3757.5625168055926
+	},
+	{
+		"wavelength": 1374.5829627415296,
+		"measuredValue": 4239.567087926862
+	},
+	{
+		"wavelength": 1376.1590465284637,
+		"measuredValue": 4188.084162409249
+	},
+	{
+		"wavelength": 1377.734969782272,
+		"measuredValue": 4049.183920408712
+	},
+	{
+		"wavelength": 1379.3107324869998,
+		"measuredValue": 3977.3151384780854
+	},
+	{
+		"wavelength": 1380.8863346266937,
+		"measuredValue": 3838.0693734874967
+	},
+	{
+		"wavelength": 1382.4617761853995,
+		"measuredValue": 4396.434525410056
+	},
+	{
+		"wavelength": 1384.0370571471626,
+		"measuredValue": 4232.656628125841
+	},
+	{
+		"wavelength": 1385.612177496029,
+		"measuredValue": 4136.946759881688
+	},
+	{
+		"wavelength": 1387.187137216045,
+		"measuredValue": 4002.8838397418663
+	},
+	{
+		"wavelength": 1388.7619362912562,
+		"measuredValue": 3756.180424845388
+	},
+	{
+		"wavelength": 1390.3365747057085,
+		"measuredValue": 4335.622479161065
+	},
+	{
+		"wavelength": 1391.9110524434477,
+		"measuredValue": 4164.588599085776
+	},
+	{
+		"wavelength": 1393.48536948852,
+		"measuredValue": 4340.114278031729
+	},
+	{
+		"wavelength": 1395.059525824971,
+		"measuredValue": 3854.6544770099486
+	},
+	{
+		"wavelength": 1396.6335214368466,
+		"measuredValue": 3614.8615219144936
+	},
+	{
+		"wavelength": 1398.2073563081926,
+		"measuredValue": 4190.157300349556
+	},
+	{
+		"wavelength": 1399.7810304230554,
+		"measuredValue": 3646.3041140091423
+	},
+	{
+		"wavelength": 1401.3545437654802,
+		"measuredValue": 3900.2635116966926
+	},
+	{
+		"wavelength": 1402.9278963195134,
+		"measuredValue": 3757.9080397956436
+	},
+	{
+		"wavelength": 1404.5010880692005,
+		"measuredValue": 4688.055929013175
+	},
+	{
+		"wavelength": 1406.074118998588,
+		"measuredValue": 4215.034955633234
+	},
+	{
+		"wavelength": 1407.6469890917208,
+		"measuredValue": 4258.225329389621
+	},
+	{
+		"wavelength": 1409.2196983326455,
+		"measuredValue": 3806.6267813928475
+	},
+	{
+		"wavelength": 1410.792246705408,
+		"measuredValue": 4217.453616563592
+	},
+	{
+		"wavelength": 1412.364634194054,
+		"measuredValue": 3966.949448776553
+	},
+	{
+		"wavelength": 1413.9368607826293,
+		"measuredValue": 3928.2508738908305
+	},
+	{
+		"wavelength": 1415.50892645518,
+		"measuredValue": 3527.0986824415163
+	},
+	{
+		"wavelength": 1417.080831195752,
+		"measuredValue": 3684.3116429147617
+	},
+	{
+		"wavelength": 1418.6525749883906,
+		"measuredValue": 4015.6681903737567
+	},
+	{
+		"wavelength": 1420.2241578171422,
+		"measuredValue": 4493.526485614412
+	},
+	{
+		"wavelength": 1421.7955796660528,
+		"measuredValue": 3819.411132024738
+	},
+	{
+		"wavelength": 1423.3668405191684,
+		"measuredValue": 4021.1965582145735
+	},
+	{
+		"wavelength": 1424.9379403605346,
+		"measuredValue": 3896.8082817961817
+	},
+	{
+		"wavelength": 1426.508879174197,
+		"measuredValue": 4493.180962624362
+	},
+	{
+		"wavelength": 1428.079656944202,
+		"measuredValue": 4175.645334767411
+	},
+	{
+		"wavelength": 1429.650273654595,
+		"measuredValue": 4463.120462489917
+	},
+	{
+		"wavelength": 1431.2207292894223,
+		"measuredValue": 4280.338800752891
+	},
+	{
+		"wavelength": 1432.7910238327295,
+		"measuredValue": 4379.849421887604
+	},
+	{
+		"wavelength": 1434.361157268563,
+		"measuredValue": 4258.225329389621
+	},
+	{
+		"wavelength": 1435.931129580968,
+		"measuredValue": 4187.738639419199
+	},
+	{
+		"wavelength": 1437.5009407539908,
+		"measuredValue": 3957.6203280451737
+	},
+	{
+		"wavelength": 1439.0705907716772,
+		"measuredValue": 3683.9661199247107
+	},
+	{
+		"wavelength": 1440.6400796180728,
+		"measuredValue": 3796.261091691315
+	},
+	{
+		"wavelength": 1442.209407277224,
+		"measuredValue": 4018.7778972842166
+	},
+	{
+		"wavelength": 1443.7785737331762,
+		"measuredValue": 3643.1944070986824
+	},
+	{
+		"wavelength": 1445.347578969976,
+		"measuredValue": 4302.45227211616
+	},
+	{
+		"wavelength": 1446.9164229716685,
+		"measuredValue": 3906.482925517612
+	},
+	{
+		"wavelength": 1448.4851057223,
+		"measuredValue": 4462.4294165098145
+	},
+	{
+		"wavelength": 1450.0536272059162,
+		"measuredValue": 4005.993546652326
+	},
+	{
+		"wavelength": 1451.621987406563,
+		"measuredValue": 3889.8978219951605
+	},
+	{
+		"wavelength": 1453.1901863082865,
+		"measuredValue": 3936.197902662006
+	},
+	{
+		"wavelength": 1454.7582238951322,
+		"measuredValue": 3593.7846195213765
+	},
+	{
+		"wavelength": 1456.3261001511464,
+		"measuredValue": 4309.708254907233
+	},
+	{
+		"wavelength": 1457.893815060375,
+		"measuredValue": 4239.567087926862
+	},
+	{
+		"wavelength": 1459.4613686068637,
+		"measuredValue": 4102.048937886529
+	},
+	{
+		"wavelength": 1461.0287607746582,
+		"measuredValue": 4311.78139284754
+	},
+	{
+		"wavelength": 1462.5959915478045,
+		"measuredValue": 4521.1683248185
+	},
+	{
+		"wavelength": 1464.1630609103486,
+		"measuredValue": 5353.878730841624
+	},
+	{
+		"wavelength": 1465.7299688463363,
+		"measuredValue": 4085.8093573541278
+	},
+	{
+		"wavelength": 1467.2967153398135,
+		"measuredValue": 4331.821726270503
+	},
+	{
+		"wavelength": 1468.8633003748264,
+		"measuredValue": 3458.33960742135
+	},
+	{
+		"wavelength": 1470.4297239354207,
+		"measuredValue": 4491.798870664157
+	},
+	{
+		"wavelength": 1471.9959860056417,
+		"measuredValue": 3415.840279645066
+	},
+	{
+		"wavelength": 1473.562086569536,
+		"measuredValue": 3809.0454423232054
+	},
+	{
+		"wavelength": 1475.1280256111493,
+		"measuredValue": 3670.1452003226673
+	},
+	{
+		"wavelength": 1476.6938031145273,
+		"measuredValue": 3927.2143049206775
+	},
+	{
+		"wavelength": 1478.259419063716,
+		"measuredValue": 3805.9357354127455
+	},
+	{
+		"wavelength": 1479.8248734427616,
+		"measuredValue": 3736.4856144124765
+	},
+	{
+		"wavelength": 1481.3901662357098,
+		"measuredValue": 3893.353051895671
+	},
+	{
+		"wavelength": 1482.9552974266062,
+		"measuredValue": 4200.5229900510885
+	},
+	{
+		"wavelength": 1484.5202669994967,
+		"measuredValue": 3816.99247109438
+	},
+	{
+		"wavelength": 1486.0850749384274,
+		"measuredValue": 3947.2546383436406
+	},
+	{
+		"wavelength": 1487.6497212274442,
+		"measuredValue": 3511.2046248991664
+	},
+	{
+		"wavelength": 1489.2142058505926,
+		"measuredValue": 4102.048937886529
+	},
+	{
+		"wavelength": 1490.7785287919196,
+		"measuredValue": 4097.902662005916
+	},
+	{
+		"wavelength": 1492.34269003547,
+		"measuredValue": 3914.084431298736
+	},
+	{
+		"wavelength": 1493.9066895652898,
+		"measuredValue": 3393.0357623016935
+	},
+	{
+		"wavelength": 1495.4705273654254,
+		"measuredValue": 3928.941919870933
+	},
+	{
+		"wavelength": 1497.0342034199218,
+		"measuredValue": 4230.237967195483
+	},
+	{
+		"wavelength": 1498.597717712826,
+		"measuredValue": 4444.807744017209
+	},
+	{
+		"wavelength": 1500.1610702281828,
+		"measuredValue": 3856.3820919602044
+	},
+	{
+		"wavelength": 1501.724260950039,
+		"measuredValue": 4275.155955902123
+	},
+	{
+		"wavelength": 1503.28728986244,
+		"measuredValue": 3751.343102984674
+	},
+	{
+		"wavelength": 1504.8501569494322,
+		"measuredValue": 3910.6292013982256
+	},
+	{
+		"wavelength": 1506.4128621950606,
+		"measuredValue": 3729.575154611455
+	},
+	{
+		"wavelength": 1507.9754055833714,
+		"measuredValue": 3860.8738908308683
+	},
+	{
+		"wavelength": 1509.537787098411,
+		"measuredValue": 3580.309222909384
+	},
+	{
+		"wavelength": 1511.1000067242248,
+		"measuredValue": 3823.902930895402
+	},
+	{
+		"wavelength": 1512.6620644448592,
+		"measuredValue": 3968.677063726808
+	},
+	{
+		"wavelength": 1514.2239602443592,
+		"measuredValue": 3950.3643452541
+	},
+	{
+		"wavelength": 1515.7856941067716,
+		"measuredValue": 4213.998386663082
+	},
+	{
+		"wavelength": 1517.3472660161417,
+		"measuredValue": 4324.56574347943
+	},
+	{
+		"wavelength": 1518.9086759565155,
+		"measuredValue": 4237.839472976607
+	},
+	{
+		"wavelength": 1520.4699239119388,
+		"measuredValue": 3567.524872277494
+	},
+	{
+		"wavelength": 1522.031009866458,
+		"measuredValue": 3614.8615219144936
+	},
+	{
+		"wavelength": 1523.5919338041185,
+		"measuredValue": 3889.552299005109
+	},
+	{
+		"wavelength": 1525.1526957089663,
+		"measuredValue": 4102.39446087658
+	},
+	{
+		"wavelength": 1526.7132955650475,
+		"measuredValue": 3723.701263780586
+	},
+	{
+		"wavelength": 1528.2737333564073,
+		"measuredValue": 4032.59881688626
+	},
+	{
+		"wavelength": 1529.8340090670924,
+		"measuredValue": 3764.818499596666
+	},
+	{
+		"wavelength": 1531.3941226811482,
+		"measuredValue": 3909.938155418123
+	},
+	{
+		"wavelength": 1532.9540741826208,
+		"measuredValue": 3740.977413283141
+	},
+	{
+		"wavelength": 1534.513863555556,
+		"measuredValue": 3197.4697499327776
+	},
+	{
+		"wavelength": 1536.0734907840001,
+		"measuredValue": 3757.5625168055935
+	},
+	{
+		"wavelength": 1537.6329558519983,
+		"measuredValue": 3667.7265393923094
+	},
+	{
+		"wavelength": 1539.1922587435968,
+		"measuredValue": 4340.805324011831
+	},
+	{
+		"wavelength": 1540.7513994428414,
+		"measuredValue": 3840.142511427803
+	},
+	{
+		"wavelength": 1542.3103779337778,
+		"measuredValue": 3633.519763377252
+	},
+	{
+		"wavelength": 1543.8691942004525,
+		"measuredValue": 3962.8031728959395
+	},
+	{
+		"wavelength": 1545.4278482269112,
+		"measuredValue": 3935.1613336918526
+	},
+	{
+		"wavelength": 1546.9863399971991,
+		"measuredValue": 4595.801290669535
+	},
+	{
+		"wavelength": 1548.5446694953632,
+		"measuredValue": 4189.811777359505
+	},
+	{
+		"wavelength": 1550.1028367054485,
+		"measuredValue": 4095.484001075558
+	},
+	{
+		"wavelength": 1551.6608416115012,
+		"measuredValue": 3717.1363269696153
+	},
+	{
+		"wavelength": 1553.218684197567,
+		"measuredValue": 3846.3619252487224
+	},
+	{
+		"wavelength": 1554.776364447692,
+		"measuredValue": 4244.404409787578
+	},
+	{
+		"wavelength": 1556.3338823459221,
+		"measuredValue": 3846.016402258672
+	},
+	{
+		"wavelength": 1557.8912378763032,
+		"measuredValue": 4137.292282871739
+	},
+	{
+		"wavelength": 1559.4484310228809,
+		"measuredValue": 3939.998655552568
+	},
+	{
+		"wavelength": 1561.0054617697015,
+		"measuredValue": 4026.3794030653403
+	},
+	{
+		"wavelength": 1562.5623301008104,
+		"measuredValue": 3683.6205969346597
+	},
+	{
+		"wavelength": 1564.1190360002538,
+		"measuredValue": 3770.001344447432
+	},
+	{
+		"wavelength": 1565.675579452078,
+		"measuredValue": 3680.165367034149
+	},
+	{
+		"wavelength": 1567.2319604403278,
+		"measuredValue": 3802.4805055122342
+	},
+	{
+		"wavelength": 1568.7881789490502,
+		"measuredValue": 4067.842161871471
+	},
+	{
+		"wavelength": 1570.3442349622906,
+		"measuredValue": 4515.639956977682
+	},
+	{
+		"wavelength": 1571.9001284640947,
+		"measuredValue": 4154.568432374294
+	},
+	{
+		"wavelength": 1573.4558594385085,
+		"measuredValue": 3452.8112395805324
+	},
+	{
+		"wavelength": 1575.0114278695783,
+		"measuredValue": 3744.432643183651
+	},
+	{
+		"wavelength": 1576.5668337413492,
+		"measuredValue": 3969.7136326969617
+	},
+	{
+		"wavelength": 1578.1220770378677,
+		"measuredValue": 3825.6305458456577
+	},
+	{
+		"wavelength": 1579.6771577431796,
+		"measuredValue": 3506.0217800484
+	},
+	{
+		"wavelength": 1581.2320758413307,
+		"measuredValue": 3567.1793492874426
+	},
+	{
+		"wavelength": 1582.7868313163672,
+		"measuredValue": 4211.579725732724
+	},
+	{
+		"wavelength": 1584.3414241523342,
+		"measuredValue": 4135.910190911535
+	},
+	{
+		"wavelength": 1585.8958543332783,
+		"measuredValue": 4098.593707986018
+	},
+	{
+		"wavelength": 1587.450121843245,
+		"measuredValue": 3421.714170475934
+	},
+	{
+		"wavelength": 1589.0042266662804,
+		"measuredValue": 3495.3105673568166
+	},
+	{
+		"wavelength": 1590.5581687864305,
+		"measuredValue": 3504.985211078247
+	},
+	{
+		"wavelength": 1592.1119481877408,
+		"measuredValue": 4125.890024200054
+	},
+	{
+		"wavelength": 1593.6655648542576,
+		"measuredValue": 3975.9330465178814
+	},
+	{
+		"wavelength": 1595.2190187700262,
+		"measuredValue": 3991.136058080129
+	},
+	{
+		"wavelength": 1596.772309919093,
+		"measuredValue": 3610.7152460338802
+	},
+	{
+		"wavelength": 1598.3254382855039,
+		"measuredValue": 3682.9295509545577
+	},
+	{
+		"wavelength": 1599.8784038533047,
+		"measuredValue": 3597.2398494218883
+	},
+	{
+		"wavelength": 1601.4312066065413,
+		"measuredValue": 4010.139822532939
+	},
+	{
+		"wavelength": 1602.9838465292592,
+		"measuredValue": 3708.498252218338
+	},
+	{
+		"wavelength": 1604.5363236055048,
+		"measuredValue": 4052.6391503092223
+	},
+	{
+		"wavelength": 1606.0886378193236,
+		"measuredValue": 4260.643990319978
+	},
+	{
+		"wavelength": 1607.640789154762,
+		"measuredValue": 4449.299542887873
+	},
+	{
+		"wavelength": 1609.192777595865,
+		"measuredValue": 3602.768217262705
+	},
+	{
+		"wavelength": 1610.7446031266793,
+		"measuredValue": 3727.847539661199
+	},
+	{
+		"wavelength": 1612.296265731251,
+		"measuredValue": 3694.3318096262433
+	},
+	{
+		"wavelength": 1613.847765393625,
+		"measuredValue": 4410.2554450121
+	},
+	{
+		"wavelength": 1615.399102097848,
+		"measuredValue": 3889.206776015058
+	},
+	{
+		"wavelength": 1616.9502758279652,
+		"measuredValue": 4297.269427265394
+	},
+	{
+		"wavelength": 1618.5012865680233,
+		"measuredValue": 4016.7047593439092
+	},
+	{
+		"wavelength": 1620.0521343020673,
+		"measuredValue": 3823.2118849153
+	},
+	{
+		"wavelength": 1621.6028190141437,
+		"measuredValue": 3428.624630276956
+	},
+	{
+		"wavelength": 1623.1533406882984,
+		"measuredValue": 3211.981715514923
+	},
+	{
+		"wavelength": 1624.7036993085771,
+		"measuredValue": 3619.007797795106
+	},
+	{
+		"wavelength": 1626.2538948590259,
+		"measuredValue": 3660.816079591288
+	},
+	{
+		"wavelength": 1627.8039273236902,
+		"measuredValue": 3575.8174240387198
+	},
+	{
+		"wavelength": 1629.353796686616,
+		"measuredValue": 3608.2965851035224
+	},
+	{
+		"wavelength": 1630.9035029318495,
+		"measuredValue": 3356.410325356279
+	},
+	{
+		"wavelength": 1632.4530460434364,
+		"measuredValue": 3852.926862059694
+	},
+	{
+		"wavelength": 1634.0024260054229,
+		"measuredValue": 3819.411132024738
+	},
+	{
+		"wavelength": 1635.5516428018545,
+		"measuredValue": 3844.2887873084164
+	},
+	{
+		"wavelength": 1637.1006964167773,
+		"measuredValue": 3850.1626781392847
+	},
+	{
+		"wavelength": 1638.649586834237,
+		"measuredValue": 3460.758268351707
+	},
+	{
+		"wavelength": 1640.1983140382792,
+		"measuredValue": 3576.8539930088737
+	},
+	{
+		"wavelength": 1641.7468780129504,
+		"measuredValue": 3799.370798601775
+	},
+	{
+		"wavelength": 1643.2952787422962,
+		"measuredValue": 4049.8749663888143
+	},
+	{
+		"wavelength": 1644.8435162103628,
+		"measuredValue": 4243.713363807476
+	},
+	{
+		"wavelength": 1646.3915904011958,
+		"measuredValue": 4650.048400107556
+	},
+	{
+		"wavelength": 1647.9395012988414,
+		"measuredValue": 4703.604463565475
+	},
+	{
+		"wavelength": 1649.4872488873445,
+		"measuredValue": 4310.744823877386
+	},
+	{
+		"wavelength": 1651.0348331507519,
+		"measuredValue": 3825.6305458456577
+	},
+	{
+		"wavelength": 1652.5822540731092,
+		"measuredValue": 3989.0629201398224
+	},
+	{
+		"wavelength": 1654.1295116384626,
+		"measuredValue": 4284.139553643453
+	},
+	{
+		"wavelength": 1655.6766058308576,
+		"measuredValue": 4093.0653401452
+	},
+	{
+		"wavelength": 1657.2235366343402,
+		"measuredValue": 3926.8687819306265
+	},
+	{
+		"wavelength": 1658.7703040329566,
+		"measuredValue": 4227.473783275073
+	},
+	{
+		"wavelength": 1660.316908010752,
+		"measuredValue": 4341.1508470018825
+	},
+	{
+		"wavelength": 1661.8633485517728,
+		"measuredValue": 4681.836515192256
+	},
+	{
+		"wavelength": 1663.4096256400649,
+		"measuredValue": 4077.862328582952
+	},
+	{
+		"wavelength": 1664.9557392596737,
+		"measuredValue": 3889.552299005109
+	},
+	{
+		"wavelength": 1666.5016893946458,
+		"measuredValue": 3857.418660930358
+	},
+	{
+		"wavelength": 1668.0474760290265,
+		"measuredValue": 3899.9179887066416
+	},
+	{
+		"wavelength": 1669.593099146862,
+		"measuredValue": 4275.847001882226
+	},
+	{
+		"wavelength": 1671.1385587321984,
+		"measuredValue": 4340.8053240118315
+	},
+	{
+		"wavelength": 1672.6838547690809,
+		"measuredValue": 4294.1597203549345
+	},
+	{
+		"wavelength": 1674.2289872415556,
+		"measuredValue": 4187.047593439097
+	},
+	{
+		"wavelength": 1675.7739561336691,
+		"measuredValue": 3912.01129335843
+	},
+	{
+		"wavelength": 1677.3187614294661,
+		"measuredValue": 3955.8927130949182
+	},
+	{
+		"wavelength": 1678.8634031129939,
+		"measuredValue": 3680.5108900242
+	},
+	{
+		"wavelength": 1680.407881168297,
+		"measuredValue": 3744.0871201936006
+	},
+	{
+		"wavelength": 1681.9521955794223,
+		"measuredValue": 3926.5232589405755
+	},
+	{
+		"wavelength": 1683.496346330415,
+		"measuredValue": 4277.920139822533
+	},
+	{
+		"wavelength": 1685.0403334053212,
+		"measuredValue": 3850.5082011293357
+	},
+	{
+		"wavelength": 1686.584156788187,
+		"measuredValue": 3829.0857757461686
+	},
+	{
+		"wavelength": 1688.127816463058,
+		"measuredValue": 3944.8359774132828
+	},
+	{
+		"wavelength": 1689.6713124139806,
+		"measuredValue": 4174.608765797258
+	},
+	{
+		"wavelength": 1691.214644625,
+		"measuredValue": 4212.961817692928
+	},
+	{
+		"wavelength": 1692.7578130801626,
+		"measuredValue": 3932.7426727614948
+	},
+	{
+		"wavelength": 1694.3008177635138,
+		"measuredValue": 3804.2081204624897
+	},
+	{
+		"wavelength": 1695.8436586591001,
+		"measuredValue": 3712.9900510890025
+	},
+	{
+		"wavelength": 1697.3863357509667,
+		"measuredValue": 3511.550147889217
+	},
+	{
+		"wavelength": 1698.92884902316,
+		"measuredValue": 4186.702070449045
+	},
+	{
+		"wavelength": 1700.4711984597259,
+		"measuredValue": 4188.08416240925
+	},
+	{
+		"wavelength": 1702.01338404471,
+		"measuredValue": 4360.500134444743
+	},
+	{
+		"wavelength": 1703.5554057621584,
+		"measuredValue": 3627.300349556333
+	},
+	{
+		"wavelength": 1705.0972635961166,
+		"measuredValue": 4103.0855068566825
+	},
+	{
+		"wavelength": 1706.638957530631,
+		"measuredValue": 4319.7284216187145
+	},
+	{
+		"wavelength": 1708.1804875497473,
+		"measuredValue": 4876.020435600968
+	}
+]

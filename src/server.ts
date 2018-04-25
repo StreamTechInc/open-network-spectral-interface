@@ -17,11 +17,7 @@ dotenv.config({ path: ".env" });
 /**
  * Controllers
  */
-
-// import * as homeController from "./controllers/home";
 import * as hardwareController from "./controllers/hardware";
-import * as devController from "./controllers/dev";
-import * as wifiController from "./controllers/wifi";
 
 /**
  * Create Server
@@ -49,15 +45,11 @@ app.use(function (err: any, req: any, res: any, next: any) {
  * App Routes
  */
 
-// devController
-app.get("/dev/status", devController.status);
-app.get("/dev/version", devController.version);
-
 // hardwareController
 app.get("/hardware", hardwareController.getAttachedHardware);
-app.get("/hardware/:id/setting", hardwareController.getAllSettingsForDevice);
-app.get("/hardware/:id/setting/:settingId", hardwareController.getSetting);
-app.post("/hardware/:id/setting/:settingId", hardwareController.postSetting);
+app.get("/hardware/:id/setting", hardwareController.getAllPropertiesForDevice);
+app.get("/hardware/:id/setting/:settingId", hardwareController.getProperty);
+app.post("/hardware/:id/setting/:settingId", hardwareController.postProperty);
 app.get("/hardware/:id/capture", hardwareController.getCapture);
 app.get("/hardware/:id/status", hardwareController.getStatus);
 app.get("/hardware/:id/frame-acquisition", hardwareController.getFrameAcquisition);
@@ -66,12 +58,6 @@ app.delete("/hardware/:id/frame-acquisition", hardwareController.deleteFrameAcqu
 app.get("/hardware/:id/stream", hardwareController.getStream);
 app.post("/hardware/:id/stream", hardwareController.postStream);
 app.get("/hardware/shutdown", hardwareController.shutdown);
-
-// WIFI controller
-app.get("/wifi", wifiController.scan);
-app.get("/wifi/current", wifiController.currentConnection);
-app.post("/wifi/connect", wifiController.connect);
-app.post("/wifi/disconnect", wifiController.disconnect);
 
 /**
  * Error Handler - Provides full stack - REMOVE FOR PRODUCTION
