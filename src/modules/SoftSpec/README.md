@@ -30,3 +30,12 @@ tslint -c tslint.json -p tsconfig.json
 
 The SoftSpec device has a property named 'scan_filename'. The purpose is to indicate what JSON file to read sample data from. Any new sample data can be added the 'scan files' directory.
 When capture is called the scan files directory will be searched for a matching file and return slightly modified values.
+
+You will also need to add files to src/modules/SoftSpec/spectrometers with the following format:
+
+```json
+{
+"modelName" : "SoftSpec",
+"serial" : "SS001f"
+}
+```

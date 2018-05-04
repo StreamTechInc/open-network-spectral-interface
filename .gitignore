@@ -59,3 +59,6 @@ typings/
 
 # dist distribution files
 dist/
+
+# SoftSpec Spectrometer files
+src/modules/SoftSpec/spectrometers/
