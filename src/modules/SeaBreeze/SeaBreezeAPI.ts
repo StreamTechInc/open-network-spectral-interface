@@ -42,7 +42,7 @@ export class SeaBreezeAPI {
 	 * Private variables
 	 * 
 	 */
-	private readonly libPath = process.env.DLL_PATH;
+	private readonly libPath = "./src/modules/SeaBreeze/SeaBreezeSTI.dll";
 
 	private functions = new ffi.Library(this.libPath, {
 		"sbapi_initialize": [ref.types.void, []],
