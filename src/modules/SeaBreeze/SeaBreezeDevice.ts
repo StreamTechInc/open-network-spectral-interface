@@ -284,7 +284,7 @@ export class SeaBreezeDevice implements IHardware {
 
 		if (this._scanAverage > 1) {
 			for (let i = 1; i < this._scanAverage; i++) {
-				const tempSpectrum = SeaBreezeAPI.Instance.GetSpectrum(+this.id);
+				const tempSpectrum = SeaBreezeAPI.Instance.GetSpectrum(this.apiID);
 
 				for (let j = 0; j < SeaBreezeAPI.Instance.pixels; j++) {
 					processedSpectrum[j].measuredValue += tempSpectrum[j].measuredValue;
