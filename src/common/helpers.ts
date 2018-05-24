@@ -31,7 +31,7 @@ export class Helpers {
 				if (existingProperty.dataType === "int" || existingProperty.dataType === "double") {
 					// Following only need if a number
 					const castValue = +newProperty.value;
-
+					
 					if (this.TestMinMax(castValue, existingProperty.minValue, existingProperty.maxValue)) {
 						if (this.TestIncrement(castValue, existingProperty.increment)) {
 							isValid.success = true;
@@ -78,7 +78,7 @@ export class Helpers {
 		let isValid = false;
 
 		if (expectedType === "int" || expectedType === "double") {
-			if (+newValue) {
+			if (!isNaN(Number(newValue))) {
 				isValid = true;
 			}
 		}
@@ -92,7 +92,7 @@ export class Helpers {
 			// Must be string 
 			isValid = true;
 		}
-
+		
 		return isValid;
 	}
 
