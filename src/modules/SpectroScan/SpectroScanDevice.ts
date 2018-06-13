@@ -5,6 +5,7 @@ import { Logger } from "../../common/logger";
 import { IStatus } from "../../interfaces/IStatus";
 import { ISubscription } from "../../interfaces/ISubscription";
 import { ICaptureData } from "../../interfaces/ICaptureData";
+import { SpectroScanAPI } from "./SpectroScanAPI";
 
 export class SpectroScanDevice implements IHardware {
 	/**
@@ -14,12 +15,12 @@ export class SpectroScanDevice implements IHardware {
 	public modelName: string;
 	public serial: string;
 	public type: string = "SpectroScan Spectrometer";
+	public handle: number;
 
 	/**
 	 * Private Variables
 	 */
 	private device: Array<number>;
-	private handle: number;
 	private status: boolean;
 
 	/**
@@ -88,7 +89,7 @@ export class SpectroScanDevice implements IHardware {
 		let capturedData: Array<ICaptureData> | Error = new Array<ICaptureData>();
 
 		try {
-			
+			SpectroScanAPI.Instance.Read(this.handle);
 
 		} catch (error) {
 			Logger.Instance.WriteError(error);

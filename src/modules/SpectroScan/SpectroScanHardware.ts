@@ -10,9 +10,32 @@ export class SpectroScanHardware implements IHardwareType {
 		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
 
 		try {
-			console.log("trying something");
-			const something = SpectroScanAPI.Instance.DeviceConnect();
-			console.log("something happened", something);
+			/**
+			 * Frow now just only allow one SpectroScan device at a time
+			 */
+			if (this._devices.length == 0) {
+				const deviceHandle = SpectroScanAPI.Instance.DeviceConnect();
+
+				const device = new SpectroScanDevice();
+				device.handle = deviceHandle;
+
+				// Using values sent in sample app
+				SpectroScanAPI.Instance.UpdateAlignment(device.handle, 30, 30);
+
+				this._devices.push(device);
+			}
+
+			/**
+			 * Leave this for now. Will need it later
+			 */
+			// if (!this.CheckIfDeviceExists(device)) {
+			// 	// Get model number
+			// 	// Get serial number
+
+			// 	this._devices.push(device);
+			// }
+
+
 		} catch (error) {
 			Logger.Instance.WriteError(error);
 			this._devices = [];
@@ -44,5 +67,17 @@ export class SpectroScanHardware implements IHardwareType {
 	public CloseDevices(): boolean {
 		this._devices = new Array<SpectroScanDevice>();
 		return true;
+	}
+
+	private CheckIfDeviceExists(device: SpectroScanDevice): boolean {
+		let doesExist = false;
+
+		this._devices.forEach(element => {
+			if (device.handle === element.handle) {
+				doesExist = true;
+			}
+		});
+
+		return doesExist;
 	}
 }
