@@ -13,17 +13,26 @@ export class SpectroScanHardware implements IHardwareType {
 			/**
 			 * Frow now just only allow one SpectroScan device at a time
 			 */
-			if (this._devices.length == 0) {
-				const deviceHandle = SpectroScanAPI.Instance.DeviceConnect();
+			// if (this._devices.length == 0) {
+			// const deviceHandle = SpectroScanAPI.Instance.DeviceConnect();
 
-				const device = new SpectroScanDevice();
-				device.handle = deviceHandle;
+			// 	const device = new SpectroScanDevice();
+			// 	device.handle = deviceHandle;
 
-				// Using values sent in sample app
-				SpectroScanAPI.Instance.UpdateAlignment(device.handle, 30, 30);
+			// 	// Using values sent in sample app
+			// 	SpectroScanAPI.Instance.UpdateAlignment(device.handle, 30, 30);
 
-				this._devices.push(device);
-			}
+			// 	this._devices.push(device);
+			// }
+
+			const handle = SpectroScanAPI.Instance.FTDI_Open();
+			SpectroScanAPI.Instance.FTDI_SetBaudRate(handle, 460800);
+			SpectroScanAPI.Instance.FTDI_Write(handle);
+
+			setTimeout(() => {
+				SpectroScanAPI.Instance.FTDI_Read(handle);
+				SpectroScanAPI.Instance.FTDI_Close(handle);
+			}, 5000);
 
 			/**
 			 * Leave this for now. Will need it later

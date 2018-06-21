@@ -89,7 +89,7 @@ export class SpectroScanDevice implements IHardware {
 		let capturedData: Array<ICaptureData> | Error = new Array<ICaptureData>();
 
 		try {
-			SpectroScanAPI.Instance.Read(this.handle);
+			// SpectroScanAPI.Instance.Read(this.handle);
 
 		} catch (error) {
 			Logger.Instance.WriteError(error);
