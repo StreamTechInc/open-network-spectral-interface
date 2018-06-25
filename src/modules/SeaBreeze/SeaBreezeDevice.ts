@@ -213,7 +213,7 @@ export class SeaBreezeDevice implements IHardware {
 			property.dataType = "int";
 			property.order = 2;
 			property.increment = 1;
-			property.minValue = 1;
+			property.minValue = 0;
 			property.maxValue = 10;
 
 			// Get Current Value
