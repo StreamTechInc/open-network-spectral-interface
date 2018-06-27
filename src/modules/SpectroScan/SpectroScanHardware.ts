@@ -28,23 +28,23 @@ export class SpectroScanHardware implements IHardwareType {
 			// SpectroScanAPI.Instance.FTDI_ListDevices();
 
 			const handle = SpectroScanAPI.Instance.FTDI_Open();
-			
+
 
 			setTimeout(() => {
 				SpectroScanAPI.Instance.FTDI_SetBaudRate(handle, 2000000);
 
 				setTimeout(() => {
-					SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(handle);
+					SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(handle, 8, 0, 0);
 
 					setTimeout(() => {
 						SpectroScanAPI.Instance.UpdateAlignment(handle, 29.7, 24.6);
 
 						setTimeout(() => {
-							SpectroScanAPI.Instance.FTDI_Write(handle);
-	
+							SpectroScanAPI.Instance.FTDI_Write(handle, [0xAD, 0x00, 0x00]);
+
 							setTimeout(() => {
-								SpectroScanAPI.Instance.FTDI_Read(handle);
-	
+								SpectroScanAPI.Instance.GetSpectrum(handle);
+
 								setTimeout(() => {
 									// SpectroScanAPI.Instance.FTDI_Close(handle);
 								}, 500);
@@ -53,10 +53,6 @@ export class SpectroScanHardware implements IHardwareType {
 					}, 10);
 				}, 10);
 			}, 10);
-
-
-			
-
 			/**
 			 * Leave this for now. Will need it later
 			 */
@@ -79,7 +75,7 @@ export class SpectroScanHardware implements IHardwareType {
 
 	public GetDeviceById(id: string) {
 		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDeviceById: " + id);
-		
+
 		let foundDevice: SpectroScanDevice = undefined;
 
 		try {
