@@ -17,12 +17,12 @@ export class Logger {
 	}
 
 	constructor() {
-		ApplicationInsights.setup(process.env.INSTRUMENTATION_KEY)
-			.setAutoCollectConsole(true)
-			.setAutoCollectExceptions(true)
-			.start();
+		// ApplicationInsights.setup(process.env.INSTRUMENTATION_KEY)
+		// 	.setAutoCollectConsole(true)
+		// 	.setAutoCollectExceptions(true)
+		// 	.start();
 
-		this.client = ApplicationInsights.defaultClient;
+		// this.client = ApplicationInsights.defaultClient;
 	}
 
 	/**

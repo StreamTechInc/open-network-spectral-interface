@@ -25,14 +25,37 @@ export class SpectroScanHardware implements IHardwareType {
 			// 	this._devices.push(device);
 			// }
 
+			// SpectroScanAPI.Instance.FTDI_ListDevices();
+
 			const handle = SpectroScanAPI.Instance.FTDI_Open();
-			SpectroScanAPI.Instance.FTDI_SetBaudRate(handle, 460800);
-			SpectroScanAPI.Instance.FTDI_Write(handle);
+			
 
 			setTimeout(() => {
-				SpectroScanAPI.Instance.FTDI_Read(handle);
-				SpectroScanAPI.Instance.FTDI_Close(handle);
-			}, 5000);
+				SpectroScanAPI.Instance.FTDI_SetBaudRate(handle, 2000000);
+
+				setTimeout(() => {
+					SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(handle);
+
+					setTimeout(() => {
+						SpectroScanAPI.Instance.UpdateAlignment(handle, 29.7, 24.6);
+
+						setTimeout(() => {
+							SpectroScanAPI.Instance.FTDI_Write(handle);
+	
+							setTimeout(() => {
+								SpectroScanAPI.Instance.FTDI_Read(handle);
+	
+								setTimeout(() => {
+									// SpectroScanAPI.Instance.FTDI_Close(handle);
+								}, 500);
+							}, 10);
+						}, 10);
+					}, 10);
+				}, 10);
+			}, 10);
+
+
+			
 
 			/**
 			 * Leave this for now. Will need it later
