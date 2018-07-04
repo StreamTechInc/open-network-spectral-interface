@@ -6,75 +6,36 @@ import { SpectroScanAPI } from "./SpectroScanAPI";
 export class SpectroScanHardware implements IHardwareType {
 	private _devices: Array<SpectroScanDevice> = new Array<SpectroScanDevice>();
 
-	public GetDevices(): Array<SpectroScanDevice> {
+	public GetDevices(): Promise<Array<SpectroScanDevice>> {
 		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
 
-		try {
-			/**
-			 * Frow now just only allow one SpectroScan device at a time
-			 */
-			// if (this._devices.length == 0) {
-			// const deviceHandle = SpectroScanAPI.Instance.DeviceConnect();
+		return new Promise<Array<SpectroScanDevice>>((resolve, reject) => {
+			try {
+				if (this._devices.length === 0) {
+					SpectroScanAPI.Instance.SetupDevice().then((handle: number) => {
+						if (handle > 0) {
+							const device = new SpectroScanDevice();
+							device.handle = handle;
 
-			// 	const device = new SpectroScanDevice();
-			// 	device.handle = deviceHandle;
+							this._devices.push(device);
+						}
 
-			// 	// Using values sent in sample app
-			// 	SpectroScanAPI.Instance.UpdateAlignment(device.handle, 30, 30);
-
-			// 	this._devices.push(device);
-			// }
-
-			// SpectroScanAPI.Instance.FTDI_ListDevices();
-
-			const handle = SpectroScanAPI.Instance.FTDI_Open();
-
-
-			setTimeout(() => {
-				SpectroScanAPI.Instance.FTDI_SetBaudRate(handle, 2000000);
-
-				setTimeout(() => {
-					SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(handle, 8, 0, 0);
-
-					setTimeout(() => {
-						SpectroScanAPI.Instance.UpdateAlignment(handle, 29.7, 24.6);
-
-						setTimeout(() => {
-							SpectroScanAPI.Instance.FTDI_Write(handle, [0xAD, 0x00, 0x00]);
-
-							setTimeout(() => {
-								SpectroScanAPI.Instance.GetSpectrum(handle);
-
-								setTimeout(() => {
-									// SpectroScanAPI.Instance.FTDI_Close(handle);
-								}, 500);
-							}, 10);
-						}, 10);
-					}, 10);
-				}, 10);
-			}, 10);
-			/**
-			 * Leave this for now. Will need it later
-			 */
-			// if (!this.CheckIfDeviceExists(device)) {
-			// 	// Get model number
-			// 	// Get serial number
-
-			// 	this._devices.push(device);
-			// }
-
-
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			this._devices = [];
-			throw error;
-		}
-
-		return this._devices;
+						resolve(this._devices);
+					}, (setupError) => {
+						reject(setupError);
+					});
+				}
+				else {
+					resolve(this._devices);
+				}
+			} catch (error) {
+				reject(error);
+			}
+		});
 	}
 
 	public GetDeviceById(id: string) {
-		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDeviceById: " + id);
+		Logger.Instance.WriteDebug("Start SpectroScanHardware.GetDeviceById: " + id);
 
 		let foundDevice: SpectroScanDevice = undefined;
 

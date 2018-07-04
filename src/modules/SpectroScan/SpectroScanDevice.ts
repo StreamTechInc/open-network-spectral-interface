@@ -6,23 +6,23 @@ import { IStatus } from "../../interfaces/IStatus";
 import { ISubscription } from "../../interfaces/ISubscription";
 import { ICaptureData } from "../../interfaces/ICaptureData";
 import { SpectroScanAPI } from "./SpectroScanAPI";
+import { SpectroScanCaptureData } from "./models/spectroscan-capture-data";
 
 export class SpectroScanDevice implements IHardware {
 	/**
 	 * Public Member Variables
 	 */
 	public id: Guid;
-	public modelName: string;
-	public serial: string;
+	public modelName: string = "nanoFTIR";
+	public serial: string = "NO3";
 	public type: string = "SpectroScan Spectrometer";
 	public handle: number;
 
 	/**
 	 * Private Variables
 	 */
-	private device: Array<number>;
 	private status: boolean;
-
+	
 	/**
 	 * Constructor
 	 */
@@ -33,70 +33,38 @@ export class SpectroScanDevice implements IHardware {
 	/**
 	 * Public Functions
 	 */
-	public GetProperties(): Array<HardwareProperty> {
-		let properties: Array<HardwareProperty> = Array<HardwareProperty>();
-		try {
-			// properties.push(this.GetScanFilenameProperty());
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			properties = undefined;
-		}
-
-		return properties;
+	public GetProperties(): Promise<Array<HardwareProperty>> {
+		return new Promise<Array<HardwareProperty>>((resolve, reject) => {
+			resolve(undefined);
+		});
 	}
 
-	public GetProperty(key: string): HardwareProperty {
-		let property: HardwareProperty = undefined;
+	public GetProperty(key: string): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			resolve(undefined);
+		});
+	}
 
-		try {
-			switch (key) {
-				case "scan_filename":
-					// property = this.GetScanFilenameProperty();
-					break;
-				default:
-					property = undefined;
-					break;
+	public SetProperty(setting: HardwareProperty): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			resolve(undefined);
+		});
+	}
+
+	public Capture(): Promise<Array<SpectroScanCaptureData>> {
+		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
+			try {
+				SpectroScanAPI.Instance.GetSpectrum(this.handle).then((data) => {
+					resolve(data);
+				}, (spectrumError) => {
+					Logger.Instance.WriteError(spectrumError);
+					reject(spectrumError);
+				});
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
 			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
-
-		return property;
-	}
-
-	public SetProperty(setting: HardwareProperty): HardwareProperty | Error {
-		let property: HardwareProperty | Error = undefined;
-
-		try {
-			switch (setting.id) {
-				case "scan_filename":
-					// property = this.SetScanFilenameProperty(setting.value);
-					break;
-				default:
-					property = undefined;
-					break;
-			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
-
-		return property;
-	}
-
-	public Capture(): Array<ICaptureData> | Error {
-		let capturedData: Array<ICaptureData> | Error = new Array<ICaptureData>();
-
-		try {
-			// SpectroScanAPI.Instance.Read(this.handle);
-
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			capturedData = error;
-		}
-
-		return capturedData;
+		});
 	}
 
 	public GetStatus(): IStatus {

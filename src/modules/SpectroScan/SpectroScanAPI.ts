@@ -59,7 +59,146 @@ export class SpectroScanAPI {
 	 * Public Functions
 	 * 
 	 */
-	public UpdateAlignment(handle: number, x: number, y: number) {
+	public SetupDevice(): Promise<number> {
+		return new Promise<number>((resolve, reject) => {
+			try {
+				const handle = SpectroScanAPI.Instance.FTDI_Open();
+
+				setTimeout(() => {
+					SpectroScanAPI.Instance.FTDI_SetBaudRate(handle, 2000000);
+
+					setTimeout(() => {
+						SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(handle, 8, 0, 0);
+
+						setTimeout(() => {
+							SpectroScanAPI.Instance.UpdateAlignment(handle, 29.7, 24.6);
+
+							resolve(handle);
+						}, 10);
+					}, 10);
+				}, 10);
+
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
+
+	public GetSpectrum(handle: number): Promise<Array<SpectroScanCaptureData>> {
+		/**
+		 * To get the spectrum there is a handful of actions to be taken with a wait between each step.
+		 * 1. Write the command to indicate it begins scanning
+		 * 2. Read with and expected return size of 1. Shows that the write worked and is processing
+		 * 3. GetQueueStatus will return with the amount of bytes waiting in the buffer to be read
+		 * 4. Read again this time it will be the raw measured data from the spectrometer
+		 * 5. UArt Conversion will convert that raw data into Interferogram data
+		 * 6. InterferogramToSpectrum will convert interferogram data into spectrum data
+		 * 7. Spectrum_Interpo will interpolate the spectrum data to its final values and wavelengths
+		 */
+
+		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
+			let status = this.FTDI_Write(handle, [0xAD, 0x00, 0x00]);
+
+			if (status === 0) {
+				// Need at least a 10 ms wait between each action
+				setTimeout(() => {
+					const buffer = ref.alloc(refArray(ref.types.uint8));
+					let bytesReturned = ref.alloc(ref.types.uint);
+
+					// Here buffer doesn't matter. rxBytes should be a 1 and bytesReturned should be a 1
+					status = this.ftdi_functions.FT_Read(handle, buffer, 1, bytesReturned);
+					let rxBytes = ref.deref(bytesReturned);
+
+					if (status === 0 && rxBytes === 1) {
+						// Need a 500ms wait to ensure all data requested will be there
+						setTimeout(() => {
+							// Retrieve the amount of bytes waiting to be read
+							bytesReturned = ref.alloc(ref.types.ulong);
+							status = this.ftdi_functions.FT_GetQueueStatus(handle, bytesReturned);
+							rxBytes = ref.deref(bytesReturned);
+
+							if (status === 0 && rxBytes > 0) {
+								const buffer2 = ref.alloc(refArray(ref.types.uint64, rxBytes));
+								bytesReturned = ref.alloc(ref.types.uint);
+
+								status = this.ftdi_functions.FT_Read(handle, buffer2, rxBytes, bytesReturned);
+								rxBytes = ref.deref(bytesReturned);
+
+								if (status === 0 && rxBytes > 0) {
+									setTimeout(() => {
+										const intf = ref.alloc(refArray(ref.types.int32, rxBytes / 2));
+
+										this.functions.FTIR_UartConversion(buffer2, 1, intf, rxBytes, rxBytes);
+
+										setTimeout(() => {
+											rxBytes = rxBytes / 2;
+
+											// TODO: Another set of numbers for hw profile?
+											const zeroPadding: number = 16384;
+											const boardband: number = 0;
+											const mertz: number = 1000;
+											const peak: number = 1;
+											const calibrationFactor: number = 0.05;
+											const SpectrumMag = ref.alloc(refArray(ref.types.double, rxBytes));
+											const Wavenumber = ref.alloc(refArray(ref.types.double, rxBytes));
+											const Intf_AC = ref.alloc(refArray(ref.types.double, rxBytes));
+
+											this.functions.FTIR_InterferogramToSpectrum(intf, zeroPadding, boardband, mertz, peak, calibrationFactor, SpectrumMag, Wavenumber, Intf_AC, rxBytes, rxBytes, rxBytes);
+
+											const scan: number = 2;
+											const au: number = 0;
+											const minwave: number = 900;
+											const maxwave: number = 2600;
+											const waverange: number = maxwave - minwave;
+											const Absorption = ref.alloc(refArray(ref.types.double, waverange));
+											const Raw = ref.alloc(refArray(ref.types.double, waverange));
+											const Wavelength = ref.alloc(refArray(ref.types.double, waverange));
+
+											this.functions.FTIR_Spectrum_Interpo(SpectrumMag, Wavenumber, SpectrumMag, Wavenumber, scan, au, minwave, maxwave, Absorption, Raw, Wavelength, waverange, waverange, waverange);
+
+											const specData = ref.deref(Raw);
+											const waveData = ref.deref(Wavelength);
+
+											const dataArray: SpectroScanCaptureData[] = [];
+											for (let index = 0; index < waveData.length; index++) {
+												const captureData = new SpectroScanCaptureData();
+												captureData.wavelength = waveData[index];
+												captureData.measuredValue = specData[index];
+
+												dataArray.push(captureData);
+											}
+											
+											resolve(dataArray);
+										}, 10);
+									}, 500);
+								}
+								else {
+									reject(new Error("Read 2 failed with status: " + status));
+								}
+							}
+							else {
+								reject(new Error("GetQueueStatus failed with status: " + status));
+							}
+						}, 500);
+					}
+					else {
+						reject(new Error("Read 1 failed with status: " + status));
+					}
+				}, 10);
+			}
+			else {
+				reject(new Error("Write failed with status: " + status));
+			}
+		});
+	}
+
+	/**
+	 * 
+	 * Private Functions
+	 * 
+	 */
+	
+	private UpdateAlignment(handle: number, x: number, y: number) {
 		try {
 			console.log("Updating alignment");
 			this.functions.FTIR_UpdateAlignment(handle, x, y);
@@ -68,7 +207,7 @@ export class SpectroScanAPI {
 		}
 	}
 
-	public FTDI_Open(): number {
+	private FTDI_Open(): number {
 		let handle: number = 0;
 
 		try {
@@ -84,7 +223,7 @@ export class SpectroScanAPI {
 		return handle;
 	}
 
-	public FTDI_Close(handle: number) {
+	private FTDI_Close(handle: number) {
 		try {
 			const status = this.ftdi_functions.FT_Close(handle);
 			console.log("Close Status", status);
@@ -93,7 +232,7 @@ export class SpectroScanAPI {
 		}
 	}
 
-	public FTDI_SetBaudRate(handle: number, baudRate: number) {
+	private FTDI_SetBaudRate(handle: number, baudRate: number) {
 		try {
 			const status = this.ftdi_functions.FT_SetBaudRate(handle, baudRate);
 			console.log("Baud Rate Set Status", status);
@@ -102,166 +241,26 @@ export class SpectroScanAPI {
 		}
 	}
 
-	public FTDI_Write(handle: number, data: number[]) {
+	private FTDI_Write(handle: number, data: number[]): number {
+		let status = -1;
 		try {
 			const bytesWritten = ref.alloc(ref.types.ulong);
 
-			const value = this.ftdi_functions.FT_Write(handle, data, 3, bytesWritten);
-
-			console.log("Write return", value);
-			console.log("bytes written", ref.deref(bytesWritten));
+			status = this.ftdi_functions.FT_Write(handle, data, 3, bytesWritten);
 		} catch (error) {
 			console.error("Error", error);
+			status = -1;
 		}
+
+		return status;
 	}
 
-	public FTDI_SetDataCharacteristics(handle: number, arg1: number, arg2: number, arg3: number) {
+	private FTDI_SetDataCharacteristics(handle: number, arg1: number, arg2: number, arg3: number) {
 		try {
 			const status = this.ftdi_functions.FT_SetDataCharacteristics(handle, arg1, arg2, arg3);
 			console.log("Set Data Characteristics Status", status);
 		} catch (error) {
 			console.error("Error", error);
-		}
-	}
-
-	public GetSpectrum(handle: number) {
-		const buffer = ref.alloc(refArray(ref.types.uint8));
-		let bytesReturned = ref.alloc(ref.types.uint);
-
-		// Here buffer doesn't matter. rxBytes should be a 1 and bytesReturned should be a 1
-		let status = this.ftdi_functions.FT_Read(handle, buffer, 1, bytesReturned);
-
-		let rxBytes = ref.deref(bytesReturned);
-		console.log("Read 1 Status", status, rxBytes);
-
-		if (status === 0 && rxBytes === 1) {
-			setTimeout(() => {
-				bytesReturned = ref.alloc(ref.types.ulong);
-
-				status = this.ftdi_functions.FT_GetQueueStatus(handle, bytesReturned);
-
-				rxBytes = ref.deref(bytesReturned);
-				console.log("Get Queue Status", status, rxBytes);
-
-				if (status === 0 && rxBytes > 0) {
-					const buffer2 = ref.alloc(refArray(ref.types.uint64, rxBytes));
-					bytesReturned = ref.alloc(ref.types.uint);
-
-					status = this.ftdi_functions.FT_Read(handle, buffer2, rxBytes, bytesReturned);
-
-					rxBytes = ref.deref(bytesReturned);
-					console.log("Read 2 Status", status, rxBytes);
-
-					if (status === 0 && rxBytes > 0) {
-						console.log("Ready for UArt Conversion");
-
-						setTimeout(() => {
-							// console.log("Writing buffer data to file");
-							// const bufferData = ref.deref(buffer2);
-
-							// const dataArray: any[] = [];
-							// for (let index = 0; index < bufferData.length; index++) {
-							// 	dataArray.push(bufferData[index]);
-							// }
-
-							// const fileHandler: FileHandler = new FileHandler();
-							// fileHandler.WriteFile("C:\\Temp\\SpectroScan\\PreUArtConversion.json", dataArray);
-
-							const intf = ref.alloc(refArray(ref.types.int32, rxBytes / 2));
-
-							this.functions.FTIR_UartConversion(buffer2, 1, intf, rxBytes, rxBytes);
-
-							// console.log("Writing intf data to file");
-							// const intfData = ref.deref(intf);
-
-							// const dataArray: any[] = [];
-							// for (let index = 0; index < intfData.length; index++) {
-							// 	dataArray.push(intfData[index]);
-							// }
-
-							// const fileHandler: FileHandler = new FileHandler();
-							// fileHandler.WriteFile("C:\\Temp\\SpectroScan\\PostUArtConversion.json", dataArray);
-
-							console.log("Ready for Interferogram to Spectrum");
-
-							setTimeout(() => {
-								rxBytes = rxBytes / 2;
-
-								// TODO: Another set of numbers for hw profile?
-								const zeroPadding: number = 16384;
-								const boardband: number = 0;
-								const mertz: number = 1000;
-								const peak: number = 1;
-								const calibrationFactor: number = 0.05;
-								const SpectrumMag = ref.alloc(refArray(ref.types.double, rxBytes));
-								const Wavenumber = ref.alloc(refArray(ref.types.double, rxBytes));
-								const Intf_AC = ref.alloc(refArray(ref.types.double, rxBytes));
-
-								this.functions.FTIR_InterferogramToSpectrum(intf, zeroPadding, boardband, mertz, peak, calibrationFactor, SpectrumMag, Wavenumber, Intf_AC, rxBytes, rxBytes, rxBytes);
-
-								// console.log("Writing spectrum data to file");
-								// const specData = ref.deref(SpectrumMag);
-								// const waveData = ref.deref(Wavenumber);
-
-								// const dataArray: any[] = [];
-								// for (let index = 0; index < waveData.length; index++) {
-								// 	const captureData = new SpectroScanCaptureData();
-								// 	captureData.wavelength = waveData[index];
-								// 	captureData.measuredValue = specData[index];
-
-								// 	dataArray.push(captureData);
-								// }
-
-								// const fileHandler: FileHandler = new FileHandler();
-								// fileHandler.WriteFile("C:\\Temp\\SpectroScan\\SpectrumData.json", dataArray);
-
-								const scan: number = 2;
-								const au: number = 0;
-								const minwave: number = 900;
-								const maxwave: number = 2600;
-								const waverange: number = maxwave - minwave;
-								const Absorption = ref.alloc(refArray(ref.types.double, waverange));
-								const Raw = ref.alloc(refArray(ref.types.double, waverange));
-								const Wavelength = ref.alloc(refArray(ref.types.double, waverange));
-
-								this.functions.FTIR_Spectrum_Interpo(SpectrumMag, Wavenumber, SpectrumMag, Wavenumber, scan, au, minwave, maxwave, Absorption, Raw, Wavelength, waverange, waverange, waverange);
-
-								console.log("Writing raw spectrum data to file");
-								const specData = ref.deref(Raw);
-								const waveData = ref.deref(Wavelength);
-
-								const dataArray: any[] = [];
-								for (let index = 0; index < waveData.length; index++) {
-									const captureData = new SpectroScanCaptureData();
-									captureData.wavelength = waveData[index];
-									captureData.measuredValue = specData[index];
-
-									dataArray.push(captureData);
-								}
-
-								const fileHandler: FileHandler = new FileHandler();
-								const filename = "C:\\Temp\\SpectroScan\\RawSpectrumData_" + Date.now() + ".json";
-								fileHandler.WriteFile(filename, dataArray);
-
-
-							}, 10);
-
-
-							// MAKE SURE TO CLOSE
-							this.FTDI_Close(handle);
-						}, 500);
-					}
-					else {
-						console.log("Failed Read 2", status, rxBytes);
-					}
-				}
-				else {
-					console.log("Failed to get Queue Status", status, rxBytes);
-				}
-			}, 500);
-		}
-		else {
-			console.log("Failed Read 1", status, rxBytes);
 		}
 	}
 }

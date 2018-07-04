@@ -5,7 +5,7 @@ export interface IHardwareType {
 	 * 
 	 * @returns Array of connected devices of the hardware type
 	 */
-	GetDevices(): Array<IHardware>;
+	GetDevices(): Promise<Array<IHardware>>;
 
 	/**
 	 * 

@@ -36,4 +36,5 @@ export class HardwareTypes {
 
 		/* End IHardwareType Initialization */
 	}
+
 }

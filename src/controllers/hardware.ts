@@ -22,28 +22,35 @@ export let getAttachedHardware = (req: Request, res: Response) => {
 
 	try {
 		const hardware = new Array<IHardware>();
+		const promiseArray = new Array<Promise<Array<IHardware>>>();
 
 		HardwareTypes.Instance.AvailableHardwareTypes.forEach((element) => {
-			const tempArray = element.GetDevices();
-
-			tempArray.forEach((iHardware) => {
-				hardware.push(iHardware);
-			});
+			promiseArray.push(element.GetDevices());
 		});
 
-		if (hardware.length == 0) {
-			hardwareResponse.data = "No devices found.";
-		}
-		else {
-			hardwareResponse.data = hardware;
-		}
+		Promise.all(promiseArray).then((devices) => {
+			devices.forEach((hardwareType) => {
+				hardwareType.forEach((device) => {
+					hardware.push(device);
+				});
+			});
+
+			if (hardware.length == 0) {
+				hardwareResponse.data = "No devices found.";
+			}
+			else {
+				hardwareResponse.data = hardware;
+			}
+
+			res.send(JSON.stringify(hardwareResponse));
+		}, (promiseError) => {
+			throw promiseError;
+		});
 	} catch (error) {
 		hardwareResponse.data = error;
 		hardwareResponse.success = false;
 		res.status(400);
 	}
-
-	res.send(JSON.stringify(hardwareResponse));
 };
 
 /**
@@ -74,20 +81,28 @@ export let getAllPropertiesForDevice = (req: Request, res: Response) => {
 		}
 
 		if (device) {
-			hardwareResponse.data = device.GetProperties();
+			device.GetProperties().then((properties) => {
+				hardwareResponse.data = properties;
+				res.send(JSON.stringify(hardwareResponse));
+			}, (getPropsError) => {
+				hardwareResponse.data = getPropsError;
+				hardwareResponse.success = false;
+				res.status(400);
+				res.send(JSON.stringify(hardwareResponse));
+			});
 		}
 		else {
 			hardwareResponse.data = "No device found with ID: " + id;
 			hardwareResponse.success = false;
+			res.send(JSON.stringify(hardwareResponse));
 		}
 
 	} catch (error) {
 		hardwareResponse.data = error;
 		hardwareResponse.success = false;
 		res.status(400);
+		res.send(JSON.stringify(hardwareResponse));
 	}
-
-	res.send(JSON.stringify(hardwareResponse));
 
 	Logger.Instance.WriteDebug("End getAllSettingsForDevice/" + id);
 };
@@ -122,28 +137,30 @@ export let getProperty = (req: Request, res: Response) => {
 		}
 
 		if (device) {
-			const tempProp = device.GetProperty(settingId);
+			device.GetProperty(settingId).then((property) => {
+				if (property) {
+					hardwareResponse.data = property;
+				}
+				else {
+					hardwareResponse.data = "Property " + settingId + " does not exist or an error has occurred";
+					hardwareResponse.success = false;
+				}
 
-			if (tempProp) {
-				hardwareResponse.data = tempProp;
-			}
-			else {
-				hardwareResponse.data = "Property " + settingId + " does not exist or an error has occurred";
-				hardwareResponse.success = false;
-			}
+				res.send(JSON.stringify(hardwareResponse));
+			});
 		}
 		else {
 			hardwareResponse.data = "No device found with ID: " + id;
 			hardwareResponse.success = false;
+			res.send(JSON.stringify(hardwareResponse));
 		}
 
 	} catch (error) {
 		hardwareResponse.data = error;
 		hardwareResponse.success = false;
 		res.status(400);
+		res.send(JSON.stringify(hardwareResponse));
 	}
-
-	res.send(JSON.stringify(hardwareResponse));
 
 	Logger.Instance.WriteDebug("End getSetting/" + id + "/" + settingId);
 };
@@ -182,41 +199,42 @@ export let postProperty = (req: Request, res: Response) => {
 			}
 
 			if (device) {
-				const comparerProperty = device.GetProperty(settingId);
-				const validationResult = Helpers.Instance.ValidateProperty(comparerProperty, body);
+				device.GetProperty(settingId).then((comparerProperty) => {
+					const validationResult = Helpers.Instance.ValidateProperty(comparerProperty, body);
 
-				if (validationResult.success) {
-					const setResponse = device.SetProperty(body);
-
-					if (setResponse instanceof Error) {
-						hardwareResponse.data = setResponse.message;
-						hardwareResponse.success = false;
+					if (validationResult.success) {
+						const setResponse = device.SetProperty(body).then((property) => {
+							hardwareResponse.data = setResponse;
+							res.send(JSON.stringify(hardwareResponse));
+						}, (setError) => {
+							hardwareResponse.data = setError;
+							hardwareResponse.success = false;
+							res.send(JSON.stringify(hardwareResponse));
+						});
 					}
 					else {
-						hardwareResponse.data = setResponse;
+						hardwareResponse = validationResult;
+						res.send(JSON.stringify(hardwareResponse));
 					}
-				}
-				else {
-					hardwareResponse = validationResult;
-				}
+				});
 			}
 			else {
 				hardwareResponse.data = "No device found with ID: " + id;
 				hardwareResponse.success = false;
+				res.send(JSON.stringify(hardwareResponse));
 			}
 		}
 		else {
 			hardwareResponse.data = "Unable to read data as HardwareSettingModel";
 			hardwareResponse.success = false;
+			res.send(JSON.stringify(hardwareResponse));
 		}
 	} catch (error) {
 		hardwareResponse.data = error;
 		hardwareResponse.success = false;
 		res.status(400);
+		res.send(JSON.stringify(hardwareResponse));
 	}
-
-	// Send out JSON'd data
-	res.send(JSON.stringify(hardwareResponse));
 
 	Logger.Instance.WriteDebug("End postSetting/" + id + "/" + settingId);
 };
@@ -249,15 +267,19 @@ export let getCapture = (req: Request, res: Response) => {
 		}
 
 		if (device) {
-			const captureResponse = device.Capture();
-
-			if (captureResponse instanceof Error) {
+			console.log("Device found");
+			device.Capture().then((data) => {
+				hardwareResponse.data = data;
+				res.send(JSON.stringify(hardwareResponse));
+				Logger.Instance.WriteDebug("End getCapture/" + id);
+			}, (captureError) => {
+				console.log("Data error");
 				hardwareResponse.success = false;
-				hardwareResponse.data = captureResponse.message;
-			}
-			else {
-				hardwareResponse.data = captureResponse;
-			}
+				hardwareResponse.data = captureError;
+				res.status(400);
+				res.send(JSON.stringify(hardwareResponse));
+				Logger.Instance.WriteDebug("End getCapture/" + id);
+			});
 		}
 		else {
 			hardwareResponse.data = "No device found with ID: " + id;
@@ -268,12 +290,8 @@ export let getCapture = (req: Request, res: Response) => {
 		hardwareResponse.data = error;
 		hardwareResponse.success = false;
 		res.status(400);
+		res.send(JSON.stringify(hardwareResponse));
 	}
-
-	// Send out JSON'd data
-	res.send(JSON.stringify(hardwareResponse));
-
-	Logger.Instance.WriteDebug("End getCapture/" + id);
 };
 
 /**

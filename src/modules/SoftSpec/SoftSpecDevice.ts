@@ -31,98 +31,107 @@ export class SoftSpecDevice implements IHardware {
 	/**
 	 * Public Functions
 	 */
-	public GetProperties(): Array<HardwareProperty> {
-		let properties: Array<HardwareProperty> = Array<HardwareProperty>();
-		try {
-			properties.push(this.GetScanFilenameProperty());
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			properties = undefined;
-		}
+	public GetProperties(): Promise<Array<HardwareProperty>> {
+		return new Promise<Array<HardwareProperty>>((resolve, reject) => {
+			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
-		return properties;
-	}
-
-	public GetProperty(key: string): HardwareProperty {
-		let property: HardwareProperty = undefined;
-
-		try {
-			switch (key) {
-				case "scan_filename":
-					property = this.GetScanFilenameProperty();
-					break;
-				default:
-					property = undefined;
-					break;
+			try {
+				properties.push(this.GetScanFilenameProperty());
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
 			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
 
-		return property;
+			resolve(properties);
+		});
 	}
 
-	public SetProperty(setting: HardwareProperty): HardwareProperty | Error {
-		let property: HardwareProperty | Error = undefined;
+	public GetProperty(key: string): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			let property: HardwareProperty = undefined;
 
-		try {
-			switch (setting.id) {
-				case "scan_filename":
-					property = this.SetScanFilenameProperty(setting.value);
-					break;
-				default:
-					property = undefined;
-					break;
+			try {
+				switch (key) {
+					case "scan_filename":
+						property = this.GetScanFilenameProperty();
+						break;
+					default:
+						property = undefined;
+						break;
+				}
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
 			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
 
-		return property;
+			resolve(property);
+		});
 	}
 
-	public Capture(): Array<SoftSpecCaptureData> | Error {
-		let capturedData: Array<SoftSpecCaptureData> | Error = new Array<SoftSpecCaptureData>();
+	public SetProperty(setting: HardwareProperty): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			let property: HardwareProperty = undefined;
 
-		try {
-			const filename = this.GetScanFilenameProperty();
+			try {
+				switch (setting.id) {
+					case "scan_filename":
+						property = this.SetScanFilenameProperty(setting.value);
+						break;
+					default:
+						property = undefined;
+						break;
+				}
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
+			}
 
-			if (filename && filename.value) {
-				const fileReturn = Helpers.Instance.ReadFile("./src/modules/SoftSpec/scan files/" + filename.value);
+			resolve(property);
+		});
+	}
 
-				if (fileReturn.success) {
-					const randomCaptureData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
+	public Capture(): Promise<Array<SoftSpecCaptureData>> {
+		return new Promise<Array<SoftSpecCaptureData>>((resolve, reject) => {
+			let capturedData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
 
-					fileReturn.data.forEach((element: SoftSpecCaptureData) => {
-						// Make a new random measured value that is +/- 0.5% of the sample data
-						const min: number = element.measuredValue - (element.measuredValue * 0.005);
-						const max: number = element.measuredValue + (element.measuredValue * 0.005);
+			try {
+				const filename = this.GetScanFilenameProperty();
 
-						const newValue: SoftSpecCaptureData = new SoftSpecCaptureData();
-						newValue.wavelength = element.wavelength;
-						newValue.measuredValue = Helpers.Instance.Random(min, max);
+				if (filename && filename.value) {
+					const fileReturn = Helpers.Instance.ReadFile("./src/modules/SoftSpec/scan files/" + filename.value);
 
-						randomCaptureData.push(newValue);
-					});
+					if (fileReturn.success) {
+						const randomCaptureData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
 
-					capturedData = fileReturn.data;
+						fileReturn.data.forEach((element: SoftSpecCaptureData) => {
+							// Make a new random measured value that is +/- 0.5% of the sample data
+							const min: number = element.measuredValue - (element.measuredValue * 0.005);
+							const max: number = element.measuredValue + (element.measuredValue * 0.005);
+
+							const newValue: SoftSpecCaptureData = new SoftSpecCaptureData();
+							newValue.wavelength = element.wavelength;
+							newValue.measuredValue = Helpers.Instance.Random(min, max);
+
+							randomCaptureData.push(newValue);
+						});
+
+						capturedData = fileReturn.data;
+					}
+					else {
+						reject(new Error(fileReturn.data));
+					}
 				}
 				else {
-					capturedData = new Error(fileReturn.data);
+					reject(new Error("No filename set for scan data"));
 				}
-			}
-			else {
-				capturedData = new Error("No filename set for scan data");
+
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
 			}
 
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			capturedData = error;
-		}
-
-		return capturedData;
+			resolve(capturedData);
+		});
 	}
 
 	public GetStatus(): IStatus {
@@ -154,36 +163,26 @@ export class SoftSpecDevice implements IHardware {
 	 */
 	//#region Property Helpers
 	private GetScanFilenameProperty(): HardwareProperty {
-		let property: HardwareProperty = new HardwareProperty();
+		const property: HardwareProperty = new HardwareProperty();
 
-		try {
-			// Fill out some known values
-			property.id = "scan_filename";
-			property.userReadableName = "Scan Filename";
-			property.dataType = "string";
-			property.order = 4;
-			property.maxLength = 100;
+		// Fill out some known values
+		property.id = "scan_filename";
+		property.userReadableName = "Scan Filename";
+		property.dataType = "string";
+		property.order = 4;
+		property.maxLength = 100;
 
-			// Get Current Value
-			property.value = this._scanFileName.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
+		// Get Current Value
+		property.value = this._scanFileName.toString();
 
 		return property;
 	}
 
-	private SetScanFilenameProperty(newValue: string): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.GetScanFilenameProperty();
+	private SetScanFilenameProperty(newValue: string): HardwareProperty {
+		const property: HardwareProperty = this.GetScanFilenameProperty();
 
-		try {
-			this._scanFileName = newValue;
-			property.value = newValue.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
+		this._scanFileName = newValue;
+		property.value = newValue.toString();
 
 		return property;
 	}

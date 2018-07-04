@@ -35,91 +35,99 @@ export class SeaBreezeDevice implements IHardware {
 	/**
 	 * Public Functions
 	 */
-	public GetProperties(): Array<HardwareProperty> {
-		let properties: Array<HardwareProperty> = Array<HardwareProperty>();
-		try {
-			properties.push(this.GetIntegrationTimeProperty());
-			properties.push(this.GetBoxcarProperty());
-			properties.push(this.GetScanAverageProperty());
+	public GetProperties(): Promise<Array<HardwareProperty>> {
+		return new Promise<Array<HardwareProperty>>((resolve, reject) => {
+			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			properties = undefined;
-		}
+			try {
+				properties.push(this.GetIntegrationTimeProperty());
+				properties.push(this.GetBoxcarProperty());
+				properties.push(this.GetScanAverageProperty());
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
+			}
 
-		return properties;
+			resolve(properties);
+		});
 	}
 
-	public GetProperty(key: string): HardwareProperty {
-		let property: HardwareProperty = undefined;
+	public GetProperty(key: string): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			let property: HardwareProperty = undefined;
 
-		try {
-			switch (key) {
-				case "integration_time":
-					property = this.GetIntegrationTimeProperty();
-					break;
-				case "boxcar":
-					property = this.GetBoxcarProperty();
-					break;
-				case "scan_average":
-					property = this.GetScanAverageProperty();
-					break;
-				default:
-					property = undefined;
-					break;
+			try {
+				switch (key) {
+					case "integration_time":
+						property = this.GetIntegrationTimeProperty();
+						break;
+					case "boxcar":
+						property = this.GetBoxcarProperty();
+						break;
+					case "scan_average":
+						property = this.GetScanAverageProperty();
+						break;
+					default:
+						property = undefined;
+						break;
+				}
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
 			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
 
-		return property;
+			resolve(property);
+		});
 	}
 
-	public SetProperty(setting: HardwareProperty): HardwareProperty | Error {
-		let property: HardwareProperty | Error = undefined;
+	public SetProperty(setting: HardwareProperty): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			let property: HardwareProperty = undefined;
 
-		try {
-			switch (setting.id) {
-				case "integration_time":
-					property = this.SetIntegrationTimeProperty(+setting.value);
-					break;
-				case "boxcar":
-					property = this.SetBoxcarProperty(+setting.value);
-					break;
-				case "scan_average":
-					property = this.SetScanAverageProperty(+setting.value);
-					break;
-				default:
-					property = undefined;
-					break;
+			try {
+				switch (setting.id) {
+					case "integration_time":
+						property = this.SetIntegrationTimeProperty(+setting.value);
+						break;
+					case "boxcar":
+						property = this.SetBoxcarProperty(+setting.value);
+						break;
+					case "scan_average":
+						property = this.SetScanAverageProperty(+setting.value);
+						break;
+					default:
+						property = undefined;
+						break;
+				}
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
 			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
 
-		return property;
+			resolve(property);
+		});
 	}
 
-	public Capture(): Array<SeaBreezeCaptureData> | Error {
-		let capturedData: Array<SeaBreezeCaptureData> | Error = new Array<SeaBreezeCaptureData>();
+	public Capture(): Promise<Array<SeaBreezeCaptureData>> {
+		return new Promise<Array<SeaBreezeCaptureData>>((resolve, reject) => {
+			let capturedData: Array<SeaBreezeCaptureData> = new Array<SeaBreezeCaptureData>();
 
-		try {
-			capturedData = SeaBreezeAPI.Instance.GetSpectrum(this.apiID);
+			try {
+				capturedData = SeaBreezeAPI.Instance.GetSpectrum(this.apiID);
 
-			if (capturedData && capturedData.length > 0) {
-				capturedData = this.ProcessCapture(capturedData);
+				if (capturedData && capturedData.length > 0) {
+					capturedData = this.ProcessCapture(capturedData);
+				}
+				else {
+					reject(new Error(SeaBreezeAPI.Instance.LastErrorString));
+				}
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject(error);
 			}
-			else {
-				capturedData = new Error(SeaBreezeAPI.Instance.LastErrorString);
-			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			capturedData = error;
-		}
 
-		return capturedData;
+			resolve(capturedData);
+		});
 	}
 
 	public GetStatus(): IStatus {
@@ -151,128 +159,96 @@ export class SeaBreezeDevice implements IHardware {
 	 */
 	//#region Property Helpers
 	private GetIntegrationTimeProperty(): HardwareProperty {
-		let property: HardwareProperty = new HardwareProperty();
+		const property: HardwareProperty = new HardwareProperty();
 
-		try {
-			// Fill out some known values
-			property.id = "integration_time";
-			property.userReadableName = "Integration Time";
-			property.dataType = "double";
-			property.order = 1;
-			property.increment = 0.1;
+		// Fill out some known values
+		property.id = "integration_time";
+		property.userReadableName = "Integration Time";
+		property.dataType = "double";
+		property.order = 1;
+		property.increment = 0.1;
 
-			// Get Max Value
-			property.maxValue = SeaBreezeAPI.Instance.getMaxIntegrationTime(this.apiID);
+		// Get Max Value
+		property.maxValue = SeaBreezeAPI.Instance.getMaxIntegrationTime(this.apiID);
 
-			// Get Min Value
-			property.minValue = SeaBreezeAPI.Instance.getMinIntegrationTime(this.apiID);
+		// Get Min Value
+		property.minValue = SeaBreezeAPI.Instance.getMinIntegrationTime(this.apiID);
 
-			// Get Current Value
-			if (this._integrationTime === 0) {
-				this._integrationTime = property.minValue;
-			}
-
-			property.value = this._integrationTime.toString();
-
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
+		// Get Current Value
+		if (this._integrationTime === 0) {
+			this._integrationTime = property.minValue;
 		}
+
+		property.value = this._integrationTime.toString();
 
 		return property;
 	}
 
-	private SetIntegrationTimeProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.GetIntegrationTimeProperty();
+	private SetIntegrationTimeProperty(newValue: number): HardwareProperty {
+		const property: HardwareProperty = this.GetIntegrationTimeProperty();
 
-		try {
-			if (SeaBreezeAPI.Instance.SetIntegrationTime(this.apiID, newValue)) {
-				Logger.Instance.WriteDebug("Prop set");
-				this._integrationTime = newValue;
-				property.value = this._integrationTime.toString();
-			}
-			else {
-				property = new Error("Integration failed to set. Error: " + SeaBreezeAPI.Instance.LastErrorString);
-			}
-
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
+		if (SeaBreezeAPI.Instance.SetIntegrationTime(this.apiID, newValue)) {
+			Logger.Instance.WriteDebug("Prop set");
+			this._integrationTime = newValue;
+			property.value = this._integrationTime.toString();
+		}
+		else {
+			throw new Error("Integration failed to set. Error: " + SeaBreezeAPI.Instance.LastErrorString);
 		}
 
 		return property;
 	}
 
 	private GetBoxcarProperty(): HardwareProperty {
-		let property: HardwareProperty = new HardwareProperty();
+		const property: HardwareProperty = new HardwareProperty();
 
-		try {
-			// Fill out some known values
-			property.id = "boxcar";
-			property.userReadableName = "Boxcar";
-			property.dataType = "int";
-			property.order = 2;
-			property.increment = 1;
-			property.minValue = 1;
-			property.maxValue = 10;
+		// Fill out some known values
+		property.id = "boxcar";
+		property.userReadableName = "Boxcar";
+		property.dataType = "int";
+		property.order = 2;
+		property.increment = 1;
+		property.minValue = 1;
+		property.maxValue = 10;
 
-			// Get Current Value
-			property.value = this._boxcar.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
+		// Get Current Value
+		property.value = this._boxcar.toString();
 
 		return property;
 	}
 
-	private SetBoxcarProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.GetBoxcarProperty();
+	private SetBoxcarProperty(newValue: number): HardwareProperty {
+		const property: HardwareProperty = this.GetBoxcarProperty();
 
-		try {
-			this._boxcar = newValue;
-			property.value = newValue.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
+		this._boxcar = newValue;
+		property.value = newValue.toString();
 
 		return property;
 	}
 
 	private GetScanAverageProperty(): HardwareProperty {
-		let property: HardwareProperty = new HardwareProperty();
+		const property: HardwareProperty = new HardwareProperty();
 
-		try {
-			// Fill out some known values
-			property.id = "scan_average";
-			property.userReadableName = "Scan Averaging";
-			property.dataType = "int";
-			property.order = 3;
-			property.increment = 1;
-			property.minValue = 1;
-			property.maxValue = 10;
+		// Fill out some known values
+		property.id = "scan_average";
+		property.userReadableName = "Scan Averaging";
+		property.dataType = "int";
+		property.order = 3;
+		property.increment = 1;
+		property.minValue = 1;
+		property.maxValue = 10;
 
-			// Get Current Value
-			property.value = this._scanAverage.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = undefined;
-		}
+		// Get Current Value
+		property.value = this._scanAverage.toString();
 
 		return property;
 	}
 
-	private SetScanAverageProperty(newValue: number): HardwareProperty | Error {
-		let property: HardwareProperty | Error = this.GetScanAverageProperty();
+	private SetScanAverageProperty(newValue: number): HardwareProperty {
+		const property: HardwareProperty = this.GetScanAverageProperty();
 
-		try {
-			this._scanAverage = newValue;
-			property.value = this._scanAverage.toString();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			property = error;
-		}
+		this._scanAverage = newValue;
+		property.value = this._scanAverage.toString();
 
 		return property;
 	}
@@ -321,7 +297,5 @@ export class SeaBreezeDevice implements IHardware {
 
 		return processedSpectrum;
 	}
-
-
 	//#endregion
 }
