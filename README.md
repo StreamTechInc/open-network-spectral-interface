@@ -70,10 +70,10 @@ This interface has 4 properties:
 
 and 10 functions:
 
-* GetProperties() : Returns a list of all properties for the device as an array of IProperty
-* GetProperty(key: string) : Returns a specific property based off the ID
-* SetProperty(property: IProperty) : Sets a property to the value supplied. Any additional property validation would be done here. Returns the complete updated IProperty. If any errors occur the error would be returned in place of the IProperty.
-* Capture() : Returns an array of capture data from a successful capture. If any errors occur the error would be returned in place of the ICaptureData array.
+* GetProperties() : Returns Promise to return a list of all properties for the device as an array of IProperty
+* GetProperty(key: string) : Returns Promise to return a specific property based off the ID
+* SetProperty(property: IProperty) : Returns Promise to set a property to the value supplied. Any additional property validation would be done here. Returns the complete updated IProperty. If any errors occur the error would be returned in place of the IProperty.
+* Capture() : Returns Promise to return an array of capture data from a successful capture. If any errors occur the error would be returned in place of the ICaptureData array.
 * GetStatus() : Returns the status details of the device.
 * GetSubscriptions() : Returns an array of all ISubscriptions of the device.
 * AddSubscription(subscription: ISubscription) : Validate and add the provided ISubscription to the device.
