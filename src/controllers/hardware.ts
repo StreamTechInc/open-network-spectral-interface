@@ -44,12 +44,21 @@ export let getAttachedHardware = (req: Request, res: Response) => {
 
 			res.send(JSON.stringify(hardwareResponse));
 		}, (promiseError) => {
-			throw promiseError;
+			hardwareResponse.data = promiseError;
+			hardwareResponse.success = false;
+			res.status(400);
+			res.send(JSON.stringify(hardwareResponse));
+		}).catch((catchError) => {
+			hardwareResponse.data = catchError;
+			hardwareResponse.success = false;
+			res.status(400);
+			res.send(JSON.stringify(hardwareResponse));
 		});
 	} catch (error) {
 		hardwareResponse.data = error;
 		hardwareResponse.success = false;
 		res.status(400);
+		res.send(JSON.stringify(hardwareResponse));
 	}
 };
 

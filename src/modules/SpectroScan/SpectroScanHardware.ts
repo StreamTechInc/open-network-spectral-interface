@@ -13,7 +13,7 @@ export class SpectroScanHardware implements IHardwareType {
 			try {
 				if (this._devices.length === 0) {
 					SpectroScanAPI.Instance.SetupDevice().then((handle: number) => {
-						if (handle > 0) {
+						if (handle && handle > 0) {
 							const device = new SpectroScanDevice();
 							device.handle = handle;
 
@@ -26,7 +26,19 @@ export class SpectroScanHardware implements IHardwareType {
 					});
 				}
 				else {
-					resolve(this._devices);
+					SpectroScanAPI.Instance.SetupDevice().then((handle: number) => {
+						if (handle && handle > 0) {
+							this._devices[0].handle = handle;
+						}
+						else {
+							this._devices = [];
+						}
+
+						resolve(this._devices);
+					}, (setupError) => {
+						this._devices = [];
+						reject(setupError);
+					});
 				}
 			} catch (error) {
 				reject(error);
@@ -54,8 +66,15 @@ export class SpectroScanHardware implements IHardwareType {
 	}
 
 	public CloseDevices(): boolean {
-		this._devices = new Array<SpectroScanDevice>();
-		return true;
+		let status = true;
+
+		this._devices.forEach(device => {
+			if (!SpectroScanAPI.Instance.CloseDevice(device.handle)) {
+				status = false;
+			}
+		});
+
+		return status;
 	}
 
 	private CheckIfDeviceExists(device: SpectroScanDevice): boolean {

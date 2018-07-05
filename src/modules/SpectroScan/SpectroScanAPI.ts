@@ -29,6 +29,8 @@ export class SpectroScanAPI {
 	 * Private variables
 	 * 
 	 */
+	private handle: number = 0;
+
 	private readonly libPath = "./src/modules/SpectroScan/SpectroScanDLL_V6.a.dll";
 
 	private functions = new ffi.Library(this.libPath, {
@@ -38,7 +40,7 @@ export class SpectroScanAPI {
 		"FTIR_UpdateAlignment": [ref.types.void, [ref.types.uint64, ref.types.double, ref.types.double]]
 	});
 
-	private readonly ftdiPath = "C:\\Users\\BrendanBohay\\Downloads\\CDM v2.12.28 WHQL Certified\\amd64\\ftd2xx64.dll";
+	private readonly ftdiPath = "./src/modules/SpectroScan/ftd2xx64.dll";
 
 	private ftdi_functions = new ffi.Library(this.ftdiPath, {
 		"FT_Open": [ref.types.ulong, [ref.types.int, ref.refType(ref.types.uint64)]],
@@ -62,23 +64,42 @@ export class SpectroScanAPI {
 	public SetupDevice(): Promise<number> {
 		return new Promise<number>((resolve, reject) => {
 			try {
-				const handle = SpectroScanAPI.Instance.FTDI_Open();
+				let status = SpectroScanAPI.Instance.FTDI_Open();
 
-				setTimeout(() => {
-					SpectroScanAPI.Instance.FTDI_SetBaudRate(handle, 2000000);
+				if (status === 0) {
 
 					setTimeout(() => {
-						SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(handle, 8, 0, 0);
+						status = SpectroScanAPI.Instance.FTDI_SetBaudRate(this.handle, 2000000);
 
-						setTimeout(() => {
-							SpectroScanAPI.Instance.UpdateAlignment(handle, 29.7, 24.6);
+						if (status === 0) {
+							setTimeout(() => {
+								status = SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(this.handle, 8, 0, 0);
 
-							resolve(handle);
-						}, 10);
+								if (status === 0) {
+									setTimeout(() => {
+										SpectroScanAPI.Instance.UpdateAlignment(this.handle, 29.7, 24.6);
+	
+										resolve(this.handle);
+									}, 10);
+								}
+								else {
+									reject("FTDI_SetDataCharacteristics failed with status: " + status);
+								}								
+							}, 10);
+						}
+						else {
+							reject("FTDI_SetBaudRate failed with status: " + status);
+						}
 					}, 10);
-				}, 10);
-
-			} catch (error) {
+				}
+				else if (status === 2) { // Status == 2 is FT_DEVICE_NOT_FOUND. So no device to attempt to open.
+					resolve(undefined);
+				}
+				else {
+					reject("Device failed to open");
+				}
+			}
+			catch (error) {
 				reject(error);
 			}
 		});
@@ -167,29 +188,33 @@ export class SpectroScanAPI {
 
 												dataArray.push(captureData);
 											}
-											
+
 											resolve(dataArray);
 										}, 10);
 									}, 500);
 								}
 								else {
-									reject(new Error("Read 2 failed with status: " + status));
+									reject("Read 2 failed with status: " + status);
 								}
 							}
 							else {
-								reject(new Error("GetQueueStatus failed with status: " + status));
+								reject("GetQueueStatus failed with status: " + status);
 							}
 						}, 500);
 					}
 					else {
-						reject(new Error("Read 1 failed with status: " + status));
+						reject("Read 1 failed with status: " + status);
 					}
 				}, 10);
 			}
 			else {
-				reject(new Error("Write failed with status: " + status));
+				reject("Write failed with status: " + status);
 			}
 		});
+	}
+
+	public CloseDevice(handle: number): boolean {
+		return this.FTDI_Close(handle) === 0;
 	}
 
 	/**
@@ -197,70 +222,88 @@ export class SpectroScanAPI {
 	 * Private Functions
 	 * 
 	 */
-	
+
 	private UpdateAlignment(handle: number, x: number, y: number) {
 		try {
-			console.log("Updating alignment");
 			this.functions.FTIR_UpdateAlignment(handle, x, y);
-		} catch (error) {
-			console.error("Error", error);
+		}
+		catch (error) {
+			Logger.Instance.WriteError(error);
 		}
 	}
 
 	private FTDI_Open(): number {
-		let handle: number = 0;
+		let status: number = 0;
 
 		try {
 			const handlePtr = ref.alloc(ref.types.uint64);
-			const status = this.ftdi_functions.FT_Open(0, handlePtr);
-			console.log("Open Status", status);
+			status = this.ftdi_functions.FT_Open(0, handlePtr);
 
-			handle = ref.deref(handlePtr);
-		} catch (error) {
-			console.error("Error", error);
+			if (status === 0) {
+				this.handle = ref.deref(handlePtr);
+			}
+			else {
+				Logger.Instance.WriteError(new Error("FTDI_Open failed with status: " + status));
+			}
+		}
+		catch (error) {
+			Logger.Instance.WriteError(error);
 		}
 
-		return handle;
+		return status;
 	}
 
-	private FTDI_Close(handle: number) {
+	private FTDI_Close(handle: number): number {
+		let status = -1;
+
 		try {
-			const status = this.ftdi_functions.FT_Close(handle);
-			console.log("Close Status", status);
-		} catch (error) {
-			console.error("Error", error);
+			status = this.ftdi_functions.FT_Close(handle);
 		}
+		catch (error) {
+			Logger.Instance.WriteError(error);
+		}
+
+		return status;
 	}
 
-	private FTDI_SetBaudRate(handle: number, baudRate: number) {
+	private FTDI_SetBaudRate(handle: number, baudRate: number): number {
+		let status = -1;
+
 		try {
-			const status = this.ftdi_functions.FT_SetBaudRate(handle, baudRate);
-			console.log("Baud Rate Set Status", status);
-		} catch (error) {
-			console.error("Error", error);
+			status = this.ftdi_functions.FT_SetBaudRate(handle, baudRate);
 		}
+		catch (error) {
+			Logger.Instance.WriteError(error);
+		}
+
+		return status;
 	}
 
 	private FTDI_Write(handle: number, data: number[]): number {
 		let status = -1;
+
 		try {
 			const bytesWritten = ref.alloc(ref.types.ulong);
 
 			status = this.ftdi_functions.FT_Write(handle, data, 3, bytesWritten);
-		} catch (error) {
-			console.error("Error", error);
-			status = -1;
+		}
+		catch (error) {
+			Logger.Instance.WriteError(error);
 		}
 
 		return status;
 	}
 
 	private FTDI_SetDataCharacteristics(handle: number, arg1: number, arg2: number, arg3: number) {
+		let status = -1;
+
 		try {
-			const status = this.ftdi_functions.FT_SetDataCharacteristics(handle, arg1, arg2, arg3);
-			console.log("Set Data Characteristics Status", status);
-		} catch (error) {
-			console.error("Error", error);
+			status = this.ftdi_functions.FT_SetDataCharacteristics(handle, arg1, arg2, arg3);
 		}
+		catch (error) {
+			Logger.Instance.WriteError(error);
+		}
+
+		return status;
 	}
 }
