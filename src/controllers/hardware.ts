@@ -276,13 +276,11 @@ export let getCapture = (req: Request, res: Response) => {
 		}
 
 		if (device) {
-			console.log("Device found");
 			device.Capture().then((data) => {
 				hardwareResponse.data = data;
 				res.send(JSON.stringify(hardwareResponse));
 				Logger.Instance.WriteDebug("End getCapture/" + id);
 			}, (captureError) => {
-				console.log("Data error");
 				hardwareResponse.success = false;
 				hardwareResponse.data = captureError;
 				res.status(400);
