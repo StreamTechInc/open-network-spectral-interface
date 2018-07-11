@@ -8,29 +8,31 @@ export class SoftSpecHardware implements IHardwareType {
 	private _specsFilePath: string = "./src/modules/SoftSpec/spectrometers/";
 	private _devices: Array<SoftSpecDevice> = new Array<SoftSpecDevice>();
 
-	public GetDevices(): Array<SoftSpecDevice> {
+	public GetDevices(): Promise<Array<SoftSpecDevice>> {
 		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
 
-		try {
-			const response = Helpers.Instance.ReadFilesInDirectory(this._specsFilePath);
-
-			if (response && response.success) {
-				response.data.forEach((device: SoftSpecDevice) => {
-					if (!this.CheckIfDeviceExists(device.serial)) {
-						const tempDevice: SoftSpecDevice = new SoftSpecDevice();
-						tempDevice.modelName = device.modelName;
-						tempDevice.serial = device.serial;
-						this._devices.push(tempDevice);
-					}
-				});
+		return new Promise<Array<SoftSpecDevice>>((resolve, reject) => {
+			try {
+				const response = Helpers.Instance.ReadFilesInDirectory(this._specsFilePath);
+	
+				if (response && response.success) {
+					response.data.forEach((device: SoftSpecDevice) => {
+						if (!this.CheckIfDeviceExists(device.serial)) {
+							const tempDevice: SoftSpecDevice = new SoftSpecDevice();
+							tempDevice.modelName = device.modelName;
+							tempDevice.serial = device.serial;
+							this._devices.push(tempDevice);
+						}
+					});
+				}
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				this._devices = [];
+				reject(error);
 			}
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-			this._devices = [];
-			throw error;
-		}
 
-		return this._devices;
+			resolve(this._devices);
+		});
 	}
 
 	public GetDeviceById(id: string) {

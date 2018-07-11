@@ -30,12 +30,10 @@ export class Logger {
 	 * @param message the message you wish to write to app insights
 	 */
 	public WriteDebug(message: string) {
-		if (this.client != undefined &&
-			(process.env.APP_MODE == "local" || process.env.APP_MODE == "development")) {
+		if (this.client != undefined && (process.env.APP_MODE == "local" || process.env.APP_MODE == "development")) {
 			this.client.trackTrace({ message: message });
+			console.log("Debug: " + message);
 		}
-
-		console.log("Trace: " + message);
 	}
 
 	/**

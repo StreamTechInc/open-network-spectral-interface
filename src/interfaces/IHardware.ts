@@ -16,22 +16,22 @@ export interface IHardware {
 	/**
 	 * Get all settings for device
 	 */
-	GetProperties(): Array<IProperty>;
+	GetProperties(): Promise<Array<IProperty>>;
 
 	/**
 	 * Get a value for a specific setting
 	 */
-	GetProperty(key: string): IProperty;
+	GetProperty(key: string): Promise<IProperty>;
 
 	/**
 	 * Set a setting with desired value
 	 */
-	SetProperty(property: IProperty): IProperty | Error;
+	SetProperty(property: IProperty): Promise<IProperty>;
 
 	/**
 	 * Capture an exposure with current settings
 	 */
-	Capture(): Array<ICaptureData> | Error;
+	Capture(): Promise<Array<ICaptureData>>;
 
 	/**
 	 * Return camera status
