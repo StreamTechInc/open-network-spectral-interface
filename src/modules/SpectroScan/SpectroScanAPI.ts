@@ -78,13 +78,13 @@ export class SpectroScanAPI {
 								if (status === 0) {
 									setTimeout(() => {
 										SpectroScanAPI.Instance.UpdateAlignment(this.handle, 29.7, 24.6);
-	
+
 										resolve(this.handle);
 									}, 10);
 								}
 								else {
 									reject("FTDI_SetDataCharacteristics failed with status: " + status);
-								}								
+								}
 							}, 10);
 						}
 						else {
@@ -215,6 +215,21 @@ export class SpectroScanAPI {
 
 	public CloseDevice(handle: number): boolean {
 		return this.FTDI_Close(handle) === 0;
+	}
+
+	public TestDevice(handle: number): boolean {
+		let status: number = -1;
+
+		try {
+			// Just a simple call to check if the handle stored is still valid
+			const bytesReturned = ref.alloc(ref.types.ulong);
+			status = this.ftdi_functions.FT_GetQueueStatus(handle, bytesReturned);
+		} catch (error) {
+			Logger.Instance.WriteError(error);
+			status = -1;
+		}
+
+		return status === 0;
 	}
 
 	/**
