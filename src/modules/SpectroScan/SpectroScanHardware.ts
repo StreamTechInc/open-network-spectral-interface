@@ -26,19 +26,13 @@ export class SpectroScanHardware implements IHardwareType {
 					});
 				}
 				else {
-					SpectroScanAPI.Instance.SetupDevice().then((handle: number) => {
-						if (handle && handle > 0) {
-							this._devices[0].handle = handle;
-						}
-						else {
-							this._devices = [];
-						}
+					const testResult: boolean = SpectroScanAPI.Instance.TestDevice(this._devices[0].handle);
 
-						resolve(this._devices);
-					}, (setupError) => {
+					if (!testResult) {
 						this._devices = [];
-						reject(setupError);
-					});
+					}
+
+					resolve(this._devices);
 				}
 			} catch (error) {
 				reject(error);
