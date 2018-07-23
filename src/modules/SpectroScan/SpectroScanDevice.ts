@@ -96,21 +96,11 @@ export class SpectroScanDevice implements IHardware {
 	public Capture(): Promise<Array<SpectroScanCaptureData>> {
 		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
 			try {
-				// SpectroScanAPI.Instance.GetSpectrum(this.handle).then((data) => {
-				// 	resolve(data);
-				// }, (spectrumError) => {
-				// 	Logger.Instance.WriteError(spectrumError);
-				// 	reject(spectrumError);
-				// });
-				// this.ProcessCapture([[]], 1).then((data) => {
-				// 	console.log("Back with data: " + data.length);
-
-				// 	resolve(data[0]);
-				// });
-				this.Process().then((data) => {
+				this.ProcessCapture().then((data) => {
 					resolve(data);
+				}, (processError) => {
+					throw processError;
 				});
-
 			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
@@ -172,42 +162,7 @@ export class SpectroScanDevice implements IHardware {
 		return property;
 	}
 
-	// private ProcessCapture(spectrum: Array<Array<SpectroScanCaptureData>>, index: number): Array<SpectroScanCaptureData> {
-	// 	const processedSpectrum = spectrum;
-
-	// 	// Add the promises in a loop and call all with promise.all
-
-
-	// 	if (this._scanAverage > 1) {
-	// 		for (let i = 1; i < this._scanAverage; i++) {
-	// 			const tempSpectrum = SpectroScanAPI.Instance.GetSpectrum(this.handle);
-
-	// 			for (let j = 0; j < SpectroScanAPI.Instance.wavelengthRange; j++) {
-	// 				processedSpectrum[j].measuredValue += tempSpectrum[j].measuredValue;
-	// 			}
-	// 		}
-
-	// 		for (let i = 0; i < SeaBreezeAPI.Instance.pixels; i++) {
-	// 			processedSpectrum[i].measuredValue = processedSpectrum[i].measuredValue / this._scanAverage;
-	// 		}
-	// 	}
-
-	// 	return processedSpectrum;
-	// }
-
-	private ProcessCapture(spectrumData: Array<Array<SpectroScanCaptureData>>, scanNumber: number = 1): Promise<Array<Array<SpectroScanCaptureData>>> {
-		return new Promise<Array<Array<SpectroScanCaptureData>>>((resolve, reject) => {
-			this.ProcessCapture(spectrumData, ++scanNumber).then((data) => {
-				console.log("Processing scan " + scanNumber);
-
-				if (spectrumData.length === this._scanAverage) {
-					resolve(spectrumData);
-				}
-			});
-		});
-	}
-
-	private async Process() {
+	private async ProcessCapture() {
 		const data: Array<Array<SpectroScanCaptureData>> = [];
 		let averagedData: Array<SpectroScanCaptureData> = [];
 		let scanNumber: number = 1;
