@@ -86,7 +86,7 @@ export class Helpers {
 			// TODO: validate enum
 		}
 		else if (expectedType === "bool") {
-			// TODO: validate bool
+			isValid = newValue.toLowerCase() === "true" || newValue.toLowerCase() === "false";
 		}
 		else if (expectedType === "string") {
 			// Must be string 

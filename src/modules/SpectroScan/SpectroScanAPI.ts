@@ -26,6 +26,15 @@ export class SpectroScanAPI {
 
 	/**
 	 * 
+	 * Public Variables
+	 * 
+	 */
+	public maxWavelength: number = 2401;
+	public minWavelength: number = 1100;
+	public wavelengthRange: number = this.maxWavelength - this.minWavelength;
+
+	/**
+	 * 
 	 * Private variables
 	 * 
 	 */
@@ -182,11 +191,20 @@ export class SpectroScanAPI {
 
 											const dataArray: SpectroScanCaptureData[] = [];
 											for (let index = 0; index < waveData.length; index++) {
-												const captureData = new SpectroScanCaptureData();
-												captureData.wavelength = waveData[index];
-												captureData.measuredValue = specData[index];
 
-												dataArray.push(captureData);
+												if (waveData[index] >= this.minWavelength && waveData[index] < this.maxWavelength) {
+													const captureData = new SpectroScanCaptureData();
+													captureData.wavelength = waveData[index];
+
+													if (specData[index] < 0) {
+														captureData.measuredValue = 0;
+													}
+													else {
+														captureData.measuredValue = specData[index];
+													}
+
+													dataArray.push(captureData);
+												}												
 											}
 
 											resolve(dataArray);
@@ -210,6 +228,12 @@ export class SpectroScanAPI {
 			else {
 				reject("Write failed with status: " + status);
 			}
+		});
+	}
+
+	public Calibrate(handle: number): Promise<Array<SpectroScanCaptureData>> {
+		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
+			// TODO: Get calibration process from Lawrence
 		});
 	}
 
