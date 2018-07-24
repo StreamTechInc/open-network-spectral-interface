@@ -29,8 +29,8 @@ export class SpectroScanAPI {
 	 * Public Variables
 	 * 
 	 */
-	public maxWavelength: number = 2400;
-	public minWavelength: number = 1000;
+	public maxWavelength: number = 2401;
+	public minWavelength: number = 1100;
 	public wavelengthRange: number = this.maxWavelength - this.minWavelength;
 
 	/**
@@ -228,6 +228,12 @@ export class SpectroScanAPI {
 			else {
 				reject("Write failed with status: " + status);
 			}
+		});
+	}
+
+	public Calibrate(handle: number): Promise<Array<SpectroScanCaptureData>> {
+		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
+			// TODO: Get calibration process from Lawrence
 		});
 	}
 

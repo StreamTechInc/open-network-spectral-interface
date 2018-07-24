@@ -24,6 +24,8 @@ export class SpectroScanDevice implements IHardware {
 	 */
 	private _status: boolean;
 	private _scanAverage: number = 1;
+	private _calibrate: boolean = false;
+
 	/**
 	 * Constructor
 	 */
@@ -40,6 +42,7 @@ export class SpectroScanDevice implements IHardware {
 
 			try {
 				properties.push(this.GetScanAverageProperty());
+				properties.push(this.GetCalibrateProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
@@ -57,6 +60,9 @@ export class SpectroScanDevice implements IHardware {
 				switch (key) {
 					case "scan_average":
 						property = this.GetScanAverageProperty();
+						break;
+					case "calibrate":
+						property = this.GetCalibrateProperty();
 						break;
 					default:
 						property = undefined;
@@ -79,6 +85,9 @@ export class SpectroScanDevice implements IHardware {
 				switch (setting.id) {
 					case "scan_average":
 						property = this.SetScanAverageProperty(+setting.value);
+						break;
+					case "calibrate":
+						property = this.SetCalibrateProperty(setting.value === "true");
 						break;
 					default:
 						property = undefined;
@@ -162,17 +171,46 @@ export class SpectroScanDevice implements IHardware {
 		return property;
 	}
 
+	private GetCalibrateProperty(): HardwareProperty {
+		const property: HardwareProperty = new HardwareProperty();
+
+		// Fill out some known values
+		property.id = "calibrate";
+		property.userReadableName = "Calibrate";
+		property.dataType = "bool";
+		property.order = 2;
+		property.increment = null;
+		property.minValue = null;
+		property.maxValue = null;
+
+		// Get Current Value
+		property.value = this._calibrate.toString();
+
+		return property;
+	}
+
+	private SetCalibrateProperty(newValue: boolean): HardwareProperty {
+		const property: HardwareProperty = this.GetCalibrateProperty();
+
+		this._calibrate = newValue;
+		property.value = this._calibrate.toString();
+
+		return property;
+	}
+
 	private async ProcessCapture() {
 		const data: Array<Array<SpectroScanCaptureData>> = [];
 		let averagedData: Array<SpectroScanCaptureData> = [];
 		let scanNumber: number = 1;
 
+		if (this._calibrate) {
+			const alignmentValues = await SpectroScanAPI.Instance.Calibrate(this.handle);
+		}
+
 		do {
 			const capturedData = await SpectroScanAPI.Instance.GetSpectrum(this.handle);
 			scanNumber++;
 			data.push(capturedData);
-
-			console.log(capturedData[0]);
 		} while (scanNumber <= this._scanAverage);
 
 		averagedData = data[0];
