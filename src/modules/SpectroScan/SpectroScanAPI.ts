@@ -85,11 +85,7 @@ export class SpectroScanAPI {
 								status = SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(this.handle, 8, 0, 0);
 
 								if (status === 0) {
-									setTimeout(() => {
-										SpectroScanAPI.Instance.UpdateAlignment(this.handle, 29.7, 24.6);
-
-										resolve(this.handle);
-									}, 10);
+									resolve(this.handle);
 								}
 								else {
 									reject("FTDI_SetDataCharacteristics failed with status: " + status);
@@ -204,7 +200,7 @@ export class SpectroScanAPI {
 													}
 
 													dataArray.push(captureData);
-												}												
+												}
 											}
 
 											resolve(dataArray);
@@ -231,9 +227,23 @@ export class SpectroScanAPI {
 		});
 	}
 
-	public Calibrate(handle: number): Promise<Array<SpectroScanCaptureData>> {
-		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
-			// TODO: Get calibration process from Lawrence
+	public Calibrate(handle: number): Promise<boolean> {
+		/**
+		 * To complete the auto alignment there is a handful of actions to be taken with a wait between each step
+		 * 1. Write the command to indicate auto-alignment should start
+		 */
+		return new Promise<boolean>((resolve, reject) => {
+			const status = this.FTDI_Write(handle, [0xAE, 0x00, 0x00]);
+
+			if (status === 0) {
+				// Wait 15s before returning
+				setTimeout(() => {
+					resolve(true);
+				}, 15000);
+			}
+			else {
+				reject("Write failed with status: " + status);
+			}
 		});
 	}
 
