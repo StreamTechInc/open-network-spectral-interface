@@ -2,11 +2,8 @@ import * as ffi from "ffi";
 import * as ref from "ref";
 import * as refArray from "ref-array";
 import { Logger } from "../../common/logger";
-import { errno } from "ffi";
 import { Helpers } from "../../common/helpers";
-import { EventData } from "applicationinsights/out/Declarations/Contracts";
 import { SpectroScanCaptureData } from "./models/spectroscan-capture-data";
-import { FileHandler } from "../../common/file-handler";
 
 export class SpectroScanAPI {
 	/**
@@ -264,6 +261,33 @@ export class SpectroScanAPI {
 		}
 
 		return status === 0;
+	}
+
+	public GetDeviceDetails(handle: number): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
+			let status = this.FTDI_Write(handle, [0xAA, 0x00, 0x00]);
+			
+			if (status === 0) {
+				setTimeout(() => {
+					const buffer = ref.alloc(refArray(ref.types.byte, 34));
+					const bytesReturned = ref.alloc(ref.types.uint);
+
+					status = this.ftdi_functions.FT_Read(handle, buffer, 34, bytesReturned);
+					const rxBytes = ref.deref(bytesReturned);
+
+					if (status === 0 && rxBytes > 0) {
+						const details = Helpers.Instance.ConvertByteArrayToString(buffer);
+						resolve(details);
+					}
+					else {
+						reject("FTDI_Read failed with a status of: " + status + " and rxBytes: " + rxBytes);
+					}
+				}, 10);
+			}
+			else {
+				reject("FTDI_Write failed with a status of: " + status);
+			}
+		});
 	}
 
 	/**

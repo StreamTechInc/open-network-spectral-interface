@@ -14,8 +14,8 @@ export class SpectroScanDevice implements IHardware {
 	 * Public Member Variables
 	 */
 	public id: Guid;
-	public modelName: string = "nanoFTIR";
-	public serial: string = "NO3";
+	public modelName: string = "";
+	public serial: string = "";
 	public type: string = "SpectroScan Spectrometer";
 	public handle: number;
 
