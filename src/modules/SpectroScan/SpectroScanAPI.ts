@@ -2,11 +2,8 @@ import * as ffi from "ffi";
 import * as ref from "ref";
 import * as refArray from "ref-array";
 import { Logger } from "../../common/logger";
-import { errno } from "ffi";
 import { Helpers } from "../../common/helpers";
-import { EventData } from "applicationinsights/out/Declarations/Contracts";
 import { SpectroScanCaptureData } from "./models/spectroscan-capture-data";
-import { FileHandler } from "../../common/file-handler";
 
 export class SpectroScanAPI {
 	/**
@@ -23,6 +20,15 @@ export class SpectroScanAPI {
 
 		return this.instance;
 	}
+
+	/**
+	 * 
+	 * Public Variables
+	 * 
+	 */
+	public maxWavelength: number = 2401;
+	public minWavelength: number = 1100;
+	public wavelengthRange: number = this.maxWavelength - this.minWavelength;
 
 	/**
 	 * 
@@ -76,11 +82,7 @@ export class SpectroScanAPI {
 								status = SpectroScanAPI.Instance.FTDI_SetDataCharacteristics(this.handle, 8, 0, 0);
 
 								if (status === 0) {
-									setTimeout(() => {
-										SpectroScanAPI.Instance.UpdateAlignment(this.handle, 29.7, 24.6);
-
-										resolve(this.handle);
-									}, 10);
+									resolve(this.handle);
 								}
 								else {
 									reject("FTDI_SetDataCharacteristics failed with status: " + status);
@@ -182,11 +184,20 @@ export class SpectroScanAPI {
 
 											const dataArray: SpectroScanCaptureData[] = [];
 											for (let index = 0; index < waveData.length; index++) {
-												const captureData = new SpectroScanCaptureData();
-												captureData.wavelength = waveData[index];
-												captureData.measuredValue = specData[index];
 
-												dataArray.push(captureData);
+												if (waveData[index] >= this.minWavelength && waveData[index] < this.maxWavelength) {
+													const captureData = new SpectroScanCaptureData();
+													captureData.wavelength = waveData[index];
+
+													if (specData[index] < 0) {
+														captureData.measuredValue = 0;
+													}
+													else {
+														captureData.measuredValue = specData[index];
+													}
+
+													dataArray.push(captureData);
+												}
 											}
 
 											resolve(dataArray);
@@ -213,6 +224,26 @@ export class SpectroScanAPI {
 		});
 	}
 
+	public Calibrate(handle: number): Promise<boolean> {
+		/**
+		 * To complete the auto alignment there is a handful of actions to be taken with a wait between each step
+		 * 1. Write the command to indicate auto-alignment should start
+		 */
+		return new Promise<boolean>((resolve, reject) => {
+			const status = this.FTDI_Write(handle, [0xAE, 0x00, 0x00]);
+
+			if (status === 0) {
+				// Wait 15s before returning
+				setTimeout(() => {
+					resolve(true);
+				}, 15000);
+			}
+			else {
+				reject("Write failed with status: " + status);
+			}
+		});
+	}
+
 	public CloseDevice(handle: number): boolean {
 		return this.FTDI_Close(handle) === 0;
 	}
@@ -230,6 +261,33 @@ export class SpectroScanAPI {
 		}
 
 		return status === 0;
+	}
+
+	public GetDeviceDetails(handle: number): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
+			let status = this.FTDI_Write(handle, [0xAA, 0x00, 0x00]);
+			
+			if (status === 0) {
+				setTimeout(() => {
+					const buffer = ref.alloc(refArray(ref.types.byte, 34));
+					const bytesReturned = ref.alloc(ref.types.uint);
+
+					status = this.ftdi_functions.FT_Read(handle, buffer, 34, bytesReturned);
+					const rxBytes = ref.deref(bytesReturned);
+
+					if (status === 0 && rxBytes > 0) {
+						const details = Helpers.Instance.ConvertByteArrayToString(buffer);
+						resolve(details);
+					}
+					else {
+						reject("FTDI_Read failed with a status of: " + status + " and rxBytes: " + rxBytes);
+					}
+				}, 10);
+			}
+			else {
+				reject("FTDI_Write failed with a status of: " + status);
+			}
+		});
 	}
 
 	/**

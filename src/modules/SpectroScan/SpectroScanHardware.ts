@@ -16,11 +16,20 @@ export class SpectroScanHardware implements IHardwareType {
 						if (handle && handle > 0) {
 							const device = new SpectroScanDevice();
 							device.handle = handle;
+							SpectroScanAPI.Instance.GetDeviceDetails(handle).then((details: string) => {
+								const splitDetails = details.split("-");
 
-							this._devices.push(device);
+								if (splitDetails.length > 2 && splitDetails[1] && splitDetails[2]) {
+									device.serial = splitDetails[1];
+									device.modelName = splitDetails[2];
+								}
+								
+								this._devices.push(device);
+								resolve(this._devices);
+							}, (detailsError) => {
+								reject(detailsError);
+							});
 						}
-
-						resolve(this._devices);
 					}, (setupError) => {
 						reject(setupError);
 					});
