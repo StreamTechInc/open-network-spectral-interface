@@ -26,8 +26,8 @@ export class SpectroScanAPI {
 	 * Public Variables
 	 * 
 	 */
-	public maxWavelength: number = 2401;
-	public minWavelength: number = 1100;
+	public maxWavelength: number = 2451;
+	public minWavelength: number = 1050;
 	public wavelengthRange: number = this.maxWavelength - this.minWavelength;
 
 	/**
@@ -159,7 +159,7 @@ export class SpectroScanAPI {
 											// TODO: Another set of numbers for hw profile?
 											const zeroPadding: number = 16384;
 											const boardband: number = 0;
-											const mertz: number = 1000;
+											const mertz: number = 800;
 											const peak: number = 1;
 											const calibrationFactor: number = 0.05;
 											const SpectrumMag = ref.alloc(refArray(ref.types.double, rxBytes));
