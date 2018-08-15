@@ -10,46 +10,51 @@ export class SpectroScanHardware implements IHardwareType {
 		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
 
 		return new Promise<Array<SpectroScanDevice>>((resolve, reject) => {
-			try {
-				if (this._devices.length === 0) {
-					SpectroScanAPI.Instance.SetupDevice().then((handle: number) => {
-						if (handle && handle > 0) {
-							const device = new SpectroScanDevice();
-							device.handle = handle;
-							SpectroScanAPI.Instance.GetDeviceDetails(handle).then((details: string) => {
-								const splitDetails = details.split("-");
+			// Added 4 second delay to prevent error.
+			// When refreshing devices through CC software we would get an error if attempting to refresh too soon after
+			// disconnecting and reconnecting device.
+			setTimeout(() => {
+				try {
+					if (this._devices.length === 0) {
+						SpectroScanAPI.Instance.SetupDevice().then((handle: number) => {
+							if (handle && handle > 0) {
+								const device = new SpectroScanDevice();
+								device.handle = handle;
+								SpectroScanAPI.Instance.GetDeviceDetails(handle).then((details: string) => {
+									const splitDetails = details.split("-");
 
-								if (splitDetails.length > 2 && splitDetails[1] && splitDetails[2]) {
-									device.serial = splitDetails[1];
-									device.modelName = splitDetails[2];
-								}
-								
-								this._devices.push(device);
+									if (splitDetails.length > 2 && splitDetails[1] && splitDetails[2]) {
+										device.serial = splitDetails[1];
+										device.modelName = splitDetails[2];
+									}
+
+									this._devices.push(device);
+									resolve(this._devices);
+								}, (detailsError) => {
+									reject(detailsError);
+								});
+							}
+							else {
+								this._devices = [];
 								resolve(this._devices);
-							}, (detailsError) => {
-								reject(detailsError);
-							});
-						}
-						else {
-							this._devices = [];
-							resolve(this._devices);
-						}
-					}, (setupError) => {
-						reject(setupError);
-					});
-				}
-				else {
-					const testResult: boolean = SpectroScanAPI.Instance.TestDevice(this._devices[0].handle);
-
-					if (!testResult) {
-						this._devices = [];
+							}
+						}, (setupError) => {
+							reject(setupError);
+						});
 					}
+					else {
+						const testResult: boolean = SpectroScanAPI.Instance.TestDevice(this._devices[0].handle);
 
-					resolve(this._devices);
+						if (!testResult) {
+							this._devices = [];
+						}
+
+						resolve(this._devices);
+					}
+				} catch (error) {
+					reject(error);
 				}
-			} catch (error) {
-				reject(error);
-			}
+			}, 4000);
 		});
 	}
 
