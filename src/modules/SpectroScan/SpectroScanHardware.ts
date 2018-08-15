@@ -30,6 +30,10 @@ export class SpectroScanHardware implements IHardwareType {
 								reject(detailsError);
 							});
 						}
+						else {
+							this._devices = [];
+							resolve(this._devices);
+						}
 					}, (setupError) => {
 						reject(setupError);
 					});
