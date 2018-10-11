@@ -57,8 +57,10 @@ typings/
 # dotenv environment variables file
 .env
 
-# dist distribution files
+# dist or build distribution files
 dist/
+builds/
 
 # SoftSpec Spectrometer files
-src/modules/SoftSpec/spectrometers/
+src/server/modules/SoftSpec/spectrometers/
+

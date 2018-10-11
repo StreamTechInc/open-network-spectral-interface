@@ -7,17 +7,21 @@ export class SpectroScanHardware implements IHardwareType {
 	private _devices: Array<SpectroScanDevice> = new Array<SpectroScanDevice>();
 
 	public GetDevices(): Promise<Array<SpectroScanDevice>> {
-		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
+		Logger.Instance.WriteDebug("Start SpectroScanHardware.GetDevices");
 
 		return new Promise<Array<SpectroScanDevice>>((resolve, reject) => {
 			// Added 4 second delay to prevent error.
 			// When refreshing devices through CC software we would get an error if attempting to refresh too soon after
 			// disconnecting and reconnecting device.
 			setTimeout(() => {
+				Logger.Instance.WriteDebug("timeout done");
 				try {
 					if (this._devices.length === 0) {
+						Logger.Instance.WriteDebug("setting up device");
 						SpectroScanAPI.Instance.SetupDevice().then((handle: number) => {
+							Logger.Instance.WriteDebug("device set up");
 							if (handle && handle > 0) {
+								Logger.Instance.WriteDebug("have handle");
 								const device = new SpectroScanDevice();
 								device.handle = handle;
 								SpectroScanAPI.Instance.GetDeviceDetails(handle).then((details: string) => {
@@ -52,6 +56,7 @@ export class SpectroScanHardware implements IHardwareType {
 						resolve(this._devices);
 					}
 				} catch (error) {
+					Logger.Instance.WriteError(error);
 					reject(error);
 				}
 			}, 4000);

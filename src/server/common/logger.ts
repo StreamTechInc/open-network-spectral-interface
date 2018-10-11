@@ -32,8 +32,9 @@ export class Logger {
 	public WriteDebug(message: string) {
 		if (this.client != undefined && (process.env.APP_MODE == "local" || process.env.APP_MODE == "development")) {
 			this.client.trackTrace({ message: message });
-			console.log("Debug: " + message);
 		}
+
+		console.log("Debug: " + message);
 	}
 
 	/**

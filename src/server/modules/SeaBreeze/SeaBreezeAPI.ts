@@ -6,9 +6,9 @@ import * as ffi from "ffi";
 import * as ref from "ref";
 import * as refArray from "ref-array";
 import { Logger } from "../../common/logger";
-import { errno } from "ffi";
 import { Helpers } from "../../common/helpers";
 import { SeaBreezeCaptureData } from "./models/seabreeze-capture-data";
+import * as path from "path";
 
 export class SeaBreezeAPI {
 	/**
@@ -42,7 +42,7 @@ export class SeaBreezeAPI {
 	 * Private variables
 	 * 
 	 */
-	private readonly libPath = "./src/modules/SeaBreeze/SeaBreezeSTI.dll";
+	private readonly libPath = path.join(__dirname, "/SeaBreezeSTI.dll");
 
 	private functions = new ffi.Library(this.libPath, {
 		"sbapi_initialize": [ref.types.void, []],
@@ -173,6 +173,7 @@ export class SeaBreezeAPI {
 			const buffer = ref.alloc(refArray(ref.types.char, maxLength));
 			const output = this.functions.sbapi_get_serial_number(id, serialNumberFeatures[0], error, buffer, maxLength);
 
+			Logger.Instance.WriteDebug("Checking for error");
 			if (this.CheckError("sbapi_get_serial_number", ref.deref(error))) {
 				serial = Helpers.Instance.ConvertByteArrayToString(buffer);
 			}

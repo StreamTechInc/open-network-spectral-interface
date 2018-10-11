@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Hello World!</title>
+</head>
+
+<body>
+	<h1>Hello World!</h1>
+	<!-- All of the Node.js APIs are available in this renderer process. -->
+	We are using Node.js
+	<script>document.write(process.versions.node)</script>,
+	Chromium
+	<script>document.write(process.versions.chrome)</script>,
+	and Electron
+	<script>document.write(process.versions.electron)</script>
+</body>
+
+<script>
+	// You can also require other files to run in this process
+	require('./dist/renderer.js')
+
+	const { ipcRenderer } = require('electron');
+	const expressAppUrl = "http://127.0.0.1:3200";
+	// const spawn = require("child_process").spawn;
+	// const node = spawn(".\\node.exe", ["./server"], {
+	// 	cwd: process.cwd()
+	// });
+	const app = require('electron').remote.app;
+	const node = require("child_process").fork(
+		`${app.getAppPath()}/server`,
+		[],
+		{
+			stdio: ["pipe", "pipe", "pipe", "ipc"]
+		});
+
+	ipcRenderer.on('stop-server', (event, data) => {
+		// This is okay for now but there is a better solution. We can use IPC to
+		// tell the server (the Express app itself) to gracefully shutdown. This
+		// would be much better especially if we had database connections or other
+		// resources we were using that needed to be cleaned up.
+		node.kill('SIGINT');
+	});
+
+</script>
+
+</html>
