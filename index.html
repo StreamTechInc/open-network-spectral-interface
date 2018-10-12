@@ -18,9 +18,8 @@
 </body>
 
 <script>
-	// You can also require other files to run in this process
-	require('./dist/renderer.js')
-
+	const request = require('request');
+	const path = require('path');
 	const { ipcRenderer } = require('electron');
 	const expressAppUrl = "http://127.0.0.1:3200";
 	// const spawn = require("child_process").spawn;
@@ -28,8 +27,10 @@
 	// 	cwd: process.cwd()
 	// });
 	const app = require('electron').remote.app;
+	console.log(path.join(app.getAppPath(), './express-server/dist/index.js'));
 	const node = require("child_process").fork(
-		`${app.getAppPath()}/server`,
+		//`${app.getAppPath()}/express-server/dist`,
+		path.join(app.getAppPath(), './express-server/dist/index'),
 		[],
 		{
 			stdio: ["pipe", "pipe", "pipe", "ipc"]
@@ -42,6 +43,17 @@
 		// resources we were using that needed to be cleaned up.
 		node.kill('SIGINT');
 	});
+
+	let checkServerRunning = setInterval(() => {
+		request(expressAppUrl, (error, response, body) => {
+			if (!error && response.statusCode == 200) {
+				$expressApp.attr("src", expressAppUrl);
+				$loading.css("display", "none");
+				$expressApp.css("display", "block");
+				clearInterval(checkServerRunning);
+			}
+		});
+	}, 1000);
 
 </script>
 

@@ -3,43 +3,23 @@
 	"productName": "ONSI",
 	"version": "1.0.0",
 	"description": "",
-	"main": "./dist/main.js",
+	"main": "main.js",
 	"scripts": {
-		"build": "gulp clean && npm run lint && tsc && gulp move",
+		"build": "gulp clean && gulp move",
 		"watch": "npm run build -w",
-		"lint": "tslint -c tslint.json -p tsconfig.json",
-		"start": "npm run build && electron ./dist/main.js",
-		"package-windows": "npm run build && electron-packager dist/ ONSI --platform=win32 --arch=x64 --overwrite --prune=true --out=builds --asar",
-		"postinstall": "./node_modules/.bin/electron-rebuild"
+		"start": "npm run build && electron ./main.js",
+		"package-windows": "electron-packager . ONSI --platform=win32 --arch=x64 --overwrite --prune=true --out=builds --asar"
 	},
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@types/dotenv": "^4.0.3",
-		"@types/electron": "^1.6.10",
-		"@types/express": "^4.16.0",
-		"@types/express-handlebars": "0.0.30",
-		"@types/ffi": "^0.2.0",
-		"@types/ref-array": "0.0.28",
 		"electron": "^1.3.0",
 		"electron-packager": "^12.2.0",
 		"electron-rebuild": "^1.8.2",
 		"gulp": "^3.9.1",
-		"gulp-clean": "^0.4.0",
-		"nodemon": "^1.18.4",
-		"tslint": "^5.11.0",
-		"typescript": "^3.1.1"
+		"gulp-clean": "^0.4.0"
 	},
 	"dependencies": {
-		"applicationinsights": "^1.0.5",
-		"body-parser": "^1.18.3",
-		"concurrently": "^4.0.1",
-		"dotenv": "^6.1.0",
-		"express": "^4.16.3",
-		"express-handlebars": "^3.0.0",
-		"ffi": "^2.2.0",
-		"guid-typescript": "^1.0.7",
-		"ref": "^1.3.5",
-		"ref-array": "^1.2.0"
+		"request": "^2.88.0"
 	}
 }
