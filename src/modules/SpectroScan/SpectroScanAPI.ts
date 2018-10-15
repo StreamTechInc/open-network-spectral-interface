@@ -171,7 +171,7 @@ export class SpectroScanAPI {
 											const scan: number = 2;
 											const au: number = 0;
 											const minwave: number = 900;
-											const maxwave: number = 2600;
+											const maxwave: number = 3000;
 											const waverange: number = maxwave - minwave;
 											const Absorption = ref.alloc(refArray(ref.types.double, waverange));
 											const Raw = ref.alloc(refArray(ref.types.double, waverange));
