@@ -156,7 +156,6 @@ export class SpectroScanAPI {
 										setTimeout(() => {
 											rxBytes = rxBytes / 2;
 
-											// TODO: Another set of numbers for hw profile?
 											const zeroPadding: number = 4096;
 											const boardband: number = 0;
 											const mertz: number = 1000;
