@@ -157,10 +157,10 @@ export class SpectroScanAPI {
 											rxBytes = rxBytes / 2;
 
 											// TODO: Another set of numbers for hw profile?
-											const zeroPadding: number = 16384;
+											const zeroPadding: number = 4096;
 											const boardband: number = 0;
-											const mertz: number = 800;
-											const peak: number = 1;
+											const mertz: number = 1000;
+											const peak: number = 0;
 											const calibrationFactor: number = 0.05;
 											const SpectrumMag = ref.alloc(refArray(ref.types.double, rxBytes));
 											const Wavenumber = ref.alloc(refArray(ref.types.double, rxBytes));
