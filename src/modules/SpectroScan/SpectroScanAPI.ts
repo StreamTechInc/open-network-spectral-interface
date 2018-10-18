@@ -27,7 +27,7 @@ export class SpectroScanAPI {
 	 * 
 	 */
 	public maxWavelength: number = 2451;
-	public minWavelength: number = 1050;
+	public minWavelength: number = 950;
 	public wavelengthRange: number = this.maxWavelength - this.minWavelength;
 
 	/**
@@ -156,11 +156,10 @@ export class SpectroScanAPI {
 										setTimeout(() => {
 											rxBytes = rxBytes / 2;
 
-											// TODO: Another set of numbers for hw profile?
-											const zeroPadding: number = 16384;
+											const zeroPadding: number = 4096;
 											const boardband: number = 0;
-											const mertz: number = 800;
-											const peak: number = 1;
+											const mertz: number = 1000;
+											const peak: number = 0;
 											const calibrationFactor: number = 0.05;
 											const SpectrumMag = ref.alloc(refArray(ref.types.double, rxBytes));
 											const Wavenumber = ref.alloc(refArray(ref.types.double, rxBytes));
@@ -171,7 +170,7 @@ export class SpectroScanAPI {
 											const scan: number = 2;
 											const au: number = 0;
 											const minwave: number = 900;
-											const maxwave: number = 3000;
+											const maxwave: number = 2600;
 											const waverange: number = maxwave - minwave;
 											const Absorption = ref.alloc(refArray(ref.types.double, waverange));
 											const Raw = ref.alloc(refArray(ref.types.double, waverange));
