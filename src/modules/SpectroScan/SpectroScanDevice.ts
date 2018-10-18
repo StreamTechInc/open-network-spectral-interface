@@ -8,6 +8,7 @@ import { ICaptureData } from "../../interfaces/ICaptureData";
 import { SpectroScanAPI } from "./SpectroScanAPI";
 import { SpectroScanCaptureData } from "./models/spectroscan-capture-data";
 import { resolve } from "url";
+import { FileHandler } from "../../common/file-handler";
 
 export class SpectroScanDevice implements IHardware {
 	/**
@@ -154,7 +155,7 @@ export class SpectroScanDevice implements IHardware {
 		property.order = 1;
 		property.increment = 1;
 		property.minValue = 1;
-		property.maxValue = 1000;
+		property.maxValue = 10000;
 
 		// Get Current Value
 		property.value = this._scanAverage.toString();
@@ -226,6 +227,35 @@ export class SpectroScanDevice implements IHardware {
 		for (let i = 0; i < SpectroScanAPI.Instance.wavelengthRange; i++) {
 			averagedData[i].measuredValue = averagedData[i].measuredValue / this._scanAverage;
 		}
+
+		/**
+		 * Leave this here in case we need to do more testing later
+		 */
+
+		// Make CSV
+		// let headers: string = "wavelength";
+		// let body: string = "";
+
+		// for (let index = 1; index <= this._scanAverage; index++) {
+		// 	headers += ",Scan " + index;
+		// }
+
+		// headers += "\n";
+
+		// for (let index = 0; index < data[0].length; index++) {
+		// 	const scan = data[0][index];
+
+		// 	body += scan.wavelength;
+
+		// 	data.forEach((element: SpectroScanCaptureData[]) => {
+		// 		body += "," + element[index].measuredValue;
+		// 	});
+
+		// 	body += "\n";
+		// }
+
+		// const fileHandler: FileHandler = new FileHandler();
+		// fileHandler.WriteFile("C:\\Temp\\SpectroScanData\\oct 18\\009_99_scan_mertz_1000.csv", headers + body);
 
 		return averagedData;
 	}
