@@ -50,7 +50,15 @@ export class WebServer {
 		this.application.get("/hardware/:id/capture", HardwareController.Capture);
 
 		// All others
-		this.application.all("*", (req, res) => {
+		this.application.all("/img", (req, res) => {
+			res.sendFile("logo_white.png", { root: path.join(__dirname, "/views/assets/img") });
+		});
+
+		this.application.all("/css", (req, res) => {
+			res.sendFile("main.css", { root: path.join(__dirname, "/views/assets/css") });
+		});
+
+		this.application.all("/", (req, res) => {
 			res.sendFile("index.html", { root: path.join(__dirname, "views") });
 		});
 	}

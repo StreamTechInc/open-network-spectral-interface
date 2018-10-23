@@ -12,7 +12,7 @@
 	<!-- <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css" media="screen" title="Electron|Express"> -->
 
 	<!-- Load Custom CSS -->
-	<!-- <link rel="stylesheet" href="/css" media="screen" title="Electron|Express"> -->
+	<link rel="stylesheet" href="/css" media="screen" title="Electron|Express">
 
 	<!-- Include HTML5 Shiv -->
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -25,10 +25,24 @@
 </head>
 
 <body>
-	<!-- <div class="image-container"> 
+	<div class="image-container">
 		<img class="image-center" src="/img">
-	</div> -->
-	<script>document.write(process.env.NODE_ENV)</script>
+	</div>
+	<h1>Open Network Spectral Interface</h1>
+	<h3 id="environmentText">
+		<!-- <script>document.write(process.env.NODE_ENV)</script> -->
+	</h3>
 </body>
 
 </html>
+<script>
+	document.onreadystatechange = () => {
+		if (document.readyState === 'complete') {
+			var h3 = document.getElementById('environmentText');
+
+			if (h3 && process.env.NODE_ENV) {
+				h3.textContent = process.env.NODE_ENV;
+			}
+		}
+	};
+</script>

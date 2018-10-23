@@ -3,14 +3,25 @@ body {
 }
 
 .image-container {
-	height: 100%;
-	width: 100%;
+    height: 100%;
+    width: 100%;
 }
-
 
 .image-center {
     display: block;
-	margin: auto;
-	height: 100%;
-	width: 100%;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+}
+
+h1 {
+	color: white;
+	text-align: center;
+	font-family: 'Poppins', sans-serif;
+}
+
+h3 {
+	color: black;
+	text-align: center;
+	font-family: 'Poppins', sans-serif;
 }

@@ -18,8 +18,8 @@ function createWindow() {
 	app.server = require(path.join(__dirname, "./dist/index.js"))();
 
 	mainWindow = new BrowserWindow({
-		width: 500,
-		height: 500,
+		width: 300,
+		height: 300,
 		autoHideMenuBar: true,
 		useContentSize: true,
 		icon: path.join(__dirname, "/server/views/assets/img/favicon.ico")
