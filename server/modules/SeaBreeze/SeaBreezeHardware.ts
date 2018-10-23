@@ -2,6 +2,7 @@ import { IHardwareType } from "../../interfaces/IHardwareType";
 import { Logger } from "../../common/logger";
 import { SeaBreezeAPI } from "./SeaBreezeAPI";
 import { SeaBreezeDevice } from "./SeaBreezeDevice";
+import { resolve } from "dns";
 
 export class SeaBreezeHardware implements IHardwareType {
 
@@ -18,11 +19,9 @@ export class SeaBreezeHardware implements IHardwareType {
 
 		return new Promise<Array<SeaBreezeDevice>>((resolve, reject) => {
 			try {
-				Logger.Instance.WriteDebug("Probing");
 				const probedDeviceCount = SeaBreezeAPI.Instance.ProbeDevices();
 
 				if (probedDeviceCount > 0) {
-					Logger.Instance.WriteDebug("Getting Device Ids");
 					const deviceIds = SeaBreezeAPI.Instance.GetDeviceIds();
 
 					for (let index = 0; index < deviceIds.length; index++) {
@@ -31,11 +30,8 @@ export class SeaBreezeHardware implements IHardwareType {
 
 						if (!this.CheckIfDeviceExists(seaBreezeDevice)) {
 							if (SeaBreezeAPI.Instance.OpenDevice(seaBreezeDevice.apiID)) {
-								Logger.Instance.WriteDebug("Getting device details for device id " + seaBreezeDevice.apiID);
 								seaBreezeDevice.serial = SeaBreezeAPI.Instance.GetSerialNumber(seaBreezeDevice.apiID);
 								seaBreezeDevice.modelName = SeaBreezeAPI.Instance.GetModelNumber(seaBreezeDevice.apiID);
-
-								Logger.Instance.WriteDebug("Got details: " + seaBreezeDevice.serial + " || " + seaBreezeDevice.modelName);
 
 								this._devices.push(seaBreezeDevice);
 							}

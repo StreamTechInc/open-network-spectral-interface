@@ -1,25 +1,60 @@
 {
-	"name": "onsi-electron",
-	"productName": "ONSI",
-	"version": "1.0.0",
-	"description": "",
-	"main": "main.js",
-	"scripts": {
-		"build": "gulp clean && gulp move",
-		"watch": "npm run build -w",
-		"start": "npm run build && electron ./main.js",
-		"package-windows": "electron-packager . ONSI --platform=win32 --arch=x64 --overwrite --prune=true --out=builds --asar"
-	},
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-		"electron": "^1.3.0",
-		"electron-packager": "^12.2.0",
-		"electron-rebuild": "^1.8.2",
-		"gulp": "^3.9.1",
-		"gulp-clean": "^0.4.0"
-	},
-	"dependencies": {
-		"request": "^2.88.0"
-	}
+  "name": "open-network-spectral-interface",
+  "version": "0.0.1",
+  "description": "Embedded API for controlling hardware",
+  "productName": "Open Network Spectral Interface",
+  "main": "main.js",
+  "engines": {
+    "node": "6.12.1"
+  },
+  "scripts": {
+    "start": "SET NODE_ENV=development && npm run build && npm run watch",
+    "build": "npm run build-ts && npm run tslint",
+    "serve": "nodemon dist/index.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\"  \"npm run watch-ts\" \"npm run serve\"",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "rebuild": "./node_modules/.bin/electron-rebuild",
+    "electron": "npm run build && electron ./main.js",
+    "package-windows": "npm run build && electron-packager . open-network-spectral-interface --platform=win32 --arch=x64 --overwrite --prune=true --out=builds --asar",
+    "create-windows-installer": "node installers/windows/create-installer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StreamTechInc/open-network-spectral-interface"
+  },
+  "author": "Stream Technologies Inc",
+  "license": "ISC",
+  "dependencies": {
+    "applicationinsights": "^1.0.0",
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
+    "cors": "^2.8.4",
+    "electron-winstaller": "^2.7.0",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.2",
+    "ffi": "^2.2.0",
+    "fs": "0.0.1-security",
+    "guid-typescript": "^1.0.7",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0",
+    "ref": "^1.3.5",
+    "ref-array": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.16.5",
+    "@types/cors": "^2.8.3",
+    "@types/errorhandler": "0.0.31",
+    "@types/express": "^4.0.37",
+    "@types/ffi": "0.0.19",
+    "@types/node": "^8.0.47",
+    "@types/ref-array": "0.0.28",
+    "electron": "^1.3.0",
+    "electron-packager": "^12.2.0",
+    "electron-rebuild": "^1.8.2",
+    "nodemon": "^1.12.1",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.3"
+  }
 }

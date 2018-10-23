@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Logger } from "../common/logger";
 import { HardwareResponse } from "../models/hardware-response";
 import { IHardware } from "../interfaces/IHardware";
-import { HardwareTypes } from "../modules/hardware-types";
+import { HardwareTypes } from "../modules/HardwareTypes";
 import { IProperty } from "../interfaces/IProperty";
 import { Helpers } from "../common/helpers";
 
@@ -294,5 +294,4 @@ export class HardwareController {
 			response.send(JSON.stringify(hardwareResponse));
 		}
 	}
-
 }

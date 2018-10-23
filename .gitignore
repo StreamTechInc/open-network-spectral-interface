@@ -35,7 +35,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-express-server/node_modules/
 
 # Typescript v1 declaration files
 typings/
@@ -58,10 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
-# dist or build distribution files
+# dist distribution files
 dist/
 builds/
 
 # SoftSpec Spectrometer files
-src/server/modules/SoftSpec/spectrometers/
-
+src/modules/SoftSpec/spectrometers/

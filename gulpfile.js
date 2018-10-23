@@ -2,8 +2,8 @@ var gulp = require('gulp');
 var clean = require('gulp-clean');
 
 var filesToMove = [
-	'./src/server/views/**/*.*',
-	'./src/server/modules/**/*.dll'
+	'./server/views/**/*.*',
+	'./server/modules/**/*.dll'
 ]
 
 gulp.task('move', function () {
