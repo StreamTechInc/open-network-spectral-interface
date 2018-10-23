@@ -8,6 +8,8 @@ if (setupEvents.handleSquirrelEvent()) {
 const electron = require("electron");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const Tray = electron.Tray;
+const Menu = electron.Menu;
 const path = require("path");
 
 let mainWindow;
@@ -15,9 +17,51 @@ let mainWindow;
 function createWindow() {
 	app.server = require(path.join(__dirname, "./dist/index.js"))();
 
-	mainWindow = new BrowserWindow({ width: 500, height: 500 });
+	mainWindow = new BrowserWindow({
+		width: 500,
+		height: 500,
+		autoHideMenuBar: true,
+		useContentSize: true,
+		icon: path.join(__dirname, "/server/views/assets/img/favicon.ico")
+	});
 
-	mainWindow.loadURL("http://localhost:3200/hardware");
+	mainWindow.loadURL("http://localhost:3200");
+	mainWindow.focus();
+
+	// Emitted when the window is closed.
+	mainWindow.on("closed", () => {
+		// Dereference the window object, usually you would store windows
+		// in an array if your app supports multi windows, this is the time
+		// when you should delete the corresponding element.
+		mainWindow = null;
+	});
+
+	const appIcon = new Tray(path.join(__dirname, "/server/views/assets/img/favicon.ico"));
+
+	const contextMenu = Menu.buildFromTemplate([
+		{
+			label: "Show App", click: function () {
+				mainWindow.show();
+			}
+		},
+		{
+			label: "Quit", click: function () {
+				app.isQuiting = true;
+				app.quit();
+			}
+		}
+	]);
+
+	appIcon.setContextMenu(contextMenu);
+
+	mainWindow.on("minimize", function (event) {
+		event.preventDefault();
+		mainWindow.hide();
+	});
+
+	mainWindow.on("show", function () {
+		appIcon.setHighlightMode("always");
+	});
 
 }
 

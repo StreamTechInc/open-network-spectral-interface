@@ -1,0 +1,16 @@
+body {
+    background-color: #137ce5;
+}
+
+.image-container {
+	height: 100%;
+	width: 100%;
+}
+
+
+.image-center {
+    display: block;
+	margin: auto;
+	height: 100%;
+	width: 100%;
+}

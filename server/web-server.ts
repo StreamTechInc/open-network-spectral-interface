@@ -48,6 +48,11 @@ export class WebServer {
 		this.application.get("/hardware/:id/setting/:settingId", HardwareController.GetProperty);
 		this.application.post("/hardware/:id/setting/:settingId", HardwareController.SetProperty);
 		this.application.get("/hardware/:id/capture", HardwareController.Capture);
+
+		// All others
+		this.application.all("*", (req, res) => {
+			res.sendFile("index.html", { root: path.join(__dirname, "views") });
+		});
 	}
 
 	private CreateServer(): void {

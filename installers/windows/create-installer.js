@@ -19,6 +19,7 @@ function getInstallerConfig() {
 		noMsi: true,
 		outputDirectory: path.join(outPath, 'windows-installer'),
 		exe: 'open-network-spectral-interface.exe',
-		setupExe: 'OpenNetworkSpectralInterface.exe'
+		setupExe: 'OpenNetworkSpectralInterface.exe',
+		setupIcon: 'C:\\Code\\open-network-spectral-interface\\server\\views\\assets\\img\\favicon.ico'
 	})
 }

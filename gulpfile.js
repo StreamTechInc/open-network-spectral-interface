@@ -7,7 +7,7 @@ var filesToMove = [
 ]
 
 gulp.task('move', function () {
-	gulp.src(filesToMove, { base: 'src' }).pipe(gulp.dest('dist'));
+	gulp.src(filesToMove, { base: 'server' }).pipe(gulp.dest('dist'));
 	gulp.src(['index.html'], { base: '.' }).pipe(gulp.dest('dist'));
 });
 
