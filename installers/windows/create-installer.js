@@ -1,5 +1,6 @@
 const createWindowsInstaller = require("electron-winstaller").createWindowsInstaller;
 const path = require("path");
+const env = require("dotenv").config();
 
 getInstallerConfig()
 	.then(createWindowsInstaller)
@@ -20,6 +21,7 @@ function getInstallerConfig() {
 		outputDirectory: path.join(outPath, 'windows-installer'),
 		exe: 'open-network-spectral-interface.exe',
 		setupExe: 'OpenNetworkSpectralInterface.exe',
-		setupIcon: 'C:\\Code\\open-network-spectral-interface\\server\\views\\assets\\img\\favicon.ico'
+		setupIcon: 'C:\\Code\\open-network-spectral-interface\\server\\views\\assets\\img\\favicon.ico',
+		signWithParams: `/f \"${process.env.CERTIFICATE_LOCATION}\" /p ${process.env.CERTIFICATE_PASSWORD} /t http://timestamp.verisign.com/scripts/timstamp.dll`
 	})
 }
