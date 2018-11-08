@@ -38,8 +38,8 @@ export class SpectroScanAPI {
 	 */
 	private handle: number = 0;
 
-	private readonly libPath = path.join(__dirname, "/SpectroScanDLL_V6.a.dll");
-	// private readonly libPath = "C:\\Code\\electron-dlls\\SpectroScanDLL_V6.a.dll"; // Need this here for a future fix
+	// private readonly libPath = path.join(__dirname, "/SpectroScanDLL_V6.a.dll");
+	private readonly libPath = "C:\\Code\\electron-dlls\\SpectroScanDLL_V6.a.dll"; // Need this here for a future fix
 
 	private functions = new ffi.Library(this.libPath, {
 		"FTIR_UartConversion": [ref.types.void, [refArray(ref.types.byte), ref.types.short, refArray(ref.types.int), ref.types.int, ref.types.int]],
@@ -48,8 +48,8 @@ export class SpectroScanAPI {
 		"FTIR_UpdateAlignment": [ref.types.void, [ref.types.uint64, ref.types.double, ref.types.double]]
 	});
 
-	private readonly ftdiPath = path.join(__dirname, "/ftd2xx64.dll");
-	// private readonly ftdiPath = "C:\\Code\\electron-dlls\\ftd2xx64.dll"; // Need this here for a futrue fix
+	// private readonly ftdiPath = path.join(__dirname, "/ftd2xx64.dll");
+	private readonly ftdiPath = "C:\\Code\\electron-dlls\\ftd2xx64.dll"; // Need this here for a futrue fix
 
 	private ftdi_functions = new ffi.Library(this.ftdiPath, {
 		"FT_Open": [ref.types.ulong, [ref.types.int, ref.refType(ref.types.uint64)]],

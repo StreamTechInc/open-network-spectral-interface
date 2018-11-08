@@ -7,6 +7,8 @@ import { Logger } from "./common/logger";
 import { HardwareController } from "./controllers/hardware.controller";
 import { Config } from "./common/config";
 
+const cors = require("cors");
+
 export class WebServer {
 	private application: express.Application;
 	private server: Server;
@@ -29,6 +31,8 @@ export class WebServer {
 		this.application.set("port", Config.PortNumber);
 		this.application.use(bodyParser.json());
 		this.application.use(bodyParser.urlencoded({ extended: true }));
+
+		this.application.use(cors());
 
 		this.application.use(function (req, res, next) {
 			Logger.Instance.WriteInfo(req.url);
