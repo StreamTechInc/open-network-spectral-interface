@@ -42,8 +42,7 @@ export class SeaBreezeAPI {
 	 * Private variables
 	 * 
 	 */
-	private readonly libPath = path.join(__dirname, "/SeaBreezeSTI.dll");
-	// private readonly libPath = "C:\\Code\\electron-dlls\\SeaBreezeSTI.dll"; // Need this for a futrue fix
+	private readonly libPath = "SeaBreezeSTI.dll";
 
 	private functions = new ffi.Library(this.libPath, {
 		"sbapi_initialize": [ref.types.void, []],

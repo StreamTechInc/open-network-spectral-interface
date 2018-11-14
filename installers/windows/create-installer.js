@@ -20,7 +20,7 @@ function getInstallerConfig() {
 		noMsi: true,
 		outputDirectory: path.join(outPath, 'windows-installer'),
 		exe: 'open-network-spectral-interface.exe',
-		setupExe: 'OpenNetworkSpectralInterface.exe',
+		setupExe: 'Setup.exe',
 		setupIcon: 'C:\\Code\\open-network-spectral-interface\\server\\views\\assets\\img\\favicon.ico',
 		signWithParams: `/f \"${process.env.CERTIFICATE_LOCATION}\" /p ${process.env.CERTIFICATE_PASSWORD} /t http://timestamp.verisign.com/scripts/timstamp.dll`
 	})
