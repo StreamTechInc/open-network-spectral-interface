@@ -17,8 +17,8 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "rebuild": "./node_modules/.bin/electron-rebuild",
     "electron": "SET NODE_ENV=development && npm run build && electron ./main.js",
-    "package-windows": "npm version patch && npm run build && electron-packager . open-network-spectral-interface --platform=win32 --arch=x64 --overwrite --prune=true --out=builds --asar --icon=./server/views/assets/img/favicon.ico",
-    "create-windows-installer": "node installers/windows/create-installer.js"
+    "package-windows": "npm run build && electron-packager . open-network-spectral-interface --platform=win32 --arch=x64 --overwrite --prune=true --out=builds --asar --icon=./server/views/assets/img/favicon.ico",
+    "create-windows-installer": "npm version patch && npm run package-windows && gulp move-dlls-windows && node installers/windows/create-installer.js"
   },
   "repository": {
     "type": "git",
