@@ -60,7 +60,6 @@ typings/
 # dist distribution files
 dist/
 builds/
-Output/
 
 # SoftSpec Spectrometer files
 src/modules/SoftSpec/spectrometers/
