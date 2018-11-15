@@ -101,7 +101,6 @@ function startAutoUpdate() {
 	electron.autoUpdater.setFeedURL(url);
 
 	electron.autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
-		electron.dialog.showMessageBox({ "message": `The release ${releaseName} has been downloaded` });
 		electron.autoUpdater.quitAndInstall();
 	});
 
