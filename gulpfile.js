@@ -20,5 +20,5 @@ gulp.task('clean', function () {
 gulp.task('move-dlls-windows', function () {
 	gulp.src(['./server/modules/SeaBreeze/SeaBreezeSTI.dll']).pipe(gulp.dest('builds/open-network-spectral-interface-win32-x64'));
 	gulp.src(['./server/modules/SpectroScan/SpectroScanDLL_V6.a.dll']).pipe(gulp.dest('builds/open-network-spectral-interface-win32-x64'))
-	gulp.src(['./server/modules/SeaBreeze/ftd2xx64.dll']).pipe(gulp.dest('builds/open-network-spectral-interface-win32-x64'))
+	gulp.src(['./server/modules/SpectroScan/ftd2xx64.dll']).pipe(gulp.dest('builds/open-network-spectral-interface-win32-x64'))
 });
