@@ -21,4 +21,8 @@ export class FileHandler {
 
 		return data;
 	}
+
+	public FileExists(filename: string): boolean {
+		return fs.existsSync(filename);
+	}
 }

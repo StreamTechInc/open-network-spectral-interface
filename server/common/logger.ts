@@ -1,8 +1,5 @@
-/**
- * Logger class to be used for logging to console and application insights
- */
-
 import * as ApplicationInsights from "applicationinsights";
+import { Config } from "./config";
 
 export class Logger {
 	private static instance: Logger;
@@ -17,7 +14,7 @@ export class Logger {
 	}
 
 	constructor() {
-		ApplicationInsights.setup(process.env.INSTRUMENTATION_KEY)
+		ApplicationInsights.setup(Config.InstrumentationKey)
 			.setAutoCollectConsole(true)
 			.setAutoCollectExceptions(true)
 			.start();
@@ -26,14 +23,15 @@ export class Logger {
 	}
 
 	/**
-	 * This will only write when in APP_MODE = local || development
+	 * This will only write when in NODE_ENV === development
 	 * @param message the message you wish to write to app insights
 	 */
 	public WriteDebug(message: string) {
-		if (this.client != undefined && (process.env.APP_MODE == "local" || process.env.APP_MODE == "development")) {
+		if (this.client != undefined && (process.env.NODE_ENV === "development")) {
 			this.client.trackTrace({ message: message });
-			console.log("Debug: " + message);
 		}
+
+		console.log("Debug: " + message);
 	}
 
 	/**
