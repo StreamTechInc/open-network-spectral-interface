@@ -1,6 +1,6 @@
 # Open Network Spectral Interface
 
-The Open Network Spectral Interface (ONSI) provides a standard command and control interface for spectrometers and multi-spectral imaging devices.
+The Open Network Spectral Interface (ONSI) provides a standard command and control interface for spectrometers and multi-spectral imaging devices. This project uses electron to create a installable application.
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ npm install
 Module README will contain further module dependent build steps.
 
 ``` command
-npm run build
+npm run electron
 ```
 
 ## Adding your own module
