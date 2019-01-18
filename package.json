@@ -1,6 +1,6 @@
 {
   "name": "open-network-spectral-interface",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Embedded API for controlling hardware",
   "productName": "Open Network Spectral Interface",
   "main": "main.js",
@@ -18,7 +18,7 @@
     "rebuild": "./node_modules/.bin/electron-rebuild",
     "electron": "SET NODE_ENV=development && npm run build && electron ./main.js",
     "package-windows": "npm run build && electron-packager . open-network-spectral-interface --platform=win32 --arch=x64 --overwrite --prune=true --out=builds --asar --icon=./server/views/assets/img/favicon.ico",
-    "create-windows-installer": "npm version patch && npm run package-windows && gulp move-dlls-windows && node installers/windows/create-installer.js"
+    "create-windows-installer": "npm run package-windows && gulp move-dlls-windows && node installers/windows/create-installer.js"
   },
   "repository": {
     "type": "git",
