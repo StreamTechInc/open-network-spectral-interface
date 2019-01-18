@@ -55,7 +55,7 @@ export class WebServer {
 
 		// All others
 		this.application.all("/img", (req, res) => {
-			res.sendFile("logo_white.png", { root: path.join(__dirname, "/views/assets/img") });
+			res.sendFile("onsi-verticle.png", { root: path.join(__dirname, "/views/assets/img") });
 		});
 
 		this.application.all("/css", (req, res) => {
