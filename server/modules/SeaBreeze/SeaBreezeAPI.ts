@@ -31,7 +31,7 @@ export class SeaBreezeAPI {
 	 * Private variables
 	 * 
 	 */
-	private seabreezeFunctions = new ffi.Library("C:\\Code\\SeaBreezeSTIv2.dll", {
+	private seabreezeFunctions = new ffi.Library("SeaBreezeSTI.dll", {
 		"seabreeze_open_spectrometer": [ref.types.int, [ref.types.int, ref.refType("int")]],
 		"seabreeze_get_serial_number": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("byte"), ref.types.int]],
 		"seabreeze_get_model": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("byte"), ref.types.int]],
