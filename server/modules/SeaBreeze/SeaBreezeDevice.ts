@@ -26,6 +26,24 @@ export class SeaBreezeDevice implements IHardware {
 	private _integrationTime: number = 0;
 
 	/**
+	 * Properties
+	 */
+	get timeout(): number {
+		let _timeout: number = 0;
+
+		// set timeout to double the time it should take to do all scans
+		// integration time is in microseconds so it's converted to milliseconds
+		_timeout = this._scanAverage * (this._integrationTime / 1000) * 2;
+
+		if (_timeout === 0) {
+			// if no timeout, default to 2 minutes in milliseconds
+			_timeout = 2 * 60 * 1000;
+		}
+
+		return _timeout;
+	}
+
+	/**
 	 * Constructor
 	 */
 	constructor() {
