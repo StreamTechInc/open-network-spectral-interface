@@ -28,59 +28,29 @@ export class SeaBreezeAPI {
 
 	/**
 	 * 
-	 * Constructor
-	 * 
-	 */
-	constructor() {
-		if (!this.IsInitialized) {
-			this.Initialize();
-		}
-	}
-
-	/**
-	 * 
 	 * Private variables
 	 * 
 	 */
-	private readonly libPath = "SeaBreezeSTI.dll";
-
-	private functions = new ffi.Library(this.libPath, {
-		"sbapi_initialize": [ref.types.void, []],
-		"sbapi_shutdown": [ref.types.void, []],
-		"sbapi_get_error_string": [ref.types.CString, [ref.types.int]],
-		"sbapi_probe_devices": [ref.types.int, []],
-		"sbapi_get_device_ids": [ref.types.int, [ref.refType("long"), ref.types.ulong]],
-		"sbapi_get_number_of_device_ids": [ref.types.int, []],
-		"sbapi_open_device": [ref.types.int, [ref.types.int, ref.refType("int")]],
-		"sbapi_get_number_of_serial_number_features": [ref.types.int, [ref.types.int, ref.refType("int")]],
-		"sbapi_get_serial_number_maximum_length": [ref.types.uchar, [ref.types.int, ref.types.int, ref.refType("int")]],
-		"sbapi_get_serial_number_features": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("long"), ref.types.int]],
-		"sbapi_get_serial_number": [ref.types.int, [ref.types.int, ref.types.int, ref.refType("int"), ref.refType("char"), ref.types.int]],
-		"sbapi_get_device_type": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("char"), ref.types.uint]],
-		"sbapi_get_number_of_spectrometer_features": [ref.types.int, [ref.types.int, ref.refType("int")]],
-		"sbapi_get_spectrometer_features": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("long"), ref.types.int]],
-		"sbapi_spectrometer_get_formatted_spectrum_length": [ref.types.int, [ref.types.int, ref.types.long, ref.refType("int")]],
-		"sbapi_spectrometer_get_formatted_spectrum": [ref.types.int, [ref.types.int, ref.types.long, ref.refType("int"), ref.refType("double"), ref.types.int]],
-		"sbapi_spectrometer_get_wavelengths": [ref.types.int, [ref.types.int, ref.types.int, ref.refType("int"), ref.refType("double"), ref.types.int]],
-		"sbapi_spectrometer_set_integration_time_micros": [ref.types.void, [ref.types.long, ref.types.long, ref.refType("int"), ref.types.ulong]],
-		"sbapi_spectrometer_get_maximum_integration_time_micros": [ref.types.long, [ref.types.long, ref.types.long, ref.refType("int")]],
-		"sbapi_spectrometer_get_minimum_integration_time_micros": [ref.types.long, [ref.types.long, ref.types.long, ref.refType("int")]]
+	private seabreezeFunctions = new ffi.Library("SeaBreezeSTI.dll", {
+		"seabreeze_open_spectrometer": [ref.types.int, [ref.types.int, ref.refType("int")]],
+		"seabreeze_get_serial_number": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("byte"), ref.types.int]],
+		"seabreeze_get_model": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("byte"), ref.types.int]],
+		"seabreeze_get_formatted_spectrum": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("double"), ref.types.int]],
+		"seabreeze_get_formatted_spectrum_length": [ref.types.int, [ref.types.int, ref.refType("int")]],
+		"seabreeze_get_error_string": [ref.types.int, [ref.types.int, ref.refType("byte"), ref.types.int]],
+		"seabreeze_get_min_integration_time_microsec": [ref.types.long, [ref.types.int, ref.refType("int")]],
+		"seabreeze_get_max_integration_time_microsec": [ref.types.long, [ref.types.int, ref.refType("int")]],
+		"seabreeze_get_wavelengths": [ref.types.int, [ref.types.int, ref.refType("int"), ref.refType("double"), ref.types.int]],
+		"seabreeze_set_integration_time_microsec": [ref.types.void, [ref.types.int, ref.refType("int"), ref.types.long]]
 	});
 
-	private isInitialized = false;
 	private lastErrorString = "SUCCESS";
-	public pixels = 0;
-	private wavelengths: Array<number> = new Array<number>();
 
 	/**
 	 * 
 	 * Properties
 	 * 
 	 */
-	public get IsInitialized() {
-		return this.isInitialized;
-	}
-
 	public get LastErrorString() {
 		return this.lastErrorString;
 	}
@@ -92,147 +62,104 @@ export class SeaBreezeAPI {
 	 */
 
 	/**
-	 * Initialize the API
-	 */
-	public Initialize() {
-		this.functions.sbapi_initialize();
-		this.isInitialized = true;
-	}
-
-	/**
-	 * Destroy the instance of the API
-	 */
-	public Shutdown() {
-		this.functions.sbapi_shutdown();
-		this.isInitialized = false;
-	}
-
-	/**
-	 * 
-	 * @returns number of devices autodetected
-	 */
-	public ProbeDevices(): number {
-		let deviceCount: number = 0;
-
-		try {
-			deviceCount = this.functions.sbapi_probe_devices();
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-		}
-
-		// Output will be all devices that were probed
-		return deviceCount;
-	}
-
-	/**
-	 * 
-	 * @returns an array containing all detected device Ids
-	 */
-	public GetDeviceIds(): Array<number> {
-		const numberOfDeviceIds = this.getNumberOfDeviceIds();
-		const buffer = ref.alloc(refArray(ref.types.long, numberOfDeviceIds));
-
-		const output = this.functions.sbapi_get_device_ids(buffer, numberOfDeviceIds);
-
-		const ids = new Array<number>();
-		for (let offset = 0; offset < buffer.length; offset += 4) {
-			ids.push(buffer.readInt32LE(offset));
-		}
-
-		ref.deref(buffer);
-
-		return ids;
-	}
-
-	/**
 	 * 
 	 * @param id device id 
 	 * @returns if device was opened or not
 	 */
 	public OpenDevice(id: number): boolean {
 		const error = ref.alloc(ref.types.int);
-		this.functions.sbapi_open_device(id, error);
+		this.seabreezeFunctions.seabreeze_open_spectrometer(id, error);
 
-		return this.CheckError("sbapi_open_device", ref.deref(error));
+		return this.CheckError("seabreeze_open_spectrometer", error.readInt8(0));
 	}
 
 	/**
 	 * 
-	 * @param id device id 
-	 * @returns serial number of desired device
+	 * @param id device id
+	 * @returns device serial number
 	 */
 	public GetSerialNumber(id: number): string {
 		let serial = "NONE";
+		const error = ref.alloc(ref.types.int);
+		const buffer = ref.alloc(refArray(ref.types.byte, 15));
 
-		const numberOfSerialNumberFeatures = this.getNumberOfSerialNumberFeatures(id);
-		const serialNumberFeatures = this.getSerialNumberFeatures(id, numberOfSerialNumberFeatures);
+		this.seabreezeFunctions.seabreeze_get_serial_number(id, error, buffer, 15);
 
-		if (serialNumberFeatures != undefined && serialNumberFeatures.length > 0) {
-			const maxLength = this.getSerialNumberMaxLength(id, serialNumberFeatures[0]);
-			const error = ref.alloc(ref.types.int);
-			const buffer = ref.alloc(refArray(ref.types.char, maxLength));
-			const output = this.functions.sbapi_get_serial_number(id, serialNumberFeatures[0], error, buffer, maxLength);
-
-			if (this.CheckError("sbapi_get_serial_number", ref.deref(error))) {
-				serial = Helpers.Instance.ConvertByteArrayToString(buffer);
-			}
-			else {
-				serial = "NONE";
-			}
-
-			ref.deref(buffer);
+		if (this.CheckError("seabreeze_get_serial_number", ref.deref(error))) {
+			serial = Helpers.Instance.ConvertByteArrayToString(buffer);
 		}
 
 		return serial;
 	}
 
-	public GetWavelength(id: number): Array<number> {
-		let wavelengths: Array<number> = new Array<number>();
+	/**
+	 * 
+	 * @param id device id
+	 * @returns device model number
+	 */
+	public GetModelNumber(id: number): string {
+		let model = "NONE";
+		const error = ref.alloc(ref.types.int);
+		const buffer = ref.alloc(refArray(ref.types.byte, 15));
 
-		if (this.wavelengths !== undefined && this.wavelengths.length > 0) {
-			wavelengths = this.wavelengths;
-		}
-		else {
-			const numberOfSpectrometerFeatures = this.getNumberOfSpectrometerFeatures(id);
-			const spectrometerFeatures = this.getSpectrometerFeatures(id, numberOfSpectrometerFeatures);
+		this.seabreezeFunctions.seabreeze_get_model(id, error, buffer, 15);
 
-			if (spectrometerFeatures != undefined && spectrometerFeatures.length > 0) {
-				if (this.pixels === 0) {
-					this.pixels = this.getFormattedSpectrumLength(id, spectrometerFeatures[0]);
-				}
-
-				if (this.pixels > 0) {
-					wavelengths = this.getWavelengths(id, spectrometerFeatures[0], this.pixels);
-					this.wavelengths = wavelengths;
-				}
-			}
+		if (this.CheckError("seabreeze_get_model", ref.deref(error))) {
+			model = Helpers.Instance.ConvertByteArrayToString(buffer);
 		}
 
-		return wavelengths;
+		return model;
 	}
 
-	public GetSpectrum(id: number): Array<SeaBreezeCaptureData> {
+	/**
+	 * 
+	 * @param id device id
+	 * @returns length of spectrum to be captured
+	 */
+	public GetFormattedSpectrumLength(id: number): number {
+		let spectrumLength: number = 0;
+		const error = ref.alloc(ref.types.int);
+		const output = this.seabreezeFunctions.seabreeze_get_formatted_spectrum_length(id, error);
+
+		if (this.CheckError("seabreeze_get_formatted_spectrum_length", error.readInt8(0))) {
+			spectrumLength = output;
+		}
+
+		return spectrumLength;
+	}
+
+	/**
+	 * 
+	 * @param id device id
+	 * @returns an array of captured data
+	 */
+	public GetFormattedSpectrum(id: number): Array<SeaBreezeCaptureData> {
 		const spectrumData: Array<SeaBreezeCaptureData> = new Array<SeaBreezeCaptureData>();
-		let spectrum: Array<number> = new Array<number>();
-		const numberOfSpectrometerFeatures = this.getNumberOfSpectrometerFeatures(id);
-		const spectrometerFeatures = this.getSpectrometerFeatures(id, numberOfSpectrometerFeatures);
+		const spectrumLength: number = this.GetFormattedSpectrumLength(id);
 
-		if (spectrometerFeatures != undefined && spectrometerFeatures.length > 0) {
-			if (this.pixels === 0) {
-				this.pixels = this.getFormattedSpectrumLength(id, spectrometerFeatures[0]);
-			}
+		if (spectrumLength > 0) {
+			const wavelengths = this.GetWavelengths(id);
 
-			if (this.pixels > 0) {
-				spectrum = this.getFormattedSpectrum(id, spectrometerFeatures[0], this.pixels);
-				const wavelengths = this.GetWavelength(id);
+			const error = ref.alloc(ref.types.int);
+			const buffer = ref.alloc(refArray(ref.types.double, spectrumLength));
 
-				for (let index = 0; index < spectrum.length; index++) {
+			const output = this.seabreezeFunctions.seabreeze_get_formatted_spectrum(id, error, buffer, spectrumLength);
+
+			if (this.CheckError("seabreeze_get_formatted_spectrum", error.readInt8(0))) {
+				const incrementer = buffer.length / output;
+				let wavelengthIndex = 0;
+
+				for (let index = 0; index < buffer.length; index += incrementer) {
 					const spectrumDataModel: SeaBreezeCaptureData = new SeaBreezeCaptureData();
-					spectrumDataModel.wavelength = wavelengths[index];
-					spectrumDataModel.measuredValue = spectrum[index];
+					spectrumDataModel.wavelength = wavelengths[wavelengthIndex];
+					spectrumDataModel.measuredValue = buffer.readDoubleLE(index);
 
 					spectrumData.push(spectrumDataModel);
+
+					wavelengthIndex++;
 				}
+
+				ref.deref(buffer);
 			}
 		}
 
@@ -242,43 +169,77 @@ export class SeaBreezeAPI {
 	/**
 	 * 
 	 * @param id device id
-	 * @returns model number of device
+	 * @returns an array of wavelengths measured by device
 	 */
-	public GetModelNumber(id: number): string {
-		let model = "NONE";
-		const error = ref.alloc(ref.types.int);
-		const buffer = ref.alloc(refArray(ref.types.char));
+	public GetWavelengths(id: number): number[] {
+		const wavelengths: number[] = [];
+		const spectrumLength = this.GetFormattedSpectrumLength(id);
 
-		const output = this.functions.sbapi_get_device_type(id, error, buffer, 20);
+		if (spectrumLength > 0) {
+			const error = ref.alloc(ref.types.int);
+			const buffer = ref.alloc(refArray(ref.types.double, spectrumLength));
 
-		if (this.CheckError("sbapi_get_device_type", ref.deref(error))) {
-			model = Helpers.Instance.ConvertByteArrayToString(buffer);
-		}
-		else {
-			model = "NONE";
-		}
+			const output = this.seabreezeFunctions.seabreeze_get_wavelengths(id, error, buffer, spectrumLength);
 
-		ref.deref(buffer);
+			if (this.CheckError("seabreeze_get_wavelengths", error.readInt8(0))) {
+				const incrementer = buffer.length / output;
 
-		return model;
-	}
-
-	public SetIntegrationTime(id: number, integrationTime: number): boolean {
-		let wasSet = false;
-
-		const numberOfSpectrometerFeatures = this.getNumberOfSpectrometerFeatures(id);
-		const spectrometerFeatures = this.getSpectrometerFeatures(id, numberOfSpectrometerFeatures);
-
-		if (spectrometerFeatures !== undefined && spectrometerFeatures.length > 0) {
-			wasSet = this.setIntegrationTime(id, spectrometerFeatures[0], integrationTime);
-
-			if (!wasSet) {
-				Logger.Instance.WriteDebug("Error setting integration time: " + this.lastErrorString);
+				for (let index = 0; index < buffer.length; index += incrementer) {
+					wavelengths.push(buffer.readDoubleLE(index));
+				}
 			}
 		}
 
-		return wasSet;
+		return wavelengths;
 	}
+
+	/**
+	 * 
+	 * @param id device id
+	 * @returns minimum possible integration time
+	 */
+	public GetMinIntegrationTimeMicro(id: number): number {
+		let integrationTime: number = 0;
+		const error = ref.alloc(ref.types.int);
+		const output = this.seabreezeFunctions.seabreeze_get_min_integration_time_microsec(id, error);
+
+		if (this.CheckError("seabreeze_get_min_integration_time_microsec", error.readInt8(0))) {
+			integrationTime = output;
+		}
+
+		return integrationTime;
+	}
+
+	/**
+	 * 
+	 * @param id device id
+	 * @returns maximum possible integration time
+	 */
+	public GetMaxIntegrationTimeMicro(id: number): number {
+		let integrationTime: number = 0;
+		const error = ref.alloc(ref.types.int);
+		const output = this.seabreezeFunctions.seabreeze_get_max_integration_time_microsec(id, error);
+
+		if (this.CheckError("seabreeze_get_max_integration_time_microsec", error.readInt8(0))) {
+			integrationTime = output;
+		}
+
+		return integrationTime;
+	}
+
+	/**
+	 * 
+	 * @param id device id
+	 * @param time new integration time
+	 * @returns success flag if set
+	 */
+	public SetIntegrationTimeMicro(id: number, time: number): boolean {
+		const error = ref.alloc(ref.types.int);
+		this.seabreezeFunctions.seabreeze_set_integration_time_microsec(id, error, time);
+
+		return this.CheckError("seabreeze_set_integration_time_microsec", error.readInt8(0));
+	}
+
 
 	/**
 	 * 
@@ -287,9 +248,10 @@ export class SeaBreezeAPI {
 	 */
 	private CheckError(operation: string, error: number): boolean {
 		if (error > 0) {
-			const output = this.functions.sbapi_get_error_string(error);
+			const buffer = ref.alloc(refArray(ref.types.byte, 64));
+			const output = this.seabreezeFunctions.seabreeze_get_error_string(error, buffer, 64);
 
-			const msg = output.toString();
+			const msg = Helpers.Instance.ConvertByteArrayToString(buffer);
 			this.lastErrorString = "[SeaBreeze] error: " + msg + " || operation: " + operation;
 
 			Logger.Instance.WriteError(new Error(this.lastErrorString));
@@ -297,234 +259,4 @@ export class SeaBreezeAPI {
 
 		return error == 0;
 	}
-
-	/**
-	 * 
-	 * @returns number of device Ids found
-	 */
-	private getNumberOfDeviceIds(): number {
-		return this.functions.sbapi_get_number_of_device_ids();
-	}
-
-	/**
-	 * 
-	 * @param id device id 
-	 * @returns number of serial number features
-	 */
-	private getNumberOfSerialNumberFeatures(id: number): number {
-		const error = ref.alloc(ref.types.int);
-		const output = this.functions.sbapi_get_number_of_serial_number_features(id, error);
-
-		if (this.CheckError("sbapi_get_number_of_serial_number_features", ref.deref(error))) {
-			return output;
-		}
-		else {
-			return 0;
-		}
-	}
-
-	/**
-	 * 
-	 * @param id device id
-	 * @param numberOfFeatures number of features the device has
-	 */
-	private getSerialNumberFeatures(id: number, numberOfFeatures: number): Array<number> {
-		let featureIds = new Array<number>();
-		const error = ref.alloc(ref.types.int);
-		const buffer = ref.alloc(refArray(ref.types.long, numberOfFeatures));
-
-		const output = this.functions.sbapi_get_serial_number_features(id, error, buffer, numberOfFeatures);
-
-		if (this.CheckError("sbapi_get_serial_number_features", ref.deref(error))) {
-			for (let offset = 0; offset < buffer.length; offset += 4) {
-				featureIds.push(buffer.readInt32LE(offset));
-			}
-		}
-		else {
-			featureIds = undefined;
-		}
-
-		ref.deref(buffer);
-
-		return featureIds;
-	}
-
-	/**
-	 * 
-	 * @param id device id
-	 * @param featureId feature id to get value of
-	 */
-	private getSerialNumberMaxLength(id: number, featureId: number) {
-		const error = ref.alloc(ref.types.int);
-		const output = this.functions.sbapi_get_serial_number_maximum_length(id, featureId, error);
-
-		if (this.CheckError("sbapi_get_serial_number_maximum_length", ref.deref(error))) {
-			return output;
-		}
-		else {
-			return 0;
-		}
-	}
-
-	/**
-	 * 
-	 * @param id device id 
-	 * @returns number of spectrometer features
-	 */
-	private getNumberOfSpectrometerFeatures(id: number): number {
-		const error = ref.alloc(ref.types.int);
-		const output = this.functions.sbapi_get_number_of_spectrometer_features(id, error);
-
-		if (this.CheckError("sbapi_get_number_of_spectrometer_features", ref.deref(error))) {
-			return output;
-		}
-		else {
-			return 0;
-		}
-	}
-
-	/**
-	 * 
-	 * @param id device id
-	 * @param numberOfFeatures number of features the device has
-	 */
-	private getSpectrometerFeatures(id: number, numberOfFeatures: number): Array<number> {
-		let featureIds = new Array<number>();
-		const error = ref.alloc(ref.types.int);
-		const buffer = ref.alloc(refArray(ref.types.long, numberOfFeatures));
-
-		const output = this.functions.sbapi_get_spectrometer_features(id, error, buffer, numberOfFeatures);
-
-		if (this.CheckError("sbapi_get_spectrometer_features", ref.deref(error))) {
-			for (let offset = 0; offset < buffer.length; offset += 4) {
-				featureIds.push(buffer.readInt32LE(offset));
-			}
-		}
-		else {
-			featureIds = undefined;
-		}
-
-		ref.deref(buffer);
-
-		return featureIds;
-	}
-
-	/**
-	 * 
-	 * @param id device id
-	 * @param featureId device feature id
-	 * @returns length of the formatted spectrum or 0 if error
-	 */
-	private getFormattedSpectrumLength(id: number, featureId: number): number {
-		let length = 0;
-
-		const error = ref.alloc(ref.types.int);
-		const output = this.functions.sbapi_spectrometer_get_formatted_spectrum_length(id, featureId, error);
-
-		if (this.CheckError("sbapi_spectrometer_get_formatted_spectrum_length", ref.deref(error))) {
-			length = output;
-		}
-
-		return length;
-	}
-
-	/**
-	 * 
-	 * @param id device id
-	 * @param featureId device feature id
-	 * @param spectrumLength the length of expected spectrum
-	 * @return array containing all values of incoming spectrum
-	 */
-	private getFormattedSpectrum(id: number, featureId: number, spectrumLength: number): Array<number> {
-		const spectrum: Array<number> = new Array<number>();
-		const error = ref.alloc(ref.types.int);
-		const buffer = ref.alloc(refArray(ref.types.double, spectrumLength));
-
-		const output = this.functions.sbapi_spectrometer_get_formatted_spectrum(id, featureId, error, buffer, spectrumLength);
-
-		if (this.CheckError("sbapi_spectrometer_get_formatted_spectrum", ref.deref(error))) {
-
-			const incrementer = buffer.length / output;
-
-			for (let index = 0; index < buffer.length; index += incrementer) {
-				spectrum.push(buffer.readDoubleLE(index));
-			}
-		}
-
-		ref.deref(buffer);
-
-		return spectrum;
-	}
-
-	private getWavelengths(id: number, featureId: number, pixels: number): Array<number> {
-		const wavelengths: Array<number> = new Array<number>();
-		const error = ref.alloc(ref.types.int);
-		const buffer = ref.alloc(refArray(ref.types.double, pixels));
-
-		const output = this.functions.sbapi_spectrometer_get_wavelengths(id, featureId, error, buffer, pixels);
-
-		if (this.CheckError("sbapi_spectrometer_get_wavelengths", ref.deref(error))) {
-
-			const incrementer = buffer.length / output;
-
-			for (let index = 0; index < buffer.length; index += incrementer) {
-				wavelengths.push(buffer.readDoubleLE(index));
-			}
-		}
-
-		ref.deref(buffer);
-
-		return wavelengths;
-	}
-
-	private setIntegrationTime(id: number, featureId: number, integrationTime: number): boolean {
-		const error = ref.alloc(ref.types.int);
-
-		this.functions.sbapi_spectrometer_set_integration_time_micros(id, featureId, error, integrationTime);
-
-		if (this.CheckError("sbapi_spectrometer_set_integration_time_micros", ref.deref(error))) {
-			return true;
-		}
-
-		return false;
-	}
-
-	//#region SETTINGS
-	/**
-	 * Integration Time
-	 */
-	public getMaxIntegrationTime(id: number): number {
-		const numberOfSpectrometerFeatures = this.getNumberOfSpectrometerFeatures(id);
-		const spectrometerFeatures = this.getSpectrometerFeatures(id, numberOfSpectrometerFeatures);
-
-		if (spectrometerFeatures !== undefined && spectrometerFeatures.length > 0) {
-			const error = ref.alloc(ref.types.int);
-
-			const response = this.functions.sbapi_spectrometer_get_maximum_integration_time_micros(id, spectrometerFeatures[0], error);
-
-			if (this.CheckError("sbapi_spectrometer_get_maximum_integration_time_micros", ref.deref(error))) {
-				return response;
-			}
-		}
-		return -1;
-	}
-
-	public getMinIntegrationTime(id: number): number {
-		const numberOfSpectrometerFeatures = this.getNumberOfSpectrometerFeatures(id);
-		const spectrometerFeatures = this.getSpectrometerFeatures(id, numberOfSpectrometerFeatures);
-
-		if (spectrometerFeatures !== undefined && spectrometerFeatures.length > 0) {
-			const error = ref.alloc(ref.types.int);
-
-			const response = this.functions.sbapi_spectrometer_get_minimum_integration_time_micros(id, spectrometerFeatures[0], error);
-
-			if (this.CheckError("sbapi_spectrometer_get_minimum_integration_time_micros", ref.deref(error))) {
-				return response;
-			}
-		}
-		return -1;
-	}
-
-
-	//#endregion
 }

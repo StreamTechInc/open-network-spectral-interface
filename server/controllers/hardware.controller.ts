@@ -270,16 +270,28 @@ export class HardwareController {
 			}
 
 			if (device) {
+				let isTimedOut: boolean = false;
+
+				response.setTimeout(device.timeout, () => {
+					isTimedOut = true;
+					response.status(408);
+					response.send("Capture timed out");
+				});
+
 				device.Capture().then((data) => {
-					hardwareResponse.data = data;
-					response.send(JSON.stringify(hardwareResponse));
-					Logger.Instance.WriteDebug("End getCapture/" + id);
+					if (!isTimedOut) {
+						hardwareResponse.data = data;
+						response.send(JSON.stringify(hardwareResponse));
+						Logger.Instance.WriteDebug("End getCapture/" + id);
+					}
 				}, (captureError) => {
-					hardwareResponse.success = false;
-					hardwareResponse.data = captureError;
-					response.status(400);
-					response.send(JSON.stringify(hardwareResponse));
-					Logger.Instance.WriteDebug("End getCapture/" + id);
+					if (!isTimedOut) {
+						hardwareResponse.success = false;
+						hardwareResponse.data = captureError;
+						response.status(400);
+						response.send(JSON.stringify(hardwareResponse));
+						Logger.Instance.WriteDebug("End getCapture/" + id);
+					}
 				});
 			}
 			else {

@@ -12,6 +12,7 @@ export interface IHardware {
 	modelName: string;
 	serial: string;
 	type: string;
+	timeout: number;
 
 	/**
 	 * Get all settings for device
