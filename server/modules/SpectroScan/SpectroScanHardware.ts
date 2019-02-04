@@ -7,7 +7,7 @@ export class SpectroScanHardware implements IHardwareType {
 	private _devices: Array<SpectroScanDevice> = new Array<SpectroScanDevice>();
 
 	public GetDevices(): Promise<Array<SpectroScanDevice>> {
-		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
+		Logger.Instance.WriteDebug("Start SpectroScanHardware.GetDevices");
 
 		return new Promise<Array<SpectroScanDevice>>((resolve, reject) => {
 			// Added 4 second delay to prevent error.

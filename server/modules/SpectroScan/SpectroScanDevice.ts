@@ -28,6 +28,24 @@ export class SpectroScanDevice implements IHardware {
 	private _calibrate: boolean = false;
 
 	/**
+	 * Properties
+	 */
+	get timeout(): number {
+		let _timeout: number = 0;
+
+		// set timeout to double the time it should take to do all scans
+		// each scan takes at least 1000 milliseconds, 200 was added as a buffer
+		_timeout = this._scanAverage * 1200 * 2;
+
+		if (_timeout === 0) {
+			// if no timeout, default to 2 minutes in milliseconds
+			_timeout = 2 * 60 * 1000;
+		}
+
+		return _timeout;
+	}
+
+	/**
 	 * Constructor
 	 */
 	constructor() {

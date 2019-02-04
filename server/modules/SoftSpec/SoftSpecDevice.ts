@@ -22,6 +22,14 @@ export class SoftSpecDevice implements IHardware {
 	private _scanFileName: string = "0_percent.json";
 
 	/**
+	 * Properties
+	 */
+	get timeout(): number {
+		// default to 2 minutes in milliseconds
+		return 2 * 60 * 1000;
+	}
+
+	/**
 	 * Constructor
 	 */
 	constructor() {

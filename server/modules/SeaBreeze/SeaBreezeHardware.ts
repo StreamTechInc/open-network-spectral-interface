@@ -19,31 +19,35 @@ export class SeaBreezeHardware implements IHardwareType {
 
 		return new Promise<Array<SeaBreezeDevice>>((resolve, reject) => {
 			try {
-				const probedDeviceCount = SeaBreezeAPI.Instance.ProbeDevices();
 
-				if (probedDeviceCount > 0) {
-					const deviceIds = SeaBreezeAPI.Instance.GetDeviceIds();
+				let keepOpening: boolean = true;
+				let deviceIndex: number = 0;
 
-					for (let index = 0; index < deviceIds.length; index++) {
-						const seaBreezeDevice = new SeaBreezeDevice();
-						seaBreezeDevice.apiID = deviceIds[index];
+				while (keepOpening) {
+					const seaBreezeDevice = new SeaBreezeDevice();
+					seaBreezeDevice.apiID = deviceIndex;
 
-						if (!this.CheckIfDeviceExists(seaBreezeDevice)) {
-							if (SeaBreezeAPI.Instance.OpenDevice(seaBreezeDevice.apiID)) {
-								seaBreezeDevice.serial = SeaBreezeAPI.Instance.GetSerialNumber(seaBreezeDevice.apiID);
-								seaBreezeDevice.modelName = SeaBreezeAPI.Instance.GetModelNumber(seaBreezeDevice.apiID);
+					if (!this.CheckIfDeviceExists(seaBreezeDevice)) {
+						if (SeaBreezeAPI.Instance.OpenDevice(deviceIndex)) {
+							seaBreezeDevice.serial = SeaBreezeAPI.Instance.GetSerialNumber(seaBreezeDevice.apiID);
+							seaBreezeDevice.modelName = SeaBreezeAPI.Instance.GetModelNumber(seaBreezeDevice.apiID);
 
-								this._devices.push(seaBreezeDevice);
-							}
+							this._devices.push(seaBreezeDevice);
+						}
+						else {
+							keepOpening = false;
 						}
 					}
+					else {
+						if (SeaBreezeAPI.Instance.GetFormattedSpectrumLength(seaBreezeDevice.apiID) <= 0) {
+							this._devices.splice(deviceIndex, 1);
+						}
+					}
+
+					deviceIndex++;
 				}
-				else {
-					// If the probed device count is 0 that mean no devices are connected
-					// so we can clear out our existing array
-					this._devices = new Array<SeaBreezeDevice>();
-				}
-			} catch (error) {
+			} 
+			catch (error) {
 				Logger.Instance.WriteError(error);
 				this._devices = [];
 				reject(error);

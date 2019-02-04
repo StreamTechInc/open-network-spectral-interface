@@ -26,6 +26,24 @@ export class SeaBreezeDevice implements IHardware {
 	private _integrationTime: number = 0;
 
 	/**
+	 * Properties
+	 */
+	get timeout(): number {
+		let _timeout: number = 0;
+
+		// set timeout to double the time it should take to do all scans
+		// integration time is in microseconds so it's converted to milliseconds
+		_timeout = this._scanAverage * (this._integrationTime / 1000) * 2;
+
+		if (_timeout === 0) {
+			// if no timeout, default to 2 minutes in milliseconds
+			_timeout = 2 * 60 * 1000;
+		}
+
+		return _timeout;
+	}
+
+	/**
 	 * Constructor
 	 */
 	constructor() {
@@ -113,7 +131,7 @@ export class SeaBreezeDevice implements IHardware {
 			let capturedData: Array<SeaBreezeCaptureData> = new Array<SeaBreezeCaptureData>();
 
 			try {
-				capturedData = SeaBreezeAPI.Instance.GetSpectrum(this.apiID);
+				capturedData = SeaBreezeAPI.Instance.GetFormattedSpectrum(this.apiID);
 
 				if (capturedData && capturedData.length > 0) {
 					capturedData = this.ProcessCapture(capturedData);
@@ -169,10 +187,10 @@ export class SeaBreezeDevice implements IHardware {
 		property.increment = 0.1;
 
 		// Get Max Value
-		property.maxValue = SeaBreezeAPI.Instance.getMaxIntegrationTime(this.apiID);
+		property.maxValue = SeaBreezeAPI.Instance.GetMaxIntegrationTimeMicro(this.apiID);
 
 		// Get Min Value
-		property.minValue = SeaBreezeAPI.Instance.getMinIntegrationTime(this.apiID);
+		property.minValue = SeaBreezeAPI.Instance.GetMinIntegrationTimeMicro(this.apiID);
 
 		// Get Current Value
 		if (this._integrationTime === 0) {
@@ -187,7 +205,7 @@ export class SeaBreezeDevice implements IHardware {
 	private SetIntegrationTimeProperty(newValue: number): HardwareProperty {
 		const property: HardwareProperty = this.GetIntegrationTimeProperty();
 
-		if (SeaBreezeAPI.Instance.SetIntegrationTime(this.apiID, newValue)) {
+		if (SeaBreezeAPI.Instance.SetIntegrationTimeMicro(this.apiID, newValue)) {
 			Logger.Instance.WriteDebug("Prop set");
 			this._integrationTime = newValue;
 			property.value = this._integrationTime.toString();
@@ -260,22 +278,22 @@ export class SeaBreezeDevice implements IHardware {
 
 		if (this._scanAverage > 1) {
 			for (let i = 1; i < this._scanAverage; i++) {
-				const tempSpectrum = SeaBreezeAPI.Instance.GetSpectrum(this.apiID);
+				const tempSpectrum = SeaBreezeAPI.Instance.GetFormattedSpectrum(this.apiID);
 
-				for (let j = 0; j < SeaBreezeAPI.Instance.pixels; j++) {
+				for (let j = 0; j < processedSpectrum.length; j++) {
 					processedSpectrum[j].measuredValue += tempSpectrum[j].measuredValue;
 				}
 			}
 
-			for (let i = 0; i < SeaBreezeAPI.Instance.pixels; i++) {
+			for (let i = 0; i < processedSpectrum.length; i++) {
 				processedSpectrum[i].measuredValue = processedSpectrum[i].measuredValue / this._scanAverage;
 			}
 		}
 
 		if (this._boxcar > 0) {
 			// Refer to seabreeze sample app for how this process was determined
-			const smoothed: Array<number> = new Array<number>(SeaBreezeAPI.Instance.pixels);
-			const boxcarLimit: number = SeaBreezeAPI.Instance.pixels - this._boxcar - 1;
+			const smoothed: Array<number> = new Array<number>(processedSpectrum.length);
+			const boxcarLimit: number = processedSpectrum.length - this._boxcar - 1;
 			const boxcarRange: number = 2 * this._boxcar + 1;
 
 			let sum: number;
