@@ -9,26 +9,26 @@ import { CanonCameraAPI } from "./CanonCameraAPI";
 import { ICaptureData } from "../../interfaces/ICaptureData";
 
 export class CanonCameraDevice implements IHardware {
-    /**
-     * Public Member Variables
-     */
-    public id: Guid;
-    public modelName: string;
-    public serial: string;
+		/**
+		 * Public Member Variables
+		 */
+		public id: Guid;
+		public modelName: string;
+		public serial: string;
 		public type: string = "Canon Camera";
 		public timeout: number;
 
-    /**
-     * Constructor
-     */
-    constructor() {
-        this.id = Guid.create();
-    }
+		/**
+		 * Constructor
+		 */
+		constructor() {
+				this.id = Guid.create();
+		}
 
-    /**
-     * Public Functions
-     */
-    public GetProperties(): Promise<Array<HardwareProperty>> {
+		/**
+		 * Public Functions
+		 */
+		public GetProperties(): Promise<Array<HardwareProperty>> {
 		return new Promise<Array<HardwareProperty>>((resolve, reject) => {
 			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
@@ -41,9 +41,9 @@ export class CanonCameraDevice implements IHardware {
 
 			resolve(properties);
 		});
-    }
-    
-    public GetProperty(key: string): Promise<HardwareProperty> {
+		}
+		
+		public GetProperty(key: string): Promise<HardwareProperty> {
 		return new Promise<HardwareProperty>((resolve, reject) => {
 			let property: HardwareProperty = undefined;
 
@@ -81,13 +81,13 @@ export class CanonCameraDevice implements IHardware {
 
 			resolve(property);
 		});
-    }
-    
-    public Capture(): Promise<Array<ICaptureData>> {
-        return undefined;
-    }
+		}
+		
+		public Capture(): Promise<Array<ICaptureData>> {
+				return undefined;
+		}
 
-    public GetStatus(): IStatus {
+		public GetStatus(): IStatus {
 		return undefined;
 	}
 
