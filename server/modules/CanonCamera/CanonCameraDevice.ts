@@ -7,6 +7,7 @@ import { resolve } from "path";
 import { Logger } from "../../common/logger";
 import { CanonCameraAPI } from "./CanonCameraAPI";
 import { ICaptureData } from "../../interfaces/ICaptureData";
+import request = require("request");
 
 export class CanonCameraDevice implements IHardware {
 		/**
@@ -16,8 +17,10 @@ export class CanonCameraDevice implements IHardware {
 		public modelName: string;
 		public serial: string;
 		public type: string = "Canon Camera";
-		public timeout: number;
 
+		get timeout(): number {
+			return 2 * 60 * 1000;
+		}
 		/**
 		 * Constructor
 		 */
@@ -81,13 +84,23 @@ export class CanonCameraDevice implements IHardware {
 
 			resolve(property);
 		});
-		}
+	}
 		
-		public Capture(): Promise<Array<ICaptureData>> {
-				return undefined;
-		}
+	public Capture(): Promise<Array<boolean>> {
+		return new Promise<Array<boolean>>(async (resolve, reject) => {
+		
+			try {
+				const result = await CanonCameraAPI.Instance.stillImageShooting(true);
+				const returnArray = new Array<boolean>();
+				returnArray.push(result);
+				resolve(returnArray);
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
 
-		public GetStatus(): IStatus {
+	public GetStatus(): IStatus {
 		return undefined;
 	}
 
