@@ -19,6 +19,11 @@ export class CanonCameraDevice implements IHardware {
 	public serial: string;
 	public type: string = "Canon Camera";
 
+	/**
+	 * Private Variables
+	 */
+	private _autoFocus: boolean = true;
+	
 	get timeout(): number {
 		return 2 * 60 * 1000;
 	}
@@ -37,7 +42,7 @@ export class CanonCameraDevice implements IHardware {
 			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
 			try {
-				properties.push(await CanonCameraAPI.Instance.getZoomProperty());
+				properties.push(await CanonCameraAPI.Instance.GetZoomProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
@@ -54,7 +59,10 @@ export class CanonCameraDevice implements IHardware {
 			try {
 				switch (key) {
 					case "zoom":
-						property = await CanonCameraAPI.Instance.getZoomProperty();
+						property = await CanonCameraAPI.Instance.GetZoomProperty();
+						break;
+					case "auto_focus":
+						property = this.GetAutoFocusProperty();
 						break;
 					default:
 						property = undefined;
@@ -76,7 +84,11 @@ export class CanonCameraDevice implements IHardware {
 			try {
 				switch (setting.id) {
 					case "zoom":
-						property = await CanonCameraAPI.Instance.setZoomProperty(+setting.value);
+						property = await CanonCameraAPI.Instance.SetZoomProperty(+setting.value);
+						break;
+					case "auto_focus":
+						property = this.SetAutoFocusProperty(setting.value === "true");
+						break;
 					default:
 						property = undefined;
 						break;
@@ -94,7 +106,7 @@ export class CanonCameraDevice implements IHardware {
 		return new Promise<Array<CanonCameraCaptureData>>(async (resolve, reject) => {
 			try {
 				const returnArray = new Array<CanonCameraCaptureData>();
-				const fileNameUrl: string = await CanonCameraAPI.Instance.stillImageShooting(true);
+				const fileNameUrl: string = await CanonCameraAPI.Instance.StillImageShooting(this._autoFocus);
 				
 					if (fileNameUrl) {
 						console.log("sent back the url " + fileNameUrl);
@@ -131,5 +143,34 @@ export class CanonCameraDevice implements IHardware {
 
 	public ToggleStream(): boolean {
 		return false;
+	}
+
+	/**
+	 * Private Functions
+	 */
+
+	private GetAutoFocusProperty(): HardwareProperty {
+		const property: HardwareProperty = new HardwareProperty();
+
+		property.id = "auto_focus";
+		property.userReadableName = "Auto Focus";
+		property.dataType = "bool";
+		property.order = 2;
+		property.increment = null;
+		property.minValue = null;
+		property.maxValue = null;
+
+		property.value = this._autoFocus.toString();
+
+		return property;
+	}
+
+	private SetAutoFocusProperty(newValue: boolean): HardwareProperty {
+		const property: HardwareProperty = this.GetAutoFocusProperty();
+
+		this._autoFocus = newValue;
+		property.value = this._autoFocus.toString();
+
+		return property;
 	}
 }

@@ -21,7 +21,7 @@ export class CanonCameraAPI {
 		return this.instance;
 	}
 
-	public getDeviceInfo(): Promise<CanonCameraDevice> {
+	public GetDeviceInfo(): Promise<CanonCameraDevice> {
 		return new Promise<CanonCameraDevice>((resolve, reject) => {
 		
 			try {
@@ -54,7 +54,7 @@ export class CanonCameraAPI {
 		});
 	}
 
-	public stillImageShooting(af: boolean): Promise<string> {
+	public StillImageShooting(af: boolean): Promise<string> {
 		return new Promise<string>(async (resolve, reject) => {
 		
 			try {
@@ -76,7 +76,7 @@ export class CanonCameraAPI {
 					if (response) {
 						
 						if (response.statusCode === 200) {
-							const fileNameUrl: string = await CanonCameraAPI.Instance.getLastFileName();
+							const fileNameUrl: string = await CanonCameraAPI.Instance.GetLastFileName();
 							resolve(fileNameUrl);
 						}
 						else {
@@ -93,7 +93,7 @@ export class CanonCameraAPI {
 		});
 	}
 
-	public async getLastFileName(): Promise<string> {
+	public async GetLastFileName(): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			try {
 				// get content list from storage
@@ -137,7 +137,7 @@ export class CanonCameraAPI {
 		});
 	}
 
-	public getZoomProperty(): Promise<HardwareProperty> {
+	public GetZoomProperty(): Promise<HardwareProperty> {
 		return new Promise<HardwareProperty>((resolve, reject) => {
 			const property: HardwareProperty = new HardwareProperty();
 
@@ -176,7 +176,7 @@ export class CanonCameraAPI {
 		});
 	}	
 
-	public setZoomProperty(newValue: number): Promise<HardwareProperty> {
+	public SetZoomProperty(newValue: number): Promise<HardwareProperty> {
 		return new Promise<HardwareProperty>((resolve, reject) => {
 			const property: HardwareProperty = new HardwareProperty();
 			try {

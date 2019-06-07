@@ -13,7 +13,7 @@ export class CanonCameraHardware implements IHardwareType {
 		return new Promise<Array<CanonCameraDevice>>(async (resolve, reject) => {
 				try {
 					if (this._devices.length === 0) {
-						const result = await CanonCameraAPI.Instance.getDeviceInfo();
+						const result = await CanonCameraAPI.Instance.GetDeviceInfo();
 						if (result) {
 							const device: CanonCameraDevice = new CanonCameraDevice();
 							device.modelName = result.modelName;
