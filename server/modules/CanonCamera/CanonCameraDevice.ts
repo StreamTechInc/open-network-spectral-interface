@@ -33,11 +33,11 @@ export class CanonCameraDevice implements IHardware {
 	 * Public Functions
 	 */
 	public GetProperties(): Promise<Array<HardwareProperty>> {
-		return new Promise<Array<HardwareProperty>>((resolve, reject) => {
+		return new Promise<Array<HardwareProperty>>(async (resolve, reject) => {
 			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
 			try {
-				
+				properties.push(await CanonCameraAPI.Instance.getZoomProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
@@ -48,12 +48,14 @@ export class CanonCameraDevice implements IHardware {
 	}
 		
 	public GetProperty(key: string): Promise<HardwareProperty> {
-		return new Promise<HardwareProperty>((resolve, reject) => {
+		return new Promise<HardwareProperty>(async (resolve, reject) => {
 			let property: HardwareProperty = undefined;
 
 			try {
 				switch (key) {
-					
+					case "zoom":
+						property = await CanonCameraAPI.Instance.getZoomProperty();
+						break;
 					default:
 						property = undefined;
 						break;
@@ -68,12 +70,13 @@ export class CanonCameraDevice implements IHardware {
 	}
 
 	public SetProperty(setting: HardwareProperty): Promise<HardwareProperty> {
-		return new Promise<HardwareProperty>((resolve, reject) => {
+		return new Promise<HardwareProperty>(async (resolve, reject) => {
 			let property: HardwareProperty = undefined;
 
 			try {
 				switch (setting.id) {
-					
+					case "zoom":
+						property = await CanonCameraAPI.Instance.setZoomProperty(+setting.value);
 					default:
 						property = undefined;
 						break;

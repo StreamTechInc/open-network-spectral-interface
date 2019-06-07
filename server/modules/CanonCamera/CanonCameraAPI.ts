@@ -5,6 +5,7 @@
 import { Logger } from "../../common/logger";
 import * as request from "request";
 import { CanonCameraDevice } from "./CanonCameraDevice";
+import { HardwareProperty } from "../../models/hardware-property";
 
 
 export class CanonCameraAPI {
@@ -64,12 +65,16 @@ export class CanonCameraAPI {
 					},
 					body: JSON.stringify({af: af})
 				};
+				
 				request.post(url, options, async (error, response, body) => {
+					
 					if (error) {
 						Logger.Instance.WriteError(error);
 						reject(new Error(error));
 					}
+					
 					if (response) {
+						
 						if (response.statusCode === 200) {
 							const fileNameUrl: string = await CanonCameraAPI.Instance.getLastFileName();
 							resolve(fileNameUrl);
@@ -95,14 +100,17 @@ export class CanonCameraAPI {
 				const url: string = "http://192.168.1.2:8080/ccapi/ver100/contents/sd/100CANON/";
 				setTimeout(() => {
 					request.get(url, (error, response, body) => {
+						
 						if (error) {
 							Logger.Instance.WriteError(error);
 							reject(new Error(error));
 						}
+						
 						if (response) {
-							console.log("statusCode is " + response.statusCode);
+							
 							if (response.statusCode === 200) {
 								const contentList = JSON.parse(body).url;
+								
 								if (contentList.length > 0) {
 									const lastUrl = contentList.pop();
 									resolve(lastUrl);
@@ -129,5 +137,77 @@ export class CanonCameraAPI {
 		});
 	}
 
-	
+	public getZoomProperty(): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			const property: HardwareProperty = new HardwareProperty();
+
+			property.id = "zoom";
+			property.userReadableName = "zoom";
+			property.dataType = "int";
+			property.order = 1;
+			property.increment = 1;
+			property.minValue = 0;
+			property.maxValue = 201;
+
+			try {
+				const url: string = "http://192.168.1.2:8080/ccapi/ver100/shooting/control/zoom";
+				
+				request.get(url, (error, response, body) => {
+					
+					if (error) {
+						Logger.Instance.WriteError(error);
+						reject(new Error(error));
+					}
+
+					if (response) {
+						
+						if (response.statusCode === 200) {
+							property.value = JSON.parse(body).value;
+							resolve(property);
+						}
+					}
+					else {
+						reject(new Error("Failed to get zoom property"));
+					}
+				});
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}	
+
+	public setZoomProperty(newValue: number): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>((resolve, reject) => {
+			const property: HardwareProperty = new HardwareProperty();
+			try {
+				const url: string = "http://192.168.1.2:8080/ccapi/ver100/shooting/control/zoom";
+				const options = {
+					headers: {
+						"content-type": "application/json"
+					},
+					body: JSON.stringify({"value": newValue})
+				};
+				request.post(url, options, (error, response, body) => {
+					
+					if (error) {
+						Logger.Instance.WriteError(error);
+						reject(new Error(error));
+					}
+					
+					if (response) {
+						
+						if (response.statusCode === 200) {
+							property.value = JSON.parse(body).value;
+							resolve(property);
+						}
+					}
+					else {
+						reject(new Error("Failed to get zoom property"));
+					}
+				});
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}	
 }
