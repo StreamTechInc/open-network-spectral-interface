@@ -43,6 +43,7 @@ export class CanonCameraDevice implements IHardware {
 
 			try {
 				properties.push(await CanonCameraAPI.Instance.GetZoomProperty());
+				properties.push(this.GetAutoFocusProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
@@ -108,12 +109,11 @@ export class CanonCameraDevice implements IHardware {
 				const returnArray = new Array<CanonCameraCaptureData>();
 				const fileNameUrl: string = await CanonCameraAPI.Instance.StillImageShooting(this._autoFocus);
 				
-					if (fileNameUrl) {
-						console.log("sent back the url " + fileNameUrl);
-						const returnData: CanonCameraCaptureData = new CanonCameraCaptureData();
-						returnData.fileNameUrl = fileNameUrl;
-						returnArray.push(returnData);
-					}
+				if (fileNameUrl) {
+					const returnData: CanonCameraCaptureData = new CanonCameraCaptureData();
+					returnData.fileNameUrl = fileNameUrl;
+					returnArray.push(returnData);
+				}
 				resolve(returnArray);
 			} catch (error) {
 				reject(error);

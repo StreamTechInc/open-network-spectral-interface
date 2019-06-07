@@ -209,5 +209,34 @@ export class CanonCameraAPI {
 				reject(error);
 			}
 		});
-	}	
+	}
+	
+	public DeleteStorageFile(fileUrl: string): boolean {
+		let isDeleted: boolean = false;
+
+		try {
+			request.delete(fileUrl, (error, response, body) => {
+				
+				if (error) {
+					Logger.Instance.WriteError(error);
+				}
+				
+				if (response) {
+					if (response.statusCode === 200) {
+						isDeleted = true;
+					}
+					else {
+						Logger.Instance.WriteDebug("Failed to delete");
+					}
+				}
+				else {
+					Logger.Instance.WriteDebug("Failed to get delete response");
+				}
+			});
+		} catch (error) {
+			Logger.Instance.WriteError(error);
+		}
+
+		return isDeleted;
+	} 
 }

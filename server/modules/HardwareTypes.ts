@@ -31,9 +31,9 @@ export class HardwareTypes {
 
 		/* Start IHardwareType Initialization */
 
-		this.AvailableHardwareTypes.push(new SeaBreezeHardware());
-		this.AvailableHardwareTypes.push(new SoftSpecHardware());
-		this.AvailableHardwareTypes.push(new SpectroScanHardware());
+		// this.AvailableHardwareTypes.push(new SeaBreezeHardware());
+		// this.AvailableHardwareTypes.push(new SoftSpecHardware());
+		// this.AvailableHardwareTypes.push(new SpectroScanHardware());
 		this.AvailableHardwareTypes.push(new CanonCameraHardware());
 
 		/* End IHardwareType Initialization */

@@ -33,7 +33,6 @@ export class CanonCameraHardware implements IHardwareType {
 
 	public GetDeviceById(id: string) {
 		Logger.Instance.WriteDebug("Start CanonCameraHardware.GetDeviceById: " + id);
-		console.log(this._devices);
 		let foundDevice: CanonCameraDevice = undefined;
 
 		try {
