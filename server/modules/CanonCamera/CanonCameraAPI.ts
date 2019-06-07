@@ -53,8 +53,8 @@ export class CanonCameraAPI {
 		});
 	}
 
-	public stillImageShooting(af: boolean): Promise<boolean> {
-		return new Promise<boolean>(async (resolve, reject) => {
+	public stillImageShooting(af: boolean): Promise<string> {
+		return new Promise<string>(async (resolve, reject) => {
 		
 			try {
 				const url: string = "http://192.168.1.2:8080/ccapi/ver100/shooting/control/shutterbutton";
@@ -64,23 +64,65 @@ export class CanonCameraAPI {
 					},
 					body: JSON.stringify({af: af})
 				};
-				request.post(url, options, (error, response, body) => {
+				request.post(url, options, async (error, response, body) => {
 					if (error) {
 						Logger.Instance.WriteError(error);
 						reject(new Error(error));
 					}
 					if (response) {
 						if (response.statusCode === 200) {
-							resolve(true);
+							const fileNameUrl: string = await CanonCameraAPI.Instance.getLastFileName();
+							resolve(fileNameUrl);
 						}
 						else {
 							reject(new Error("failed to capture"));
 						}
 					}
 					else {
-						reject(new Error("failed to capture"));
+						reject(new Error("Failed to get request response"));
 					}
 				});
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
+
+	public async getLastFileName(): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
+			try {
+				// get content list from storage
+				const url: string = "http://192.168.1.2:8080/ccapi/ver100/contents/sd/100CANON/";
+				setTimeout(() => {
+					request.get(url, (error, response, body) => {
+						if (error) {
+							Logger.Instance.WriteError(error);
+							reject(new Error(error));
+						}
+						if (response) {
+							console.log("statusCode is " + response.statusCode);
+							if (response.statusCode === 200) {
+								const contentList = JSON.parse(body).url;
+								if (contentList.length > 0) {
+									const lastUrl = contentList.pop();
+									resolve(lastUrl);
+								}
+								else {
+									reject(new Error("Content is empty"));
+								}
+							}
+							else if (response.statusCode === 503) {
+								Logger.Instance.WriteDebug("Device is buty");
+							}
+							else {
+								reject(new Error("Failed to get content"));
+							}
+						}
+						else {
+							reject(new Error("Failed to get request response"));
+						}
+					});
+				}, (200));
 			} catch (error) {
 				reject(error);
 			}

@@ -8,30 +8,31 @@ import { Logger } from "../../common/logger";
 import { CanonCameraAPI } from "./CanonCameraAPI";
 import { ICaptureData } from "../../interfaces/ICaptureData";
 import request = require("request");
+import { CanonCameraCaptureData } from "./models/canoncamera-capture-data";
 
 export class CanonCameraDevice implements IHardware {
-		/**
-		 * Public Member Variables
-		 */
-		public id: Guid;
-		public modelName: string;
-		public serial: string;
-		public type: string = "Canon Camera";
+	/**
+	 * Public Member Variables
+	 */
+	public id: Guid;
+	public modelName: string;
+	public serial: string;
+	public type: string = "Canon Camera";
 
-		get timeout(): number {
-			return 2 * 60 * 1000;
-		}
-		/**
-		 * Constructor
-		 */
-		constructor() {
-				this.id = Guid.create();
-		}
+	get timeout(): number {
+		return 2 * 60 * 1000;
+	}
+	/**
+	 * Constructor
+	 */
+	constructor() {
+			this.id = Guid.create();
+	}
 
-		/**
-		 * Public Functions
-		 */
-		public GetProperties(): Promise<Array<HardwareProperty>> {
+	/**
+	 * Public Functions
+	 */
+	public GetProperties(): Promise<Array<HardwareProperty>> {
 		return new Promise<Array<HardwareProperty>>((resolve, reject) => {
 			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
@@ -44,9 +45,9 @@ export class CanonCameraDevice implements IHardware {
 
 			resolve(properties);
 		});
-		}
+	}
 		
-		public GetProperty(key: string): Promise<HardwareProperty> {
+	public GetProperty(key: string): Promise<HardwareProperty> {
 		return new Promise<HardwareProperty>((resolve, reject) => {
 			let property: HardwareProperty = undefined;
 
@@ -86,13 +87,18 @@ export class CanonCameraDevice implements IHardware {
 		});
 	}
 		
-	public Capture(): Promise<Array<boolean>> {
-		return new Promise<Array<boolean>>(async (resolve, reject) => {
-		
+	public Capture(): Promise<Array<CanonCameraCaptureData>> {
+		return new Promise<Array<CanonCameraCaptureData>>(async (resolve, reject) => {
 			try {
-				const result = await CanonCameraAPI.Instance.stillImageShooting(true);
-				const returnArray = new Array<boolean>();
-				returnArray.push(result);
+				const returnArray = new Array<CanonCameraCaptureData>();
+				const fileNameUrl: string = await CanonCameraAPI.Instance.stillImageShooting(true);
+				
+					if (fileNameUrl) {
+						console.log("sent back the url " + fileNameUrl);
+						const returnData: CanonCameraCaptureData = new CanonCameraCaptureData();
+						returnData.fileNameUrl = fileNameUrl;
+						returnArray.push(returnData);
+					}
 				resolve(returnArray);
 			} catch (error) {
 				reject(error);
