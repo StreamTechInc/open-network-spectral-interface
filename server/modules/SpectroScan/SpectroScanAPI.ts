@@ -201,7 +201,7 @@ export class SpectroScanAPI {
 
 											resolve(dataArray);
 										}, 10);
-									}, 500);
+									}, 10);
 								}
 								else {
 									reject("Read 2 failed with status: " + status);
