@@ -1,5 +1,5 @@
 //handle setupevents as quickly as possible
-const setupEvents = require('./installers/setup-events')
+const setupEvents = require('./setup-events')
 if (setupEvents.handleSquirrelEvent()) {
 	// squirrel event handled and app will exit in 1000ms, so don't do anything else
 	return;
@@ -15,14 +15,14 @@ const path = require("path");
 let mainWindow;
 
 function createWindow() {
-	app.server = require(path.join(__dirname, "./dist/index.js"))();
+	app.server = require(path.join(__dirname, "./express/dist/index.js"))();
 
 	mainWindow = new BrowserWindow({
 		width: 300,
 		height: 300,
 		autoHideMenuBar: true,
 		useContentSize: true,
-		icon: path.join(__dirname, "/server/views/assets/img/favicon.ico")
+		icon: path.join(__dirname, "/express/dist/views/assets/img/favicon.ico")
 	});
 
 	mainWindow.loadURL("http://localhost:3200");
@@ -37,7 +37,7 @@ function createWindow() {
 		mainWindow = null;
 	});
 
-	const appIcon = new Tray(path.join(__dirname, "/server/views/assets/img/favicon.ico"));
+	const appIcon = new Tray(path.join(__dirname, "/express/dist/views/assets/img/favicon.ico"));
 
 	const contextMenu = Menu.buildFromTemplate([
 		{
