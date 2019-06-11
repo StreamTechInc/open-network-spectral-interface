@@ -6,7 +6,6 @@ import { Logger } from "../../common/logger";
 import * as request from "request";
 import { CanonCameraDevice } from "./CanonCameraDevice";
 import { HardwareProperty } from "../../models/hardware-property";
-import { readInt64BE } from "ref";
 
 
 

@@ -3,13 +3,9 @@ import { Guid } from "guid-typescript";
 import { HardwareProperty } from "../../models/hardware-property";
 import { IStatus } from "../../interfaces/IStatus";
 import { ISubscription } from "../../interfaces/ISubscription";
-import { resolve } from "path";
 import { Logger } from "../../common/logger";
 import { CanonCameraAPI } from "./CanonCameraAPI";
-import { ICaptureData } from "../../interfaces/ICaptureData";
-import request = require("request");
 import { CanonCameraCaptureData } from "./models/canoncamera-capture-data";
-import * as fs from "fs";
 
 export class CanonCameraDevice implements IHardware {
 	/**
