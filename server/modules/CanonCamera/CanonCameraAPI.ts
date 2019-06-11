@@ -6,6 +6,8 @@ import { Logger } from "../../common/logger";
 import * as request from "request";
 import { CanonCameraDevice } from "./CanonCameraDevice";
 import { HardwareProperty } from "../../models/hardware-property";
+import { readInt64BE } from "ref";
+
 
 
 export class CanonCameraAPI {
@@ -76,11 +78,13 @@ export class CanonCameraAPI {
 					if (response) {
 						
 						if (response.statusCode === 200) {
-							const fileNameUrl: string = await CanonCameraAPI.Instance.GetLastFileName();
-							resolve(fileNameUrl);
+							setTimeout(async () => {
+								const fileNameUrl: string = await CanonCameraAPI.Instance.GetLastFileName();
+								resolve(fileNameUrl);
+							}, 400);
 						}
 						else {
-							reject(new Error("failed to capture"));
+							reject(new Error(response.statusCode + "failed to capture"));
 						}
 					}
 					else {
@@ -121,6 +125,7 @@ export class CanonCameraAPI {
 							}
 							else if (response.statusCode === 503) {
 								Logger.Instance.WriteDebug("Device is buty");
+								reject();
 							}
 							else {
 								reject(new Error("Failed to get content"));
@@ -211,32 +216,76 @@ export class CanonCameraAPI {
 		});
 	}
 	
-	public DeleteStorageFile(fileUrl: string): boolean {
-		let isDeleted: boolean = false;
+	public DownloadStorageFile(fileUrl: string): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
 
-		try {
-			request.delete(fileUrl, (error, response, body) => {
-				
-				if (error) {
-					Logger.Instance.WriteError(error);
-				}
-				
-				if (response) {
-					if (response.statusCode === 200) {
-						isDeleted = true;
+			try {
+				const options = {
+					headers: {
+						"content-type": "image/jpeg"
+					}
+				};
+				request.get(fileUrl, options, (error, response, body) => {
+					if (error) {
+						Logger.Instance.WriteError(error);
+						reject(error);
+					}
+					
+					if (response) {
+
+						if (response.statusCode === 200) {
+							resolve(body);
+						}
+						else {
+							Logger.Instance.WriteDebug("Failed to delete");
+							reject();
+						}
 					}
 					else {
-						Logger.Instance.WriteDebug("Failed to delete");
+						Logger.Instance.WriteDebug("Failed to get delete response");
+						reject();
 					}
-				}
-				else {
-					Logger.Instance.WriteDebug("Failed to get delete response");
-				}
-			});
-		} catch (error) {
-			Logger.Instance.WriteError(error);
-		}
+				});
 
-		return isDeleted;
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
+
+
+	public DeleteStorageFile(fileUrl: string): Promise<boolean> {
+		return new Promise<boolean>((resolve, reject) => {
+			let isDeleted: boolean = false;
+
+			try {
+				request.delete(fileUrl, (error, response, body) => {
+					
+					if (error) {
+						Logger.Instance.WriteError(error);
+						reject(error);
+					}
+					
+					if (response) {
+
+						if (response.statusCode === 200) {
+							isDeleted = true;
+							resolve(isDeleted);
+						}
+						else {
+							Logger.Instance.WriteDebug(response.statusCode + "Failed to delete");
+							reject();
+						}
+					}
+					else {
+						Logger.Instance.WriteDebug("Failed to get delete response");
+						reject();
+					}
+				});
+			} catch (error) {
+				Logger.Instance.WriteError(error);
+				reject();
+			}
+		});
 	} 
 }

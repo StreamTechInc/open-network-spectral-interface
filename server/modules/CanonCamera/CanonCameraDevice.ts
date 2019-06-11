@@ -9,6 +9,7 @@ import { CanonCameraAPI } from "./CanonCameraAPI";
 import { ICaptureData } from "../../interfaces/ICaptureData";
 import request = require("request");
 import { CanonCameraCaptureData } from "./models/canoncamera-capture-data";
+import * as fs from "fs";
 
 export class CanonCameraDevice implements IHardware {
 	/**
@@ -111,8 +112,9 @@ export class CanonCameraDevice implements IHardware {
 				
 				if (fileNameUrl) {
 					const returnData: CanonCameraCaptureData = new CanonCameraCaptureData();
-					returnData.fileNameUrl = fileNameUrl;
+					returnData.imageData = await CanonCameraAPI.Instance.DownloadStorageFile(fileNameUrl);
 					returnArray.push(returnData);
+					await CanonCameraAPI.Instance.DeleteStorageFile(fileNameUrl);
 				}
 				resolve(returnArray);
 			} catch (error) {
