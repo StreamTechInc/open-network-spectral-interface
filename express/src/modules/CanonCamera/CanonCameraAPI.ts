@@ -1,5 +1,5 @@
 /**
- * This is a class for accessing Canon Camera compatiable devices
+ * This is a class for accessing Canon Camera compatible devices
  */
 
 import { Logger } from "../../common/logger";
@@ -14,6 +14,11 @@ export class CanonCameraAPI {
 	 *  Singleton
 	 */
 	private static instance: CanonCameraAPI;
+	
+	/**
+	 * Constants
+	 */
+	private _baseUrl: string = "http://192.168.1.2:8080/ccapi/ver100/";
 
 	static get Instance() {
 		if (this.instance === null || this.instance === undefined) {
@@ -26,12 +31,12 @@ export class CanonCameraAPI {
 		return new Promise<CanonCameraDevice>((resolve, reject) => {
 		
 			try {
-				const url: string = "http://192.168.1.2:8080/ccapi/ver100/deviceinformation";
+				const url: string =  this._baseUrl + "deviceinformation";
 
 				request.get(url, (error, response, body) => {
 					if (error) {
-						Logger.Instance.WriteError(error);
-						reject(new Error(error));
+						// failed to connect
+						resolve(null);
 					}
 
 					if (response) {
@@ -59,7 +64,7 @@ export class CanonCameraAPI {
 		return new Promise<string>(async (resolve, reject) => {
 		
 			try {
-				const url: string = "http://192.168.1.2:8080/ccapi/ver100/shooting/control/shutterbutton";
+				const url: string = this._baseUrl + "shooting/control/shutterbutton";
 				const options = {
 					headers: {
 						"content-type": "application/json"
@@ -100,7 +105,7 @@ export class CanonCameraAPI {
 		return new Promise<string>((resolve, reject) => {
 			try {
 				// get content list from storage
-				const url: string = "http://192.168.1.2:8080/ccapi/ver100/contents/sd/100CANON/";
+				const url: string = this._baseUrl + "contents/sd/100CANON/";
 				setTimeout(() => {
 					request.get(url, (error, response, body) => {
 						
@@ -154,7 +159,7 @@ export class CanonCameraAPI {
 			property.maxValue = 201;
 
 			try {
-				const url: string = "http://192.168.1.2:8080/ccapi/ver100/shooting/control/zoom";
+				const url: string = this._baseUrl + "shooting/control/zoom";
 				
 				request.get(url, (error, response, body) => {
 					
@@ -184,7 +189,7 @@ export class CanonCameraAPI {
 		return new Promise<HardwareProperty>((resolve, reject) => {
 			const property: HardwareProperty = new HardwareProperty();
 			try {
-				const url: string = "http://192.168.1.2:8080/ccapi/ver100/shooting/control/zoom";
+				const url: string = this._baseUrl + "shooting/control/zoom";
 				const options = {
 					headers: {
 						"content-type": "application/json"
