@@ -12,7 +12,7 @@ getInstallerConfig()
 function getInstallerConfig() {
 	console.log('creating windows installer')
 	const rootPath = path.join('./')
-	const outPath = path.join(rootPath, 'builds')
+	const outPath = path.join(rootPath, 'dist')
 
 	return Promise.resolve({
 		appDirectory: path.join(outPath, 'open-network-spectral-interface-win32-x64/'),
@@ -21,7 +21,7 @@ function getInstallerConfig() {
 		outputDirectory: path.join(outPath, 'windows-installer'),
 		exe: 'open-network-spectral-interface.exe',
 		setupExe: 'Setup.exe',
-		setupIcon: 'C:\\Code\\open-network-spectral-interface\\server\\views\\assets\\img\\favicon.ico',
+		setupIcon: '..\\express\\src\\views\\assets\\img\\favicon.ico',
 		signWithParams: `/f \"${process.env.CERTIFICATE_LOCATION}\" /p ${process.env.CERTIFICATE_PASSWORD} /t http://timestamp.verisign.com/scripts/timstamp.dll`
 	})
 }

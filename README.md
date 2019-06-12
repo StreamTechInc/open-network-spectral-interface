@@ -16,7 +16,9 @@ The following instructions will get you up and running without any additional mo
 Module README will contain further module dependent installation instructions.
 
 ``` command
-npm install
+under electron directory
+    npm run dev-init
+    npm run electron
 ```
 
 ### Build Steps
@@ -24,7 +26,8 @@ npm install
 Module README will contain further module dependent build steps.
 
 ``` command
-npm run electron
+under build directory
+    npm run create-windows-installer
 ```
 
 ## Adding your own module

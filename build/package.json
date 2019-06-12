@@ -1,13 +1,13 @@
 {
-	"name": "cloud-connect",
-	"version": "1.0.33",
-	"description": "Embedded UI for capturing data from spectral devices and uploading to cloud for processing",
-	"productName": "Cloud Connect",
+	"name": "onsi-builder",
+	"version": "1.0.0",
+	"description": "build onsi",
+	"productName": "onsi-builder",
 	"main": "main.js",
 	"scripts": {
 		"express-build": "gulp copy-express-files && cd ../electron/express && npm install --production && npm prune --production && cd ../../express && npm run build",
 		"package-electron-windows": "cd ../electron && npm install && npm run package-windows",
-		"create-windows-installer": "npm run express-build && npm run angular-build && npm run python-build && npm run package-electron-windows && gulp move-files-prod && node installers/windows/create-installer.js"
+		"create-windows-installer": "npm install && npm run express-build && npm run package-electron-windows && gulp move-dlls-windows && node installers/windows/create-installer.js"
 	},
 	"dependencies": {
 		"dotenv": "^6.1.0",

@@ -124,7 +124,7 @@ export class CanonCameraAPI {
 							}
 							else if (response.statusCode === 503) {
 								Logger.Instance.WriteDebug("Device is buty");
-								reject();
+								reject(new Error("busy"));
 							}
 							else {
 								reject(new Error("Failed to get content"));
