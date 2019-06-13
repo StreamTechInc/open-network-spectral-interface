@@ -35,7 +35,7 @@ export class CanonCameraAPI {
 
 				request.get(url, (error, response, body) => {
 					if (error) {
-						// failed to connect
+						Logger.Instance.WriteError(error);
 						resolve(null);
 					}
 
@@ -128,8 +128,8 @@ export class CanonCameraAPI {
 								}
 							}
 							else if (response.statusCode === 503) {
-								Logger.Instance.WriteDebug("Device is buty");
-								reject(new Error("busy"));
+								Logger.Instance.WriteDebug("Device is busy");
+								reject(new Error("Device is busy"));
 							}
 							else {
 								reject(new Error("Failed to get content"));
@@ -146,18 +146,8 @@ export class CanonCameraAPI {
 		});
 	}
 
-	public GetZoomProperty(): Promise<HardwareProperty> {
-		return new Promise<HardwareProperty>((resolve, reject) => {
-			const property: HardwareProperty = new HardwareProperty();
-
-			property.id = "zoom";
-			property.userReadableName = "zoom";
-			property.dataType = "int";
-			property.order = 1;
-			property.increment = 1;
-			property.minValue = 0;
-			property.maxValue = 201;
-
+	public GetZoomProperty(): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
 			try {
 				const url: string = this._baseUrl + "shooting/control/zoom";
 				
@@ -171,8 +161,10 @@ export class CanonCameraAPI {
 					if (response) {
 						
 						if (response.statusCode === 200) {
-							property.value = JSON.parse(body).value;
-							resolve(property);
+							resolve(JSON.parse(body).value);
+						}
+						else {
+							reject(new Error("Filed with response code: " + response.statusCode));
 						}
 					}
 					else {
@@ -208,6 +200,9 @@ export class CanonCameraAPI {
 						if (response.statusCode === 200) {
 							property.value = JSON.parse(body).value;
 							resolve(property);
+						}
+						else {
+							reject(new Error("Failed with response code: " + response.statusCode));
 						}
 					}
 					else {

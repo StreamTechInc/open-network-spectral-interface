@@ -20,7 +20,7 @@ export class CanonCameraDevice implements IHardware {
 	 * Private Variables
 	 */
 	private _autoFocus: boolean = true;
-	
+
 	get timeout(): number {
 		return 2 * 60 * 1000;
 	}
@@ -28,7 +28,7 @@ export class CanonCameraDevice implements IHardware {
 	 * Constructor
 	 */
 	constructor() {
-			this.id = Guid.create();
+		this.id = Guid.create();
 	}
 
 	/**
@@ -39,7 +39,16 @@ export class CanonCameraDevice implements IHardware {
 			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
 			try {
-				properties.push(await CanonCameraAPI.Instance.GetZoomProperty());
+				const zoomProperty: HardwareProperty = new HardwareProperty();
+				zoomProperty.id = "zoom";
+				zoomProperty.userReadableName = "zoom";
+				zoomProperty.dataType = "int";
+				zoomProperty.order = 1;
+				zoomProperty.increment = 1;
+				zoomProperty.minValue = 0;
+				zoomProperty.maxValue = 201;
+				zoomProperty.value = await CanonCameraAPI.Instance.GetZoomProperty()
+				properties.push();
 				properties.push(this.GetAutoFocusProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
@@ -49,7 +58,7 @@ export class CanonCameraDevice implements IHardware {
 			resolve(properties);
 		});
 	}
-		
+
 	public GetProperty(key: string): Promise<HardwareProperty> {
 		return new Promise<HardwareProperty>(async (resolve, reject) => {
 			let property: HardwareProperty = undefined;
@@ -57,7 +66,14 @@ export class CanonCameraDevice implements IHardware {
 			try {
 				switch (key) {
 					case "zoom":
-						property = await CanonCameraAPI.Instance.GetZoomProperty();
+						property.id = "zoom";
+						property.userReadableName = "zoom";
+						property.dataType = "int";
+						property.order = 1;
+						property.increment = 1;
+						property.minValue = 0;
+						property.maxValue = 201;
+						property.value = await CanonCameraAPI.Instance.GetZoomProperty();
 						break;
 					case "auto_focus":
 						property = this.GetAutoFocusProperty();
@@ -99,13 +115,13 @@ export class CanonCameraDevice implements IHardware {
 			resolve(property);
 		});
 	}
-		
+
 	public Capture(): Promise<Array<CanonCameraCaptureData>> {
 		return new Promise<Array<CanonCameraCaptureData>>(async (resolve, reject) => {
 			try {
 				const returnArray = new Array<CanonCameraCaptureData>();
 				const fileNameUrl: string = await CanonCameraAPI.Instance.StillImageShooting(this._autoFocus);
-				
+
 				if (fileNameUrl) {
 					const returnData: CanonCameraCaptureData = new CanonCameraCaptureData();
 					returnData.imageData = await CanonCameraAPI.Instance.DownloadStorageFile(fileNameUrl);
