@@ -146,7 +146,7 @@ export class CanonCameraAPI {
 		});
 	}
 
-	public GetZoomProperty(): Promise<string> {
+	public GetZoomValue(): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			try {
 				const url: string = this._baseUrl + "shooting/control/zoom";
@@ -168,7 +168,7 @@ export class CanonCameraAPI {
 						}
 					}
 					else {
-						reject(new Error("Failed to get zoom property"));
+						reject(new Error("Failed to get zoom value"));
 					}
 				});
 			} catch (error) {
@@ -177,7 +177,7 @@ export class CanonCameraAPI {
 		});
 	}	
 
-	public SetZoomProperty(newValue: number): Promise<HardwareProperty> {
+	public SetZoomValue(newValue: number): Promise<HardwareProperty> {
 		return new Promise<HardwareProperty>((resolve, reject) => {
 			const property: HardwareProperty = new HardwareProperty();
 			try {
@@ -206,7 +206,7 @@ export class CanonCameraAPI {
 						}
 					}
 					else {
-						reject(new Error("Failed to get zoom property"));
+						reject(new Error("Failed to set zoom value"));
 					}
 				});
 			} catch (error) {

@@ -39,16 +39,7 @@ export class CanonCameraDevice implements IHardware {
 			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
 			try {
-				const zoomProperty: HardwareProperty = new HardwareProperty();
-				zoomProperty.id = "zoom";
-				zoomProperty.userReadableName = "zoom";
-				zoomProperty.dataType = "int";
-				zoomProperty.order = 1;
-				zoomProperty.increment = 1;
-				zoomProperty.minValue = 0;
-				zoomProperty.maxValue = 201;
-				zoomProperty.value = await CanonCameraAPI.Instance.GetZoomProperty();
-				properties.push(zoomProperty);
+				properties.push(await this.GetZoomProperty());
 				properties.push(this.GetAutoFocusProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
@@ -66,15 +57,7 @@ export class CanonCameraDevice implements IHardware {
 			try {
 				switch (key) {
 					case "zoom":
-						property = new HardwareProperty();
-						property.id = "zoom";
-						property.userReadableName = "zoom";
-						property.dataType = "int";
-						property.order = 1;
-						property.increment = 1;
-						property.minValue = 0;
-						property.maxValue = 201;
-						property.value = await CanonCameraAPI.Instance.GetZoomProperty();
+						property = await this.GetZoomProperty();
 						break;
 					case "auto_focus":
 						property = this.GetAutoFocusProperty();
@@ -99,7 +82,7 @@ export class CanonCameraDevice implements IHardware {
 			try {
 				switch (setting.id) {
 					case "zoom":
-						property = await CanonCameraAPI.Instance.SetZoomProperty(+setting.value);
+						property = await CanonCameraAPI.Instance.SetZoomValue(+setting.value);
 						break;
 					case "auto_focus":
 						property = this.SetAutoFocusProperty(setting.value === "true");
@@ -163,6 +146,32 @@ export class CanonCameraDevice implements IHardware {
 	/**
 	 * Private Functions
 	 */
+
+	private GetZoomProperty(): Promise<HardwareProperty> {
+		return new Promise<HardwareProperty>(async (resolve, reject) => {
+			const zoomProperty: HardwareProperty = new HardwareProperty();
+			try {
+				zoomProperty.id = "zoom";
+				zoomProperty.userReadableName = "zoom";
+				zoomProperty.dataType = "int";
+				zoomProperty.order = 1;
+				zoomProperty.increment = 1;
+				zoomProperty.minValue = 0;
+				zoomProperty.maxValue = 201;
+				zoomProperty.value = await CanonCameraAPI.Instance.GetZoomValue();
+				
+				if (zoomProperty.value) {
+					resolve(zoomProperty);
+				}
+				else {
+					reject("Failed to get zoom value");
+				}
+			}
+			catch (error) {
+				reject(error);
+			}
+		});
+	}
 
 	private GetAutoFocusProperty(): HardwareProperty {
 		const property: HardwareProperty = new HardwareProperty();
