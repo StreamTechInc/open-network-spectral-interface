@@ -161,7 +161,7 @@ export class CanonCameraAPI {
 					if (response) {
 						
 						if (response.statusCode === 200) {
-							resolve(JSON.parse(body).value);
+							resolve(JSON.parse(body).value.toString());
 						}
 						else {
 							reject(new Error("Filed with response code: " + response.statusCode));

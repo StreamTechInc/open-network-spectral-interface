@@ -47,8 +47,8 @@ export class CanonCameraDevice implements IHardware {
 				zoomProperty.increment = 1;
 				zoomProperty.minValue = 0;
 				zoomProperty.maxValue = 201;
-				zoomProperty.value = await CanonCameraAPI.Instance.GetZoomProperty()
-				properties.push();
+				zoomProperty.value = await CanonCameraAPI.Instance.GetZoomProperty();
+				properties.push(zoomProperty);
 				properties.push(this.GetAutoFocusProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
@@ -66,6 +66,7 @@ export class CanonCameraDevice implements IHardware {
 			try {
 				switch (key) {
 					case "zoom":
+						property = new HardwareProperty();
 						property.id = "zoom";
 						property.userReadableName = "zoom";
 						property.dataType = "int";
