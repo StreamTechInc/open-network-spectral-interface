@@ -1,5 +1,7 @@
 //handle setupevents as quickly as possible
 const setupEvents = require('./setup-events')
+const fs = require("fs");
+
 if (setupEvents.handleSquirrelEvent()) {
 	// squirrel event handled and app will exit in 1000ms, so don't do anything else
 	return;
@@ -96,17 +98,19 @@ app.on("activate", () => {
 
 // Auto-Update
 function startAutoUpdate() {
-	url = "https://streamdocsprod.blob.core.windows.net/onsi";
+	if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe'))) {
+        url = "https://streamdocsprod.blob.core.windows.net/onsi";
 
-	electron.autoUpdater.setFeedURL(url);
+        electron.autoUpdater.setFeedURL(url);
 
-	electron.autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
-		electron.autoUpdater.quitAndInstall();
-	});
+        electron.autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
+            electron.autoUpdater.quitAndInstall();
+        });
 
-	electron.autoUpdater.addListener("error", (error) => {
-		electron.dialog.showMessageBox({ "message": "Auto updater error: " + error });
-	});
+        electron.autoUpdater.addListener("error", (error) => {
+            electron.dialog.showMessageBox({ "message": "Auto updater error: " + error });
+        });
 
-	electron.autoUpdater.checkForUpdates();
+        electron.autoUpdater.checkForUpdates();
+    }
 }

@@ -14,7 +14,7 @@ export class CanonCameraAPI {
 	 *  Singleton
 	 */
 	private static instance: CanonCameraAPI;
-	
+
 	/**
 	 * Constants
 	 */
@@ -29,9 +29,9 @@ export class CanonCameraAPI {
 
 	public GetDeviceInfo(): Promise<CanonCameraDevice> {
 		return new Promise<CanonCameraDevice>((resolve, reject) => {
-		
+
 			try {
-				const url: string =  this._baseUrl + "deviceinformation";
+				const url: string = this._baseUrl + "deviceinformation";
 
 				request.get(url, (error, response, body) => {
 					if (error) {
@@ -62,25 +62,25 @@ export class CanonCameraAPI {
 
 	public StillImageShooting(af: boolean): Promise<string> {
 		return new Promise<string>(async (resolve, reject) => {
-		
+
 			try {
 				const url: string = this._baseUrl + "shooting/control/shutterbutton";
 				const options = {
 					headers: {
 						"content-type": "application/json"
 					},
-					body: JSON.stringify({af: af})
+					body: JSON.stringify({ af: af })
 				};
-				
+
 				request.post(url, options, async (error, response, body) => {
-					
+
 					if (error) {
 						Logger.Instance.WriteError(error);
 						reject(new Error(error));
 					}
-					
+
 					if (response) {
-						
+
 						if (response.statusCode === 200) {
 							setTimeout(async () => {
 								const fileNameUrl: string = await CanonCameraAPI.Instance.GetLastFileName();
@@ -108,17 +108,17 @@ export class CanonCameraAPI {
 				const url: string = this._baseUrl + "contents/sd/100CANON/";
 				setTimeout(() => {
 					request.get(url, (error, response, body) => {
-						
+
 						if (error) {
 							Logger.Instance.WriteError(error);
 							reject(new Error(error));
 						}
-						
+
 						if (response) {
-							
+
 							if (response.statusCode === 200) {
 								const contentList = JSON.parse(body).url;
-								
+
 								if (contentList.length > 0) {
 									const lastUrl = contentList.pop();
 									resolve(lastUrl);
@@ -150,16 +150,16 @@ export class CanonCameraAPI {
 		return new Promise<string>((resolve, reject) => {
 			try {
 				const url: string = this._baseUrl + "shooting/control/zoom";
-				
+
 				request.get(url, (error, response, body) => {
-					
+
 					if (error) {
 						Logger.Instance.WriteError(error);
 						reject(new Error(error));
 					}
 
 					if (response) {
-						
+
 						if (response.statusCode === 200) {
 							resolve(JSON.parse(body).value.toString());
 						}
@@ -175,7 +175,7 @@ export class CanonCameraAPI {
 				reject(error);
 			}
 		});
-	}	
+	}
 
 	public SetZoomValue(newValue: number): Promise<HardwareProperty> {
 		return new Promise<HardwareProperty>((resolve, reject) => {
@@ -186,17 +186,17 @@ export class CanonCameraAPI {
 					headers: {
 						"content-type": "application/json"
 					},
-					body: JSON.stringify({"value": newValue})
+					body: JSON.stringify({ "value": newValue })
 				};
 				request.post(url, options, (error, response, body) => {
-					
+
 					if (error) {
 						Logger.Instance.WriteError(error);
 						reject(new Error(error));
 					}
-					
+
 					if (response) {
-						
+
 						if (response.statusCode === 200) {
 							property.value = JSON.parse(body).value;
 							resolve(property);
@@ -214,26 +214,26 @@ export class CanonCameraAPI {
 			}
 		});
 	}
-	
+
 	public DownloadStorageFile(fileUrl: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 
 			try {
 				const options = {
-					headers: {
-						"content-type": "image/jpeg"
-					}
+					url: fileUrl,
+					encoding: "binary"
 				};
-				request.get(fileUrl, options, (error, response, body) => {
+				request.get(options, (error, response, body) => {
 					if (error) {
 						Logger.Instance.WriteError(error);
 						reject(error);
 					}
-					
+
 					if (response) {
 
 						if (response.statusCode === 200) {
-							resolve(body);
+							const image = new Buffer(body, "binary").toString("base64");
+							resolve(image);
 						}
 						else {
 							Logger.Instance.WriteDebug("Failed to delete");
@@ -259,12 +259,12 @@ export class CanonCameraAPI {
 
 			try {
 				request.delete(fileUrl, (error, response, body) => {
-					
+
 					if (error) {
 						Logger.Instance.WriteError(error);
 						reject(error);
 					}
-					
+
 					if (response) {
 
 						if (response.statusCode === 200) {
@@ -286,5 +286,5 @@ export class CanonCameraAPI {
 				reject();
 			}
 		});
-	} 
+	}
 }
