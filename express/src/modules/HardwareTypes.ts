@@ -5,6 +5,7 @@ import { IHardwareType } from "../interfaces/IHardwareType";
 import { SeaBreezeHardware } from "./SeaBreeze/SeaBreezeHardware";
 import { SoftSpecHardware } from "./SoftSpec/SoftSpecHardware";
 import { SpectroScanHardware } from "./SpectroScan/SpectroScanHardware";
+import { CanonCameraHardware } from "./CanonCamera/CanonCameraHardware";
 
 /* End Module Imports */
 
@@ -33,6 +34,7 @@ export class HardwareTypes {
 		this.AvailableHardwareTypes.push(new SeaBreezeHardware());
 		this.AvailableHardwareTypes.push(new SoftSpecHardware());
 		this.AvailableHardwareTypes.push(new SpectroScanHardware());
+		this.AvailableHardwareTypes.push(new CanonCameraHardware());
 
 		/* End IHardwareType Initialization */
 	}
