@@ -1,0 +1,32 @@
+{
+  "name": "open-network-spectral-interface",
+  "version": "1.0.0",
+  "description": "Embedded API for controlling hardware",
+  "productName": "Open Network Spectral Interface",
+  "main": "main.js",
+  "engines": {
+    "node": "6.12.1"
+  },
+  "scripts": {
+    "electron": "SET NODE_ENV=development && npm run express-build && electron ./main.js",
+    "express-build": "cd ../express && npm run build",
+    "package-windows": "electron-packager . open-network-spectral-interface --platform=win32 --arch=x64 --overwrite --prune=true --out=../build/dist --icon=./express/dist/views/assets/img/favicon.ico",
+    "dev-init": "cd ../express && npm install && cd ../electron && npm install && cd ../express && gulp move && cd ../electron/express && npm install && npm run rebuild && cd ../../express && npm run build",
+    "prod-init": "cd ../express &&  npm install --production && npm prune --production && cd ../electron && npm install --production && npm prune --production && cd ../express && gulp move && cd ../electron/express && npm install --production && npm prune --production && npm run rebuild && cd ../../express && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StreamTechInc/open-network-spectral-interface"
+  },
+  "author": "Stream Technologies Inc",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^6.1.0"
+  },
+  "devDependencies": {
+    "electron": "^1.3.0",
+    "electron-packager": "^12.2.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0"
+  }
+}

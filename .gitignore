@@ -59,7 +59,8 @@ typings/
 
 # dist distribution files
 dist/
-builds/
+build/dist
+electron/express/
 
 # SoftSpec Spectrometer files
 src/modules/SoftSpec/spectrometers/

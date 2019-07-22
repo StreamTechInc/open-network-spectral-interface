@@ -5,16 +5,16 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
-        "outDir": "dist",
+        "outDir": "../electron/express/dist",
         "baseUrl": ".",
         "paths": {
             "*": [
                 "node_modules/*",
-                "server/types/*"
+                "src/types/*"
             ]
         }
     },
     "include": [
-        "server/**/*"
+        "src/**/*"
     ]
 }

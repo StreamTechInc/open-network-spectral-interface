@@ -1,0 +1,18 @@
+{
+	"name": "onsi-builder",
+	"version": "1.0.0",
+	"description": "build onsi",
+	"productName": "onsi-builder",
+	"main": "main.js",
+	"scripts": {
+		"express-build": "gulp copy-express-files && cd ../electron/express && npm install --production && npm prune --production && cd ../../express && npm run build",
+		"package-electron-windows": "cd ../electron && npm install && npm run package-windows",
+		"create-windows-installer": "npm install && npm run express-build && npm run package-electron-windows && gulp move-dlls-windows && node installers/windows/create-installer.js"
+	},
+	"dependencies": {
+		"dotenv": "^6.1.0",
+		"electron-packager": "^12.2.0",
+		"electron-winstaller": "^2.7.0",
+		"gulp": "^3.9.1"
+	}
+}
