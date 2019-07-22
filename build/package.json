@@ -1,6 +1,6 @@
 {
 	"name": "onsi-builder",
-	"version": "1.0.0",
+	"version": "1.0.19",
 	"description": "build onsi",
 	"productName": "onsi-builder",
 	"main": "main.js",

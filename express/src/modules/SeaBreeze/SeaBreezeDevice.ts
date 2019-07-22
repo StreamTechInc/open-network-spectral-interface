@@ -254,7 +254,7 @@ export class SeaBreezeDevice implements IHardware {
 		property.order = 3;
 		property.increment = 1;
 		property.minValue = 1;
-		property.maxValue = 10;
+		property.maxValue = 10000;
 
 		// Get Current Value
 		property.value = this._scanAverage.toString();
