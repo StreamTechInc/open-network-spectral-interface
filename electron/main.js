@@ -1,6 +1,7 @@
 //handle setupevents as quickly as possible
 const setupEvents = require('./setup-events')
 const fs = require("fs");
+const dns = require("dns");
 
 if (setupEvents.handleSquirrelEvent()) {
 	// squirrel event handled and app will exit in 1000ms, so don't do anything else
@@ -74,9 +75,9 @@ function createWindow() {
 app.on("ready", () => {
 	createWindow();
 
-	if (process.env.NODE_ENV !== "development") {
+	//if (process.env.NODE_ENV !== "development") {
 		startAutoUpdate();
-	}
+	//}
 });
 
 // Quit when all windows are closed.
@@ -98,19 +99,28 @@ app.on("activate", () => {
 
 // Auto-Update
 function startAutoUpdate() {
-	if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe'))) {
-        url = "https://streamdocsprod.blob.core.windows.net/onsi";
-
-        electron.autoUpdater.setFeedURL(url);
-
-        electron.autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
-            electron.autoUpdater.quitAndInstall();
-        });
-
-        electron.autoUpdater.addListener("error", (error) => {
-            electron.dialog.showMessageBox({ "message": "Auto updater error: " + error });
-        });
-
-        electron.autoUpdater.checkForUpdates();
-    }
+	// Check for internet before attempting to get updates
+	dns.lookup("google.com", function (error) {
+		if (!error) {
+			if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe'))) {
+				url = "https://streamdocsprod.blob.core.windows.net/onsi";
+		
+				electron.autoUpdater.setFeedURL(url);
+		
+				electron.autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName) => {
+					electron.autoUpdater.quitAndInstall();
+				});
+		
+				electron.autoUpdater.addListener("error", (error) => {
+					electron.dialog.showMessageBox({ "message": "Auto updater error: " + error });
+				});
+		
+				electron.autoUpdater.checkForUpdates();
+			}
+		}
+		else {
+			console.log('no internet');
+		}
+		// else we don't have internet so keep on keeping on
+	});	
 }
