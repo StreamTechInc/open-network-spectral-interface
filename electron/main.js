@@ -75,9 +75,9 @@ function createWindow() {
 app.on("ready", () => {
 	createWindow();
 
-	//if (process.env.NODE_ENV !== "development") {
+	if (process.env.NODE_ENV !== "development") {
 		startAutoUpdate();
-	//}
+	}
 });
 
 // Quit when all windows are closed.
