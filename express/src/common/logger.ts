@@ -1,4 +1,5 @@
 import * as ApplicationInsights from "applicationinsights";
+import * as DNS from "dns";
 import { Config } from "./config";
 
 export class Logger {
@@ -14,12 +15,20 @@ export class Logger {
 	}
 
 	constructor() {
-		ApplicationInsights.setup(Config.InstrumentationKey)
-			.setAutoCollectConsole(true)
-			.setAutoCollectExceptions(true)
-			.start();
+		// Make sure we are connected to the internet before trying to send logs
+		DNS.lookup("google.com", (error: any) => {
+			if (!error) {
+				ApplicationInsights.setup(Config.InstrumentationKey)
+					.setAutoCollectConsole(true)
+					.setAutoCollectExceptions(true)
+					.start();
 
-		this.client = ApplicationInsights.defaultClient;
+				this.client = ApplicationInsights.defaultClient;
+			}
+			else {
+				this.client = undefined;
+			}
+		});
 	}
 
 	/**
