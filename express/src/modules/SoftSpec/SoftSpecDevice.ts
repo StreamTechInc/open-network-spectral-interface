@@ -19,7 +19,9 @@ export class SoftSpecDevice implements IHardware {
 	/**
 	 * Private Member Variables
 	 */
-	private _scanFileName: string = "0_percent.json";
+	private _datasetName: string = "calibration";
+	private _datasetIndex: number = 0;
+	private _scanAverage: number = 1;
 
 	/**
 	 * Properties
@@ -44,7 +46,8 @@ export class SoftSpecDevice implements IHardware {
 			const properties: Array<HardwareProperty> = Array<HardwareProperty>();
 
 			try {
-				properties.push(this.GetScanFilenameProperty());
+				properties.push(this.GetDatasetNameProperty());
+				properties.push(this.GetScanAverageProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
@@ -60,8 +63,11 @@ export class SoftSpecDevice implements IHardware {
 
 			try {
 				switch (key) {
-					case "scan_filename":
-						property = this.GetScanFilenameProperty();
+					case "dataset_name":
+						property = this.GetDatasetNameProperty();
+						break;
+					case "scan_average":
+						property = this.GetScanAverageProperty();
 						break;
 					default:
 						property = undefined;
@@ -82,8 +88,11 @@ export class SoftSpecDevice implements IHardware {
 
 			try {
 				switch (setting.id) {
-					case "scan_filename":
-						property = this.SetScanFilenameProperty(setting.value);
+					case "dataset_name":
+						property = this.SetDatasetNameProperty(setting.value);
+						break;
+					case "scan_average":
+						property = this.SetScanAverageProperty(+setting.value);
 						break;
 					default:
 						property = undefined;
@@ -100,40 +109,60 @@ export class SoftSpecDevice implements IHardware {
 
 	public Capture(): Promise<Array<SoftSpecCaptureData>> {
 		return new Promise<Array<SoftSpecCaptureData>>((resolve, reject) => {
-			let capturedData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
+			const capturedData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
 
 			try {
-				const filename = this.GetScanFilenameProperty();
+				const datesetName = this.GetDatasetNameProperty();
 
-				if (filename && filename.value) {
-					const fileReturn = Helpers.Instance.ReadFile("./src/modules/SoftSpec/scan files/" + filename.value);
+				if (datesetName && datesetName.value) {
+					const directoryReturn = Helpers.Instance.ReadFilesInDirectory(`../express/src/modules/SoftSpec/scan files/${datesetName.value}/`);
 
-					if (fileReturn.success) {
-						const randomCaptureData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
+					if (directoryReturn && directoryReturn.success) {
+						// Reset the dataset file index
+						if (directoryReturn.data.length <= this._datasetIndex) {
+							this._datasetIndex = 0;
+						}
 
-						fileReturn.data.forEach((element: SoftSpecCaptureData) => {
-							// Make a new random measured value that is +/- 0.5% of the sample data
-							const min: number = element.measuredValue - (element.measuredValue * 0.005);
-							const max: number = element.measuredValue + (element.measuredValue * 0.005);
+						console.log(directoryReturn.data.length, this._datasetIndex);
 
-							const newValue: SoftSpecCaptureData = new SoftSpecCaptureData();
-							newValue.wavelength = element.wavelength;
-							newValue.measuredValue = Helpers.Instance.Random(min, max);
+						const fileData: Array<SoftSpecCaptureData> = directoryReturn.data[this._datasetIndex];
 
-							randomCaptureData.push(newValue);
-						});
+						if (fileData) {
+							const randomCaptureData: Array<SoftSpecCaptureData> = new Array<SoftSpecCaptureData>();
+							
+							fileData.forEach((element: SoftSpecCaptureData) => {
+								const newValue: SoftSpecCaptureData = new SoftSpecCaptureData();
+								newValue.wavelength = element.wavelength;
+								newValue.measuredValue = 0;
+	
+								for (let index = 0; index < this._scanAverage; index++) {
+									// Make a new random measured value that is +/- 0.5% of the sample data
+									const min: number = element.measuredValue - (element.measuredValue * 0.005);
+									const max: number = element.measuredValue + (element.measuredValue * 0.005);
+	
+									newValue.measuredValue += Helpers.Instance.Random(min, max);
+								}
+	
+								randomCaptureData.push(newValue);
+							});
+	
+							for (let index = 0; index < randomCaptureData.length; index++) {
+								capturedData.push({ wavelength: randomCaptureData[index].wavelength, measuredValue: randomCaptureData[index].measuredValue / this._scanAverage });
+							}
 
-						capturedData = fileReturn.data;
+							this._datasetIndex++;
+						}
 					}
 					else {
-						reject(new Error(fileReturn.data));
+						reject(new Error(directoryReturn.data));
 					}
 				}
 				else {
-					reject(new Error("No filename set for scan data"));
+					reject(new Error("No dataset name set for scan data"));
 				}
 
 			} catch (error) {
+				this._datasetIndex = 0;
 				Logger.Instance.WriteError(error);
 				reject(error);
 			}
@@ -170,27 +199,55 @@ export class SoftSpecDevice implements IHardware {
 	 * Private Functions
 	 */
 	//#region Property Helpers
-	private GetScanFilenameProperty(): HardwareProperty {
+	private GetDatasetNameProperty(): HardwareProperty {
 		const property: HardwareProperty = new HardwareProperty();
 
 		// Fill out some known values
-		property.id = "scan_filename";
-		property.userReadableName = "Scan Filename";
+		property.id = "dataset_name";
+		property.userReadableName = "Dataset Name";
 		property.dataType = "string";
-		property.order = 4;
+		property.order = 1;
 		property.maxLength = 100;
 
 		// Get Current Value
-		property.value = this._scanFileName.toString();
+		property.value = this._datasetName.toString();
 
 		return property;
 	}
 
-	private SetScanFilenameProperty(newValue: string): HardwareProperty {
-		const property: HardwareProperty = this.GetScanFilenameProperty();
+	private SetDatasetNameProperty(newValue: string): HardwareProperty {
+		const property: HardwareProperty = this.GetDatasetNameProperty();
 
-		this._scanFileName = newValue;
+		this._datasetIndex = 0;
+		this._datasetName = newValue;
 		property.value = newValue.toString();
+
+		return property;
+	}
+
+	private GetScanAverageProperty(): HardwareProperty {
+		const property: HardwareProperty = new HardwareProperty();
+
+		// Fill out some known values
+		property.id = "scan_average";
+		property.userReadableName = "Scan Averaging";
+		property.dataType = "int";
+		property.order = 2;
+		property.increment = 1;
+		property.minValue = 1;
+		property.maxValue = 10000;
+
+		// Get Current Value
+		property.value = this._scanAverage.toString();
+
+		return property;
+	}
+
+	private SetScanAverageProperty(newValue: number): HardwareProperty {
+		const property: HardwareProperty = this.GetScanAverageProperty();
+
+		this._scanAverage = newValue;
+		property.value = this._scanAverage.toString();
 
 		return property;
 	}

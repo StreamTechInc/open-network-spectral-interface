@@ -31,7 +31,7 @@ export class Helpers {
 				if (existingProperty.dataType === "int" || existingProperty.dataType === "double") {
 					// Following only need if a number
 					const castValue = +newProperty.value;
-					
+
 					if (this.TestMinMax(castValue, existingProperty.minValue, existingProperty.maxValue)) {
 						if (this.TestIncrement(castValue, existingProperty.increment)) {
 							isValid.success = true;
@@ -92,7 +92,7 @@ export class Helpers {
 			// Must be string 
 			isValid = true;
 		}
-		
+
 		return isValid;
 	}
 
@@ -151,6 +151,32 @@ export class Helpers {
 		return fileResponse;
 	}
 
+	public ReadImageFile(filename: string): HardwareResponse {
+		const fileResponse: HardwareResponse = new HardwareResponse();
+		fileResponse.success = false;
+
+		try {
+			if (filename === undefined || filename.length === 0) {
+				fileResponse.data = "No filename provided";
+				Logger.Instance.WriteDebug(fileResponse.data);
+			}
+			else {
+				if (!fs.existsSync(filename)) {
+					fileResponse.data = 'File "' + filename + '" does not exist';
+					Logger.Instance.WriteDebug(fileResponse.data);
+				}
+				else {
+					fileResponse.data = fs.readFileSync(filename, { encoding: "base64" });
+					fileResponse.success = true;
+				}
+			}
+		} catch (error) {
+			fileResponse.data = error;
+		}
+
+		return fileResponse;
+	}
+
 	public ReadFilesInDirectory(filepath: string): HardwareResponse {
 		const fileResponse: HardwareResponse = new HardwareResponse();
 		fileResponse.success = false;
@@ -169,6 +195,30 @@ export class Helpers {
 				});
 
 				fileResponse.data = fileDataArray;
+				fileResponse.success = true;
+			}
+		} catch (error) {
+			fileResponse.data = error;
+		}
+
+		return fileResponse;
+	}
+
+	public ReadFilenamesInDirectory(filepath: string): HardwareResponse {
+		const fileResponse: HardwareResponse = new HardwareResponse();
+		fileResponse.success = false;
+
+		try {
+			if (filepath === undefined || filepath.length === 0) {
+				fileResponse.data = "No filepath provided.";
+			}
+			else {
+				const filenameArray = new Array();
+				fs.readdirSync(filepath).forEach(file => {
+					filenameArray.push(file);
+				});
+
+				fileResponse.data = filenameArray;
 				fileResponse.success = true;
 			}
 		} catch (error) {
