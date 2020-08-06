@@ -1,9 +1,11 @@
-import * as ffi from "ffi";
-import * as ref from "ref";
-import * as refArray from "ref-array";
-import { Logger } from "../../common/logger";
-import { Helpers } from "../../common/helpers";
-import { SpectroScanCaptureData } from "./models/spectroscan-capture-data";
+import * as ffi from 'ffi';
+import * as ref from 'ref';
+import * as refArray from 'ref-array';
+import { Logger } from '../../common/logger';
+import { Helpers } from '../../common/helpers';
+import { SpectroScanCaptureData } from './models/spectroscan-capture-data';
+import * as path from 'path';
+import { SpectroScanDevice } from './SpectroScanDevice';
 
 export class SpectroScanAPI {
 	/**
@@ -17,6 +19,7 @@ export class SpectroScanAPI {
 		if (this.instance === null || this.instance === undefined) {
 			this.instance = new SpectroScanAPI();
 		}
+
 
 		return this.instance;
 	}
@@ -37,29 +40,30 @@ export class SpectroScanAPI {
 	 */
 	private handle: number = 0;
 
-	private readonly libPath = "SpectroScanDLL_V6.a.dll"; 
+	private readonly spectroScanV6Path = 'C:\\Code\\open-network-spectral-interface\\express\\dist\\modules\\SpectroScan\\SpectroScanDLL_V6.a.dll';
 
-	private functions = new ffi.Library(this.libPath, {
-		"FTIR_UartConversion": [ref.types.void, [refArray(ref.types.byte), ref.types.short, refArray(ref.types.int), ref.types.int, ref.types.int]],
-		"FTIR_InterferogramToSpectrum": [ref.types.void, [refArray(ref.types.int), ref.types.double, ref.types.int, ref.types.int, ref.types.int, ref.types.double, refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), ref.types.int, ref.types.int, ref.types.int]],
-		"FTIR_Spectrum_Interpo": [ref.types.void, [refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), ref.types.int, ref.types.int, ref.types.double, ref.types.double, refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), ref.types.int, ref.types.int, ref.types.int]],
-		"FTIR_UpdateAlignment": [ref.types.void, [ref.types.uint64, ref.types.double, ref.types.double]]
+	private spectroScanV6Functions = new ffi.Library(this.spectroScanV6Path, {
+		'FTIR_UartConversion': [ref.types.void, [refArray(ref.types.byte), ref.types.short, refArray(ref.types.int), ref.types.int, ref.types.int]],
+		'FTIR_InterferogramToSpectrum': [ref.types.void, [refArray(ref.types.int), ref.types.double, ref.types.int, ref.types.int, ref.types.int, ref.types.double, refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), ref.types.int, ref.types.int, ref.types.int]],
+		'FTIR_Spectrum_Interpo': [ref.types.void, [refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), ref.types.int, ref.types.int, ref.types.double, ref.types.double, refArray(ref.types.double), refArray(ref.types.double), refArray(ref.types.double), ref.types.int, ref.types.int, ref.types.int]],
+		'FTIR_UpdateAlignment': [ref.types.void, [ref.types.uint64, ref.types.double, ref.types.double]]
 	});
 
-	private readonly ftdiPath = "ftd2xx64.dll"; 
+	private readonly ftdiPath = 'C:\\Code\\open-network-spectral-interface\\express\\dist\\modules\\SpectroScan\\ftd2xx64.dll';
 
 	private ftdi_functions = new ffi.Library(this.ftdiPath, {
-		"FT_Open": [ref.types.ulong, [ref.types.int, ref.refType(ref.types.uint64)]],
-		"FT_Close": [ref.types.ulong, [ref.types.uint64]],
-		"FT_SetBaudRate": [ref.types.ulong, [ref.types.uint64, ref.types.ulong]],
-		"FT_Write": [ref.types.ulong, [ref.types.uint64, refArray(ref.types.byte), ref.types.ulong, ref.refType(ref.types.ulong)]],
-		"FT_Read": [ref.types.ulong, [ref.types.uint64, ref.refType(refArray(ref.types.byte)), ref.types.ulong, ref.refType(ref.types.ulong)]],
-		"FT_GetStatus": [ref.types.ulong, [ref.types.uint64, ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.ulong)]],
-		"FT_SetTimeouts": [ref.types.ulong, [ref.types.uint64, ref.types.ulong, ref.types.ulong]],
-		"FT_GetQueueStatus": [ref.types.ulong, [ref.types.uint64, ref.refType(ref.types.ulong)]],
-		"FT_GetDeviceInfoDetail": [ref.types.ulong, [ref.types.ulong, ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.char), ref.refType(ref.types.ulong)]],
-		"FT_ListDevices": [ref.types.ulong, [ref.refType(ref.types.void), ref.refType(ref.types.void), ref.types.ulong]],
-		"FT_SetDataCharacteristics": [ref.types.ulong, [ref.types.uint64, ref.types.uchar, ref.types.uchar, ref.types.uchar]]
+		'FT_Open': [ref.types.ulong, [ref.types.int, ref.refType(ref.types.uint64)]],
+		'FT_Close': [ref.types.ulong, [ref.types.uint64]],
+		'FT_SetBaudRate': [ref.types.ulong, [ref.types.uint64, ref.types.ulong]],
+		'FT_Write': [ref.types.ulong, [ref.types.uint64, refArray(ref.types.byte), ref.types.ulong, ref.refType(ref.types.ulong)]],
+		'FT_Read': [ref.types.ulong, [ref.types.uint64, ref.refType(refArray(ref.types.byte)), ref.types.ulong, ref.refType(ref.types.ulong)]],
+		'FT_GetStatus': [ref.types.ulong, [ref.types.uint64, ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.ulong)]],
+		'FT_SetTimeouts': [ref.types.ulong, [ref.types.uint64, ref.types.ulong, ref.types.ulong]],
+		'FT_GetQueueStatus': [ref.types.ulong, [ref.types.uint64, ref.refType(ref.types.ulong)]],
+		'FT_GetDeviceInfoDetail': [ref.types.ulong, [ref.types.ulong, ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.char), ref.refType(ref.types.ulong)]],
+		'FT_ListDevices': [ref.types.ulong, [ref.refType(ref.types.void), ref.refType(ref.types.void), ref.types.ulong]],
+		'FT_SetDataCharacteristics': [ref.types.ulong, [ref.types.uint64, ref.types.uchar, ref.types.uchar, ref.types.uchar]],
+		'FT_GetDeviceInfo': [ref.types.ulong, [ref.types.uint64, ref.refType(ref.types.ulong), ref.refType(ref.types.ulong), ref.refType(ref.types.char), ref.refType(ref.types.char), ref.refType(ref.types.void)]]
 	});
 
 	/**
@@ -85,12 +89,12 @@ export class SpectroScanAPI {
 									resolve(this.handle);
 								}
 								else {
-									reject("FTDI_SetDataCharacteristics failed with status: " + status);
+									reject('FTDI_SetDataCharacteristics failed with status: ' + status);
 								}
 							}, 10);
 						}
 						else {
-							reject("FTDI_SetBaudRate failed with status: " + status);
+							reject('FTDI_SetBaudRate failed with status: ' + status);
 						}
 					}, 10);
 				}
@@ -98,7 +102,7 @@ export class SpectroScanAPI {
 					resolve(undefined);
 				}
 				else {
-					reject("Device failed to open");
+					reject('Device failed to open');
 				}
 			}
 			catch (error) {
@@ -107,7 +111,12 @@ export class SpectroScanAPI {
 		});
 	}
 
-	public GetSpectrum(handle: number): Promise<Array<SpectroScanCaptureData>> {
+	public GetSpectrum(handle: number, version: number): Promise<Array<SpectroScanCaptureData>> {
+		console.log('get spectrum');
+		return version === 3 ? this.GetSpectrumV3(handle) : this.GetSpectrumV4(handle);
+	}
+
+	private GetSpectrumV3(handle: number): Promise<Array<SpectroScanCaptureData>> {
 		/**
 		 * To get the spectrum there is a handful of actions to be taken with a wait between each step.
 		 * 1. Write the command to indicate it begins scanning
@@ -151,7 +160,7 @@ export class SpectroScanAPI {
 									setTimeout(() => {
 										const intf = ref.alloc(refArray(ref.types.int32, rxBytes / 2));
 
-										this.functions.FTIR_UartConversion(buffer2, 1, intf, rxBytes, rxBytes);
+										this.spectroScanV6Functions.FTIR_UartConversion(buffer2, 1, intf, rxBytes, rxBytes);
 
 										setTimeout(() => {
 											rxBytes = rxBytes / 2;
@@ -165,7 +174,7 @@ export class SpectroScanAPI {
 											const Wavenumber = ref.alloc(refArray(ref.types.double, rxBytes));
 											const Intf_AC = ref.alloc(refArray(ref.types.double, rxBytes));
 
-											this.functions.FTIR_InterferogramToSpectrum(intf, zeroPadding, boardband, mertz, peak, calibrationFactor, SpectrumMag, Wavenumber, Intf_AC, rxBytes, rxBytes, rxBytes);
+											this.spectroScanV6Functions.FTIR_InterferogramToSpectrum(intf, zeroPadding, boardband, mertz, peak, calibrationFactor, SpectrumMag, Wavenumber, Intf_AC, rxBytes, rxBytes, rxBytes);
 
 											const scan: number = 2;
 											const au: number = 0;
@@ -176,7 +185,7 @@ export class SpectroScanAPI {
 											const Raw = ref.alloc(refArray(ref.types.double, waverange));
 											const Wavelength = ref.alloc(refArray(ref.types.double, waverange));
 
-											this.functions.FTIR_Spectrum_Interpo(SpectrumMag, Wavenumber, SpectrumMag, Wavenumber, scan, au, minwave, maxwave, Absorption, Raw, Wavelength, waverange, waverange, waverange);
+											this.spectroScanV6Functions.FTIR_Spectrum_Interpo(SpectrumMag, Wavenumber, SpectrumMag, Wavenumber, scan, au, minwave, maxwave, Absorption, Raw, Wavelength, waverange, waverange, waverange);
 
 											const specData = ref.deref(Raw);
 											const waveData = ref.deref(Wavelength);
@@ -204,22 +213,28 @@ export class SpectroScanAPI {
 									}, 10);
 								}
 								else {
-									reject("Read 2 failed with status: " + status);
+									reject('Read 2 failed with status: ' + status);
 								}
 							}
 							else {
-								reject("GetQueueStatus failed with status: " + status);
+								reject('GetQueueStatus failed with status: ' + status);
 							}
 						}, 500);
 					}
 					else {
-						reject("Read 1 failed with status: " + status);
+						reject('Read 1 failed with status: ' + status);
 					}
 				}, 10);
 			}
 			else {
-				reject("Write failed with status: " + status);
+				reject('Write failed with status: ' + status);
 			}
+		});
+	}
+
+	private GetSpectrumV4(comPort: number): Promise<Array<SpectroScanCaptureData>> {
+		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
+			resolve(null);
 		});
 	}
 
@@ -238,7 +253,7 @@ export class SpectroScanAPI {
 				}, 15000);
 			}
 			else {
-				reject("Write failed with status: " + status);
+				reject('Write failed with status: ' + status);
 			}
 		});
 	}
@@ -262,8 +277,8 @@ export class SpectroScanAPI {
 		return status === 0;
 	}
 
-	public GetDeviceDetails(handle: number): Promise<string> {
-		return new Promise<string>((resolve, reject) => {
+	public GetDeviceDetails(handle: number): Promise<string[]> {
+		return new Promise<string[]>((resolve, reject) => {
 			let status = this.FTDI_Write(handle, [0xAA, 0x00, 0x00]);
 
 			if (status === 0) {
@@ -276,15 +291,15 @@ export class SpectroScanAPI {
 
 					if (status === 0 && rxBytes > 0) {
 						const details = Helpers.Instance.ConvertByteArrayToString(buffer);
-						resolve(details);
+						resolve(details.split('-'));
 					}
 					else {
-						reject("FTDI_Read failed with a status of: " + status + " and rxBytes: " + rxBytes);
+						reject('FTDI_Read failed with a status of: ' + status + ' and rxBytes: ' + rxBytes);
 					}
 				}, 10);
 			}
 			else {
-				reject("FTDI_Write failed with a status of: " + status);
+				reject('FTDI_Write failed with a status of: ' + status);
 			}
 		});
 	}
@@ -294,16 +309,6 @@ export class SpectroScanAPI {
 	 * Private Functions
 	 * 
 	 */
-
-	private UpdateAlignment(handle: number, x: number, y: number) {
-		try {
-			this.functions.FTIR_UpdateAlignment(handle, x, y);
-		}
-		catch (error) {
-			Logger.Instance.WriteError(error);
-		}
-	}
-
 	private FTDI_Open(): number {
 		let status: number = 0;
 
@@ -315,7 +320,7 @@ export class SpectroScanAPI {
 				this.handle = ref.deref(handlePtr);
 			}
 			else {
-				Logger.Instance.WriteError(new Error("FTDI_Open failed with status: " + status));
+				Logger.Instance.WriteError(new Error('FTDI_Open failed with status: ' + status));
 			}
 		}
 		catch (error) {

@@ -1,11 +1,11 @@
-import { IHardware } from "../../interfaces/IHardware";
-import { Guid } from "guid-typescript";
-import { HardwareProperty } from "../../models/hardware-property";
-import { Logger } from "../../common/logger";
-import { IStatus } from "../../interfaces/IStatus";
-import { ISubscription } from "../../interfaces/ISubscription";
-import { SoftSpecCaptureData } from "./models/softspec-capture-data";
-import { Helpers } from "../../common/helpers";
+import { IHardware } from '../../interfaces/IHardware';
+import { Guid } from 'guid-typescript';
+import { HardwareProperty } from '../../models/hardware-property';
+import { Logger } from '../../common/logger';
+import { IStatus } from '../../interfaces/IStatus';
+import { ISubscription } from '../../interfaces/ISubscription';
+import { SoftSpecCaptureData } from './models/softspec-capture-data';
+import { Helpers } from '../../common/helpers';
 
 export class SoftSpecDevice implements IHardware {
 	/**
@@ -14,12 +14,12 @@ export class SoftSpecDevice implements IHardware {
 	public id: Guid;
 	public modelName: string;
 	public serial: string;
-	public type: string = "SoftSpec Spectrometer";
+	public type: string = 'Software Spectrometer';
 
 	/**
 	 * Private Member Variables
 	 */
-	private _datasetName: string = "calibration";
+	private _datasetName: string = 'calibration';
 	private _datasetIndex: number = 0;
 	private _scanAverage: number = 1;
 
@@ -63,10 +63,10 @@ export class SoftSpecDevice implements IHardware {
 
 			try {
 				switch (key) {
-					case "dataset_name":
+					case 'dataset_name':
 						property = this.GetDatasetNameProperty();
 						break;
-					case "scan_average":
+					case 'scan_average':
 						property = this.GetScanAverageProperty();
 						break;
 					default:
@@ -88,10 +88,10 @@ export class SoftSpecDevice implements IHardware {
 
 			try {
 				switch (setting.id) {
-					case "dataset_name":
+					case 'dataset_name':
 						property = this.SetDatasetNameProperty(setting.value);
 						break;
-					case "scan_average":
+					case 'scan_average':
 						property = this.SetScanAverageProperty(+setting.value);
 						break;
 					default:
@@ -158,7 +158,7 @@ export class SoftSpecDevice implements IHardware {
 					}
 				}
 				else {
-					reject(new Error("No dataset name set for scan data"));
+					reject(new Error('No dataset name set for scan data'));
 				}
 
 			} catch (error) {
@@ -203,9 +203,9 @@ export class SoftSpecDevice implements IHardware {
 		const property: HardwareProperty = new HardwareProperty();
 
 		// Fill out some known values
-		property.id = "dataset_name";
-		property.userReadableName = "Dataset Name";
-		property.dataType = "string";
+		property.id = 'dataset_name';
+		property.userReadableName = 'Dataset Name';
+		property.dataType = 'string';
 		property.order = 1;
 		property.maxLength = 100;
 
@@ -229,9 +229,9 @@ export class SoftSpecDevice implements IHardware {
 		const property: HardwareProperty = new HardwareProperty();
 
 		// Fill out some known values
-		property.id = "scan_average";
-		property.userReadableName = "Scan Averaging";
-		property.dataType = "int";
+		property.id = 'scan_average';
+		property.userReadableName = 'Scan Averaging';
+		property.dataType = 'int';
 		property.order = 2;
 		property.increment = 1;
 		property.minValue = 1;

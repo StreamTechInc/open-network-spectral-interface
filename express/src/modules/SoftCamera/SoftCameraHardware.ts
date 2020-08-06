@@ -1,15 +1,15 @@
-import { IHardwareType } from "../../interfaces/IHardwareType";
-import { SoftCameraDevice } from "./SoftCameraDevice";
-import { Logger } from "../../common/logger";
-import { Helpers } from "../../common/helpers";
+import { IHardwareType } from '../../interfaces/IHardwareType';
+import { SoftCameraDevice } from './SoftCameraDevice';
+import { Logger } from '../../common/logger';
+import { Helpers } from '../../common/helpers';
 
 export class SoftCameraHardware implements IHardwareType {
 
-	private _specsFilePath: string = "../express/src/modules/SoftCamera/cameras/";
+	private _specsFilePath: string = '../express/src/modules/SoftCamera/cameras/';
 	private _devices: Array<SoftCameraDevice> = new Array<SoftCameraDevice>();
 
 	public GetDevices(): Promise<Array<SoftCameraDevice>> {
-		Logger.Instance.WriteDebug("Start SoftCameraHardware.GetDevices");
+		Logger.Instance.WriteDebug('Start SoftCameraHardware.GetDevices');
 
 		return new Promise<Array<SoftCameraDevice>>((resolve, reject) => {
 			try {
@@ -36,7 +36,7 @@ export class SoftCameraHardware implements IHardwareType {
 	}
 
 	public GetDeviceById(id: string) {
-		Logger.Instance.WriteDebug("Start SoftCameraHardware.GetDeviceById: " + id);
+		Logger.Instance.WriteDebug('Start SoftCameraHardware.GetDeviceById: ' + id);
 		
 		let foundDevice: SoftCameraDevice = undefined;
 

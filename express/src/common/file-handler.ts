@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import * as fs from 'fs';
 
 export class FileHandler {
 
@@ -14,7 +14,7 @@ export class FileHandler {
 		let data;
 
 		try {
-			data = JSON.parse(fs.readFileSync(filename, "utf8"));
+			data = JSON.parse(fs.readFileSync(filename, 'utf8'));
 		} catch (error) {
 			console.log(error);
 		}

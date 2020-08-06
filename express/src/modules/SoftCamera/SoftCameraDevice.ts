@@ -1,11 +1,11 @@
-import { IHardware } from "../../interfaces/IHardware";
-import { Guid } from "guid-typescript";
-import { HardwareProperty } from "../../models/hardware-property";
-import { Logger } from "../../common/logger";
-import { IStatus } from "../../interfaces/IStatus";
-import { ISubscription } from "../../interfaces/ISubscription";
-import { SoftCameraCaptureData } from "./models/softcamera-capture-data";
-import { Helpers } from "../../common/helpers";
+import { IHardware } from '../../interfaces/IHardware';
+import { Guid } from 'guid-typescript';
+import { HardwareProperty } from '../../models/hardware-property';
+import { Logger } from '../../common/logger';
+import { IStatus } from '../../interfaces/IStatus';
+import { ISubscription } from '../../interfaces/ISubscription';
+import { SoftCameraCaptureData } from './models/softcamera-capture-data';
+import { Helpers } from '../../common/helpers';
 
 export class SoftCameraDevice implements IHardware {
 	/**
@@ -14,12 +14,12 @@ export class SoftCameraDevice implements IHardware {
 	public id: Guid;
 	public modelName: string;
 	public serial: string;
-	public type: string = "SoftCamera";
+	public type: string = 'SoftCamera';
 
 	/**
 	 * Private Member Variables
 	 */
-	private _datasetPath: string = "D:\\RGB Images\\";
+	private _datasetPath: string = 'D:\\RGB Images\\';
 	private _datasetIndex: number = 0;
 
 	/**
@@ -61,7 +61,7 @@ export class SoftCameraDevice implements IHardware {
 
 			try {
 				switch (key) {
-					case "dataset_path":
+					case 'dataset_path':
 						property = this.GetDatasetPathProperty();
 						break;
 					default:
@@ -83,7 +83,7 @@ export class SoftCameraDevice implements IHardware {
 
 			try {
 				switch (setting.id) {
-					case "dataset_path":
+					case 'dataset_path':
 						property = this.SetDatasetPathProperty(setting.value);
 						break;
 					default:
@@ -132,7 +132,7 @@ export class SoftCameraDevice implements IHardware {
 					}
 				}
 				else {
-					reject(new Error("No dataset name set for scan data"));
+					reject(new Error('No dataset name set for scan data'));
 				}
 
 			} catch (error) {
@@ -177,9 +177,9 @@ export class SoftCameraDevice implements IHardware {
 		const property: HardwareProperty = new HardwareProperty();
 
 		// Fill out some known values
-		property.id = "dataset_path";
-		property.userReadableName = "Dataset Path";
-		property.dataType = "string";
+		property.id = 'dataset_path';
+		property.userReadableName = 'Dataset Path';
+		property.dataType = 'string';
 		property.order = 1;
 		property.maxLength = 100;
 

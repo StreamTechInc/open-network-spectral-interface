@@ -1,15 +1,15 @@
-import { IHardwareType } from "../../interfaces/IHardwareType";
-import { SoftSpecDevice } from "./SoftSpecDevice";
-import { Logger } from "../../common/logger";
-import { Helpers } from "../../common/helpers";
+import { IHardwareType } from '../../interfaces/IHardwareType';
+import { SoftSpecDevice } from './SoftSpecDevice';
+import { Logger } from '../../common/logger';
+import { Helpers } from '../../common/helpers';
 
 export class SoftSpecHardware implements IHardwareType {
 
-	private _specsFilePath: string = "../express/src/modules/SoftSpec/spectrometers/";
+	private _specsFilePath: string = '../express/src/modules/SoftSpec/spectrometers/';
 	private _devices: Array<SoftSpecDevice> = new Array<SoftSpecDevice>();
 
 	public GetDevices(): Promise<Array<SoftSpecDevice>> {
-		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDevices");
+		Logger.Instance.WriteDebug('Start SoftSpecHardware.GetDevices');
 
 		return new Promise<Array<SoftSpecDevice>>((resolve, reject) => {
 			try {
@@ -36,7 +36,7 @@ export class SoftSpecHardware implements IHardwareType {
 	}
 
 	public GetDeviceById(id: string) {
-		Logger.Instance.WriteDebug("Start SoftSpecHardware.GetDeviceById: " + id);
+		Logger.Instance.WriteDebug('Start SoftSpecHardware.GetDeviceById: ' + id);
 		
 		let foundDevice: SoftSpecDevice = undefined;
 

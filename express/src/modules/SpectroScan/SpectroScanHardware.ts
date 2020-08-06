@@ -1,13 +1,13 @@
-import { IHardwareType } from "../../interfaces/IHardwareType";
-import { SpectroScanDevice } from "./SpectroScanDevice";
-import { Logger } from "../../common/logger";
-import { SpectroScanAPI } from "./SpectroScanAPI";
+import { IHardwareType } from '../../interfaces/IHardwareType';
+import { SpectroScanDevice } from './SpectroScanDevice';
+import { Logger } from '../../common/logger';
+import { SpectroScanAPI } from './SpectroScanAPI';
 
 export class SpectroScanHardware implements IHardwareType {
 	private _devices: Array<SpectroScanDevice> = new Array<SpectroScanDevice>();
 
 	public GetDevices(): Promise<Array<SpectroScanDevice>> {
-		Logger.Instance.WriteDebug("Start SpectroScanHardware.GetDevices");
+		Logger.Instance.WriteDebug('Start SpectroScanHardware.GetDevices');
 
 		return new Promise<Array<SpectroScanDevice>>((resolve, reject) => {
 			// Added 4 second delay to prevent error.
@@ -20,12 +20,17 @@ export class SpectroScanHardware implements IHardwareType {
 							if (handle && handle > 0) {
 								const device = new SpectroScanDevice();
 								device.handle = handle;
-								SpectroScanAPI.Instance.GetDeviceDetails(handle).then((details: string) => {
-									const splitDetails = details.split("-");
+								SpectroScanAPI.Instance.GetDeviceDetails(handle).then((details: string[]) => {
+									if (details.length > 2 && details[1] && details[2] && details[3]) {
+										device.serial = details[1];
+										device.modelName = details[2];
+										device.majorVersion = +details[3];
 
-									if (splitDetails.length > 2 && splitDetails[1] && splitDetails[2]) {
-										device.serial = splitDetails[1];
-										device.modelName = splitDetails[2];
+										// If this uses the console app to read the spectrum we must close this connection
+										// or the console app won't be able to connect
+										if (device.majorVersion === 4) {
+											SpectroScanAPI.Instance.CloseDevice(device.handle);
+										}
 									}
 
 									this._devices.push(device);
@@ -43,15 +48,19 @@ export class SpectroScanHardware implements IHardwareType {
 						});
 					}
 					else {
-						const testResult: boolean = SpectroScanAPI.Instance.TestDevice(this._devices[0].handle);
 
-						if (!testResult) {
-							this._devices = [];
-						}
+						if (this._devices[0].majorVersion === 3) {
+							const testResult: boolean = SpectroScanAPI.Instance.TestDevice(this._devices[0].handle);
+
+							if (!testResult) {
+								this._devices = [];
+							}
+						}						
 
 						resolve(this._devices);
 					}
 				} catch (error) {
+					console.error(error);
 					reject(error);
 				}
 			}, 4000);
@@ -59,7 +68,7 @@ export class SpectroScanHardware implements IHardwareType {
 	}
 
 	public GetDeviceById(id: string) {
-		Logger.Instance.WriteDebug("Start SpectroScanHardware.GetDeviceById: " + id);
+		Logger.Instance.WriteDebug('Start SpectroScanHardware.GetDeviceById: ' + id);
 
 		let foundDevice: SpectroScanDevice = undefined;
 
