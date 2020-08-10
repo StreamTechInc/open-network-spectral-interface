@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 export class Config {
 	private static _applicationEnvironment: string = process.env.NODE_ENV;
 
@@ -18,5 +20,15 @@ export class Config {
 
 	static get PortNumber() {
 		return 3200;
+	}
+
+	static get SpectroScanPath() {
+		let ssPath: string = '';
+
+		if (this._applicationEnvironment && this._applicationEnvironment.toLowerCase().trim() === 'development') {
+			ssPath = path.join(__dirname, '..\\modules\\SpectroScan\\');
+		}
+
+		return ssPath;
 	}
 }

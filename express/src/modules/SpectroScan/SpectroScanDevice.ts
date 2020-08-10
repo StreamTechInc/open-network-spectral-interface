@@ -4,15 +4,13 @@ import { HardwareProperty } from '../../models/hardware-property';
 import { Logger } from '../../common/logger';
 import { IStatus } from '../../interfaces/IStatus';
 import { ISubscription } from '../../interfaces/ISubscription';
-import { ICaptureData } from '../../interfaces/ICaptureData';
 import { SpectroScanAPI } from './SpectroScanAPI';
 import { SpectroScanCaptureData } from './models/spectroscan-capture-data';
-import { resolve } from 'url';
 import { FileHandler } from '../../common/file-handler';
 import * as childProcess from 'child_process';
-import { Helpers } from '../../common/helpers';
 import * as path from 'path';
 import { NanoFTIRCaptureOutput } from './models/nanoFTIR-capture-output';
+import { Config } from '../../common/config';
 
 export class SpectroScanDevice implements IHardware {
 	/**
@@ -29,9 +27,7 @@ export class SpectroScanDevice implements IHardware {
 	/**
 	 * Private Variables
 	 */
-	private _status: boolean;
 	private _scanAverage: number = 1;
-	private _calibrate: boolean = false;
 
 	/**
 	 * Properties
@@ -39,14 +35,8 @@ export class SpectroScanDevice implements IHardware {
 	get timeout(): number {
 		let _timeout: number = 0;
 
-		// set timeout to double the time it should take to do all scans
-		// each scan takes at least 1000 milliseconds, 200 was added as a buffer
-		_timeout = this._scanAverage * 1200 * 50;
-
-		if (_timeout === 0) {
-			// if no timeout, default to 2 minutes in milliseconds
-			_timeout = 2 * 60 * 1000;
-		}
+		// Set timeout to 2 minutes plus 500ms/scan. 
+		_timeout = (2 * 60 * 1000) + (this._scanAverage * 500);
 
 		return _timeout;
 	}
@@ -67,7 +57,6 @@ export class SpectroScanDevice implements IHardware {
 
 			try {
 				properties.push(this.GetScanAverageProperty());
-				properties.push(this.GetCalibrateProperty());
 			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
@@ -85,9 +74,6 @@ export class SpectroScanDevice implements IHardware {
 				switch (key) {
 					case 'scan_average':
 						property = this.GetScanAverageProperty();
-						break;
-					case 'calibrate':
-						property = this.GetCalibrateProperty();
 						break;
 					default:
 						property = undefined;
@@ -110,9 +96,6 @@ export class SpectroScanDevice implements IHardware {
 				switch (setting.id) {
 					case 'scan_average':
 						property = this.SetScanAverageProperty(+setting.value);
-						break;
-					case 'calibrate':
-						property = this.SetCalibrateProperty(setting.value === 'true');
 						break;
 					default:
 						property = undefined;
@@ -206,33 +189,6 @@ export class SpectroScanDevice implements IHardware {
 		return property;
 	}
 
-	private GetCalibrateProperty(): HardwareProperty {
-		const property: HardwareProperty = new HardwareProperty();
-
-		// Fill out some known values
-		property.id = 'calibrate';
-		property.userReadableName = 'Calibrate';
-		property.dataType = 'bool';
-		property.order = 2;
-		property.increment = null;
-		property.minValue = null;
-		property.maxValue = null;
-
-		// Get Current Value
-		property.value = this._calibrate.toString();
-
-		return property;
-	}
-
-	private SetCalibrateProperty(newValue: boolean): HardwareProperty {
-		const property: HardwareProperty = this.GetCalibrateProperty();
-
-		this._calibrate = newValue;
-		property.value = this._calibrate.toString();
-
-		return property;
-	}
-
 	private async ProcessCaptureV3() {
 		const data: Array<Array<SpectroScanCaptureData>> = [];
 		let averagedData: Array<SpectroScanCaptureData> = [];
@@ -302,7 +258,7 @@ export class SpectroScanDevice implements IHardware {
 
 				if (success) {
 					const fileHandler: FileHandler = new FileHandler();
-					const fileData: NanoFTIRCaptureOutput = fileHandler.ReadFile(path.join(__dirname, 'processed_spectrum.json'));
+					const fileData: NanoFTIRCaptureOutput = fileHandler.ReadFile(path.join(Config.SpectroScanPath, 'processed_spectrum.json'));
 
 					if (fileData) {
 						this.comPort = fileData.comPort;
@@ -317,7 +273,7 @@ export class SpectroScanDevice implements IHardware {
 				else {
 					retryCount++;
 				}
-				
+
 			} while (retryCount < 5);
 
 			if (retryCount === 5 && !success) {
@@ -328,28 +284,33 @@ export class SpectroScanDevice implements IHardware {
 
 	private async NanoFTIRCapture(): Promise<number> {
 		return new Promise<number>(async (resolve, reject) => {
-			const scriptPath = path.join(__dirname, 'NanoFTIRCapture.exe');
-			const captureProcess = childProcess.spawn(scriptPath, [this._scanAverage.toString(), this.comPort.toString(), __dirname]);
+			try {
+				const scriptPath = path.join(Config.SpectroScanPath, 'NanoFTIRCapture.exe');
+				const captureProcess = childProcess.spawn(scriptPath, [this._scanAverage.toString(), this.comPort.toString(), Config.SpectroScanPath]);
 
-			captureProcess.on('error', (error) => {
+				captureProcess.on('error', (error) => {
+					Logger.Instance.WriteError(error);
+					reject(error);
+				});
+
+				captureProcess.on('uncaughtException', (error) => {
+					Logger.Instance.WriteError(error);
+					reject(error);
+				});
+
+				captureProcess.stderr.on('error', (error) => {
+					Logger.Instance.WriteError(error);
+					reject(error);
+				});
+
+				captureProcess.on('exit', (code) => {
+					Logger.Instance.WriteDebug('NanoFTIR capture app exit code: ' + code);
+					resolve(code);
+				});
+			} catch (error) {
 				Logger.Instance.WriteError(error);
 				reject(error);
-			});
-
-			captureProcess.on('uncaughtException', (error) => {
-				Logger.Instance.WriteError(error);
-				reject(error);
-			});
-
-			captureProcess.stderr.on('error', (error) => {
-				Logger.Instance.WriteError(error);
-				reject(error);
-			});
-
-			captureProcess.on('exit', (code) => {
-				Logger.Instance.WriteDebug('NanoFTIR capture app exit code: ' + code);
-				resolve(code);
-			});
+			}
 		});
 	}
 }

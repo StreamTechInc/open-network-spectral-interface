@@ -1,11 +1,12 @@
 import * as ffi from 'ffi';
 import * as ref from 'ref';
 import * as refArray from 'ref-array';
+import * as path from 'path';
 import { Logger } from '../../common/logger';
 import { Helpers } from '../../common/helpers';
 import { SpectroScanCaptureData } from './models/spectroscan-capture-data';
-import * as path from 'path';
-import { SpectroScanDevice } from './SpectroScanDevice';
+import { Config } from '../../common/config';
+
 
 export class SpectroScanAPI {
 	/**
@@ -19,7 +20,6 @@ export class SpectroScanAPI {
 		if (this.instance === null || this.instance === undefined) {
 			this.instance = new SpectroScanAPI();
 		}
-
 
 		return this.instance;
 	}
@@ -40,7 +40,7 @@ export class SpectroScanAPI {
 	 */
 	private handle: number = 0;
 
-	private readonly spectroScanV6Path = 'C:\\Code\\open-network-spectral-interface\\express\\dist\\modules\\SpectroScan\\SpectroScanDLL_V6.a.dll';
+	private readonly spectroScanV6Path = path.join(Config.SpectroScanPath, 'SpectroScanDLL_V6.a.dll');
 
 	private spectroScanV6Functions = new ffi.Library(this.spectroScanV6Path, {
 		'FTIR_UartConversion': [ref.types.void, [refArray(ref.types.byte), ref.types.short, refArray(ref.types.int), ref.types.int, ref.types.int]],
@@ -49,7 +49,7 @@ export class SpectroScanAPI {
 		'FTIR_UpdateAlignment': [ref.types.void, [ref.types.uint64, ref.types.double, ref.types.double]]
 	});
 
-	private readonly ftdiPath = 'C:\\Code\\open-network-spectral-interface\\express\\dist\\modules\\SpectroScan\\ftd2xx64.dll';
+	private readonly ftdiPath = path.join(Config.SpectroScanPath, 'ftd2xx64.dll');
 
 	private ftdi_functions = new ffi.Library(this.ftdiPath, {
 		'FT_Open': [ref.types.ulong, [ref.types.int, ref.refType(ref.types.uint64)]],
