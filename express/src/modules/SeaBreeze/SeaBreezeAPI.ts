@@ -9,6 +9,7 @@ import * as path from 'path';
 import { Logger } from '../../common/logger';
 import { Helpers } from '../../common/helpers';
 import { SeaBreezeCaptureData } from './models/seabreeze-capture-data';
+import { Config } from '../../common/config';
 
 export class SeaBreezeAPI {
 	/**
@@ -31,7 +32,7 @@ export class SeaBreezeAPI {
 	 * Private variables
 	 * 
 	 */
-	private seabreezeFunctions = new ffi.Library('SeaBreezeSTI.dll', {
+	private seabreezeFunctions = new ffi.Library(path.join(Config.SeaBreezePath, 'SeaBreezeSTI.dll'), {
 		'seabreeze_open_spectrometer': [ref.types.int, [ref.types.int, ref.refType('int')]],
 		'seabreeze_get_serial_number': [ref.types.int, [ref.types.int, ref.refType('int'), ref.refType('byte'), ref.types.int]],
 		'seabreeze_get_model': [ref.types.int, [ref.types.int, ref.refType('int'), ref.refType('byte'), ref.types.int]],

@@ -195,7 +195,7 @@ export class SpectroScanDevice implements IHardware {
 		let scanNumber: number = 1;
 
 		do {
-			const capturedData = await SpectroScanAPI.Instance.GetSpectrum(this.handle, this.majorVersion);
+			const capturedData = await SpectroScanAPI.Instance.GetSpectrum(this.handle);
 			scanNumber++;
 			data.push(capturedData);
 		} while (scanNumber <= this._scanAverage);
@@ -248,7 +248,6 @@ export class SpectroScanDevice implements IHardware {
 
 	private async ProcessCaptureV4(): Promise<Array<SpectroScanCaptureData>> {
 		return new Promise<Array<SpectroScanCaptureData>>(async (resolve, reject) => {
-
 			let retryCount: number = 0;
 			let success: boolean = false;
 

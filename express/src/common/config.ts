@@ -22,8 +22,18 @@ export class Config {
 		return 3200;
 	}
 
+	static get SeaBreezePath() {
+		let ssPath: string = 'resources/';
+
+		if (this._applicationEnvironment && this._applicationEnvironment.toLowerCase().trim() === 'development') {
+			ssPath = path.join(__dirname, '..\\modules\\SeaBreeze\\');
+		}
+
+		return ssPath;
+	}
+
 	static get SpectroScanPath() {
-		let ssPath: string = '';
+		let ssPath: string = 'resources/';
 
 		if (this._applicationEnvironment && this._applicationEnvironment.toLowerCase().trim() === 'development') {
 			ssPath = path.join(__dirname, '..\\modules\\SpectroScan\\');

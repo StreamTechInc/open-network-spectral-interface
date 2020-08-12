@@ -111,12 +111,7 @@ export class SpectroScanAPI {
 		});
 	}
 
-	public GetSpectrum(handle: number, version: number): Promise<Array<SpectroScanCaptureData>> {
-		console.log('get spectrum');
-		return version === 3 ? this.GetSpectrumV3(handle) : this.GetSpectrumV4(handle);
-	}
-
-	private GetSpectrumV3(handle: number): Promise<Array<SpectroScanCaptureData>> {
+	public GetSpectrum(handle: number): Promise<Array<SpectroScanCaptureData>> {
 		/**
 		 * To get the spectrum there is a handful of actions to be taken with a wait between each step.
 		 * 1. Write the command to indicate it begins scanning
@@ -229,12 +224,6 @@ export class SpectroScanAPI {
 			else {
 				reject('Write failed with status: ' + status);
 			}
-		});
-	}
-
-	private GetSpectrumV4(comPort: number): Promise<Array<SpectroScanCaptureData>> {
-		return new Promise<Array<SpectroScanCaptureData>>((resolve, reject) => {
-			resolve(null);
 		});
 	}
 
