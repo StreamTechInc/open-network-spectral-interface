@@ -1,6 +1,6 @@
-import * as ApplicationInsights from "applicationinsights";
-import * as DNS from "dns";
-import { Config } from "./config";
+import * as ApplicationInsights from 'applicationinsights';
+import * as DNS from 'dns';
+import { Config } from './config';
 
 export class Logger {
 	private static instance: Logger;
@@ -16,7 +16,7 @@ export class Logger {
 
 	constructor() {
 		// Make sure we are connected to the internet before trying to send logs
-		DNS.lookup("google.com", (error: any) => {
+		DNS.lookup('google.com', (error: any) => {
 			if (!error) {
 				ApplicationInsights.setup(Config.InstrumentationKey)
 					.setAutoCollectConsole(true)
@@ -36,11 +36,11 @@ export class Logger {
 	 * @param message the message you wish to write to app insights
 	 */
 	public WriteDebug(message: string) {
-		if (this.client != undefined && (process.env.NODE_ENV === "development")) {
+		if (this.client != undefined && (process.env.NODE_ENV === 'development')) {
 			this.client.trackTrace({ message: message });
 		}
 
-		console.log("Debug: " + message);
+		console.log('Debug: ' + message);
 	}
 
 	/**
@@ -52,7 +52,7 @@ export class Logger {
 			this.client.trackTrace({ message: message });
 		}
 
-		console.log("Trace: " + message);
+		console.log('Trace: ' + message);
 	}
 
 	public WriteError(exception: Error) {
@@ -60,7 +60,7 @@ export class Logger {
 			this.client.trackException({ exception: exception });
 		}
 
-		console.log("Exception: " + exception);
+		console.log('Exception: ' + exception);
 	}
 
 }

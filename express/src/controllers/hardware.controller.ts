@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { Logger } from "../common/logger";
-import { HardwareResponse } from "../models/hardware-response";
-import { IHardware } from "../interfaces/IHardware";
-import { HardwareTypes } from "../modules/HardwareTypes";
-import { IProperty } from "../interfaces/IProperty";
-import { Helpers } from "../common/helpers";
+import { Request, Response } from 'express';
+import { Logger } from '../common/logger';
+import { HardwareResponse } from '../models/hardware-response';
+import { IHardware } from '../interfaces/IHardware';
+import { HardwareTypes } from '../modules/HardwareTypes';
+import { IProperty } from '../interfaces/IProperty';
+import { Helpers } from '../common/helpers';
 
 export class HardwareController {
 	/**
@@ -12,7 +12,7 @@ export class HardwareController {
 	 * Return unique device ids, serial and model numbers of all hardware attached
 	 */
 	public static GetAttachedHardware(request: Request, response: Response) {
-		Logger.Instance.WriteDebug("Start getAttachedHardware");
+		Logger.Instance.WriteDebug('Start getAttachedHardware');
 
 		const hardwareResponse: HardwareResponse = new HardwareResponse();
 		hardwareResponse.success = true;
@@ -33,7 +33,7 @@ export class HardwareController {
 				});
 
 				if (hardware.length == 0) {
-					hardwareResponse.data = "No devices found.";
+					hardwareResponse.data = 'No devices found.';
 				}
 				else {
 					hardwareResponse.data = hardware;
@@ -66,7 +66,7 @@ export class HardwareController {
 	public static GetAllPropertiesForDevice(request: Request, response: Response) {
 		const id = request.params.id;
 
-		Logger.Instance.WriteDebug("Start getAllSettingsForDevice/" + id);
+		Logger.Instance.WriteDebug('Start getAllSettingsForDevice/' + id);
 
 		const hardwareResponse: HardwareResponse = new HardwareResponse();
 		hardwareResponse.success = true;
@@ -97,7 +97,7 @@ export class HardwareController {
 				});
 			}
 			else {
-				hardwareResponse.data = "No device found with ID: " + id;
+				hardwareResponse.data = 'No device found with ID: ' + id;
 				hardwareResponse.success = false;
 				response.send(JSON.stringify(hardwareResponse));
 			}
@@ -109,7 +109,7 @@ export class HardwareController {
 			response.send(JSON.stringify(hardwareResponse));
 		}
 
-		Logger.Instance.WriteDebug("End getAllSettingsForDevice/" + id);
+		Logger.Instance.WriteDebug('End getAllSettingsForDevice/' + id);
 	}
 
 	/**
@@ -120,7 +120,7 @@ export class HardwareController {
 		const id = request.params.id;
 		const settingId = request.params.settingId;
 
-		Logger.Instance.WriteDebug("Start getSetting/" + id + "/" + settingId);
+		Logger.Instance.WriteDebug('Start getSetting/' + id + '/' + settingId);
 
 		// Init a new response with success = false
 		const hardwareResponse: HardwareResponse = new HardwareResponse();
@@ -146,7 +146,7 @@ export class HardwareController {
 						hardwareResponse.data = property;
 					}
 					else {
-						hardwareResponse.data = "Property " + settingId + " does not exist or an error has occurred";
+						hardwareResponse.data = 'Property ' + settingId + ' does not exist or an error has occurred';
 						hardwareResponse.success = false;
 					}
 
@@ -154,7 +154,7 @@ export class HardwareController {
 				});
 			}
 			else {
-				hardwareResponse.data = "No device found with ID: " + id;
+				hardwareResponse.data = 'No device found with ID: ' + id;
 				hardwareResponse.success = false;
 				response.send(JSON.stringify(hardwareResponse));
 			}
@@ -166,7 +166,7 @@ export class HardwareController {
 			response.send(JSON.stringify(hardwareResponse));
 		}
 
-		Logger.Instance.WriteDebug("End getSetting/" + id + "/" + settingId);
+		Logger.Instance.WriteDebug('End getSetting/' + id + '/' + settingId);
 	}
 
 	/**
@@ -177,7 +177,7 @@ export class HardwareController {
 		const id = request.params.id;
 		const settingId = request.params.settingId;
 
-		Logger.Instance.WriteDebug("Start postSetting/" + id + "/" + settingId);
+		Logger.Instance.WriteDebug('Start postSetting/' + id + '/' + settingId);
 
 		// Init a new response with success = false
 		let hardwareResponse: HardwareResponse = new HardwareResponse();
@@ -222,13 +222,13 @@ export class HardwareController {
 					});
 				}
 				else {
-					hardwareResponse.data = "No device found with ID: " + id;
+					hardwareResponse.data = 'No device found with ID: ' + id;
 					hardwareResponse.success = false;
 					response.send(JSON.stringify(hardwareResponse));
 				}
 			}
 			else {
-				hardwareResponse.data = "Unable to read data as HardwareSettingModel";
+				hardwareResponse.data = 'Unable to read data as HardwareSettingModel';
 				hardwareResponse.success = false;
 				response.send(JSON.stringify(hardwareResponse));
 			}
@@ -239,7 +239,7 @@ export class HardwareController {
 			response.send(JSON.stringify(hardwareResponse));
 		}
 
-		Logger.Instance.WriteDebug("End postSetting/" + id + "/" + settingId);
+		Logger.Instance.WriteDebug('End postSetting/' + id + '/' + settingId);
 	}
 
 	/**
@@ -249,7 +249,7 @@ export class HardwareController {
 	public static Capture(request: Request, response: Response) {
 		const id = request.params.id;
 
-		Logger.Instance.WriteDebug("Start getCapture/" + id);
+		Logger.Instance.WriteDebug('Start getCapture/' + id);
 
 		// Init a new response with success = false
 		const hardwareResponse: HardwareResponse = new HardwareResponse();
@@ -275,14 +275,14 @@ export class HardwareController {
 				response.setTimeout(device.timeout, () => {
 					isTimedOut = true;
 					response.status(408);
-					response.send("Capture timed out");
+					response.send('Capture timed out');
 				});
 
 				device.Capture().then((data) => {
 					if (!isTimedOut) {
 						hardwareResponse.data = data;
 						response.send(JSON.stringify(hardwareResponse));
-						Logger.Instance.WriteDebug("End getCapture/" + id);
+						Logger.Instance.WriteDebug('End getCapture/' + id);
 					}
 				}, (captureError) => {
 					if (!isTimedOut) {
@@ -290,12 +290,12 @@ export class HardwareController {
 						hardwareResponse.data = captureError;
 						response.status(400);
 						response.send(JSON.stringify(hardwareResponse));
-						Logger.Instance.WriteDebug("End getCapture/" + id);
+						Logger.Instance.WriteDebug('End getCapture/' + id);
 					}
 				});
 			}
 			else {
-				hardwareResponse.data = "No device found with ID: " + id;
+				hardwareResponse.data = 'No device found with ID: ' + id;
 				hardwareResponse.success = false;
 			}
 

@@ -1,13 +1,13 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import * as path from "path";
-import { createServer, Server } from "http";
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as path from 'path';
+import { createServer, Server } from 'http';
 
-import { Logger } from "./common/logger";
-import { HardwareController } from "./controllers/hardware.controller";
-import { Config } from "./common/config";
+import { Logger } from './common/logger';
+import { HardwareController } from './controllers/hardware.controller';
+import { Config } from './common/config';
 
-const cors = require("cors");
+const cors = require('cors');
 
 export class WebServer {
 	private application: express.Application;
@@ -27,8 +27,8 @@ export class WebServer {
 	private CreateApplication() {
 		this.application = express();
 
-		this.application.set("env", process.env.NODE_ENV);
-		this.application.set("port", Config.PortNumber);
+		this.application.set('env', process.env.NODE_ENV);
+		this.application.set('port', Config.PortNumber);
 		this.application.use(bodyParser.json());
 		this.application.use(bodyParser.urlencoded({ extended: true }));
 
@@ -40,30 +40,30 @@ export class WebServer {
 		});
 
 		this.application.use(function (err: any, req: any, res: any, next: any) {
-			Logger.Instance.WriteInfo("Error: " + JSON.stringify(err) + " || Request: " + req.url);
+			Logger.Instance.WriteInfo('Error: ' + JSON.stringify(err) + ' || Request: ' + req.url);
 			next(err);
 		});
 	}
 
 	private SetupRoutes() {
 		// Hardware Controller
-		this.application.get("/hardware", HardwareController.GetAttachedHardware);
-		this.application.get("/hardware/:id/setting", HardwareController.GetAllPropertiesForDevice);
-		this.application.get("/hardware/:id/setting/:settingId", HardwareController.GetProperty);
-		this.application.post("/hardware/:id/setting/:settingId", HardwareController.SetProperty);
-		this.application.get("/hardware/:id/capture", HardwareController.Capture);
+		this.application.get('/hardware', HardwareController.GetAttachedHardware);
+		this.application.get('/hardware/:id/setting', HardwareController.GetAllPropertiesForDevice);
+		this.application.get('/hardware/:id/setting/:settingId', HardwareController.GetProperty);
+		this.application.post('/hardware/:id/setting/:settingId', HardwareController.SetProperty);
+		this.application.get('/hardware/:id/capture', HardwareController.Capture);
 
 		// All others
-		this.application.all("/img", (req, res) => {
-			res.sendFile("onsi-verticle.png", { root: path.join(__dirname, "/views/assets/img") });
+		this.application.all('/img', (req, res) => {
+			res.sendFile('onsi-verticle.png', { root: path.join(__dirname, '/views/assets/img') });
 		});
 
-		this.application.all("/css", (req, res) => {
-			res.sendFile("main.css", { root: path.join(__dirname, "/views/assets/css") });
+		this.application.all('/css', (req, res) => {
+			res.sendFile('main.css', { root: path.join(__dirname, '/views/assets/css') });
 		});
 
-		this.application.all("/", (req, res) => {
-			res.sendFile("index.html", { root: path.join(__dirname, "views") });
+		this.application.all('/', (req, res) => {
+			res.sendFile('index.html', { root: path.join(__dirname, 'views') });
 		});
 	}
 
@@ -73,8 +73,8 @@ export class WebServer {
 
 	private Listen() {
 		this.server.listen(Config.PortNumber, () => {
-			console.log(("  App is running at http://localhost:%d in %s mode"), this.application.get("port"), this.application.get("env"));
-			console.log("  Press CTRL-C to stop\n");
+			console.log(('  App is running at http://localhost:%d in %s mode'), this.application.get('port'), this.application.get('env'));
+			console.log('  Press CTRL-C to stop\n');
 		});
 	}
 }

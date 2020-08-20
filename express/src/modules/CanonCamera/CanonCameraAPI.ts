@@ -2,10 +2,10 @@
  * This is a class for accessing Canon Camera compatible devices
  */
 
-import { Logger } from "../../common/logger";
-import * as request from "request";
-import { CanonCameraDevice } from "./CanonCameraDevice";
-import { HardwareProperty } from "../../models/hardware-property";
+import { Logger } from '../../common/logger';
+import * as request from 'request';
+import { CanonCameraDevice } from './CanonCameraDevice';
+import { HardwareProperty } from '../../models/hardware-property';
 
 
 
@@ -18,7 +18,7 @@ export class CanonCameraAPI {
 	/**
 	 * Constants
 	 */
-	private _baseUrl: string = "http://192.168.1.2:8080/ccapi/ver100/";
+	private _baseUrl: string = 'http://192.168.1.2:8080/ccapi/ver100/';
 
 	static get Instance() {
 		if (this.instance === null || this.instance === undefined) {
@@ -31,7 +31,7 @@ export class CanonCameraAPI {
 		return new Promise<CanonCameraDevice>((resolve, reject) => {
 
 			try {
-				const url: string = this._baseUrl + "deviceinformation";
+				const url: string = this._baseUrl + 'deviceinformation';
 
 				request.get(url, (error, response, body) => {
 					if (error) {
@@ -47,11 +47,11 @@ export class CanonCameraAPI {
 							resolve(device);
 						}
 						else {
-							reject(new Error("failed to get device info"));
+							reject(new Error('failed to get device info'));
 						}
 					}
 					else {
-						reject(new Error("failed to get response"));
+						reject(new Error('failed to get response'));
 					}
 				});
 			} catch (error) {
@@ -64,10 +64,10 @@ export class CanonCameraAPI {
 		return new Promise<string>(async (resolve, reject) => {
 
 			try {
-				const url: string = this._baseUrl + "shooting/control/shutterbutton";
+				const url: string = this._baseUrl + 'shooting/control/shutterbutton';
 				const options = {
 					headers: {
-						"content-type": "application/json"
+						'content-type': 'application/json'
 					},
 					body: JSON.stringify({ af: af })
 				};
@@ -88,11 +88,11 @@ export class CanonCameraAPI {
 							}, 400);
 						}
 						else {
-							reject(new Error(response.statusCode + "failed to capture"));
+							reject(new Error(response.statusCode + 'failed to capture'));
 						}
 					}
 					else {
-						reject(new Error("Failed to get request response"));
+						reject(new Error('Failed to get request response'));
 					}
 				});
 			} catch (error) {
@@ -105,7 +105,7 @@ export class CanonCameraAPI {
 		return new Promise<string>((resolve, reject) => {
 			try {
 				// get content list from storage
-				const url: string = this._baseUrl + "contents/sd/100CANON/";
+				const url: string = this._baseUrl + 'contents/sd/100CANON/';
 				setTimeout(() => {
 					request.get(url, (error, response, body) => {
 
@@ -124,19 +124,19 @@ export class CanonCameraAPI {
 									resolve(lastUrl);
 								}
 								else {
-									reject(new Error("Content is empty"));
+									reject(new Error('Content is empty'));
 								}
 							}
 							else if (response.statusCode === 503) {
-								Logger.Instance.WriteDebug("Device is busy");
-								reject(new Error("Device is busy"));
+								Logger.Instance.WriteDebug('Device is busy');
+								reject(new Error('Device is busy'));
 							}
 							else {
-								reject(new Error("Failed to get content"));
+								reject(new Error('Failed to get content'));
 							}
 						}
 						else {
-							reject(new Error("Failed to get request response"));
+							reject(new Error('Failed to get request response'));
 						}
 					});
 				}, (200));
@@ -149,7 +149,7 @@ export class CanonCameraAPI {
 	public GetZoomValue(): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			try {
-				const url: string = this._baseUrl + "shooting/control/zoom";
+				const url: string = this._baseUrl + 'shooting/control/zoom';
 
 				request.get(url, (error, response, body) => {
 
@@ -164,11 +164,11 @@ export class CanonCameraAPI {
 							resolve(JSON.parse(body).value.toString());
 						}
 						else {
-							reject(new Error("Filed with response code: " + response.statusCode));
+							reject(new Error('Filed with response code: ' + response.statusCode));
 						}
 					}
 					else {
-						reject(new Error("Failed to get zoom value"));
+						reject(new Error('Failed to get zoom value'));
 					}
 				});
 			} catch (error) {
@@ -181,12 +181,12 @@ export class CanonCameraAPI {
 		return new Promise<HardwareProperty>((resolve, reject) => {
 			const property: HardwareProperty = new HardwareProperty();
 			try {
-				const url: string = this._baseUrl + "shooting/control/zoom";
+				const url: string = this._baseUrl + 'shooting/control/zoom';
 				const options = {
 					headers: {
-						"content-type": "application/json"
+						'content-type': 'application/json'
 					},
-					body: JSON.stringify({ "value": newValue })
+					body: JSON.stringify({ 'value': newValue })
 				};
 				request.post(url, options, (error, response, body) => {
 
@@ -202,11 +202,11 @@ export class CanonCameraAPI {
 							resolve(property);
 						}
 						else {
-							reject(new Error("Failed with response code: " + response.statusCode));
+							reject(new Error('Failed with response code: ' + response.statusCode));
 						}
 					}
 					else {
-						reject(new Error("Failed to set zoom value"));
+						reject(new Error('Failed to set zoom value'));
 					}
 				});
 			} catch (error) {
@@ -221,7 +221,7 @@ export class CanonCameraAPI {
 			try {
 				const options = {
 					url: fileUrl,
-					encoding: "binary"
+					encoding: 'binary'
 				};
 				request.get(options, (error, response, body) => {
 					if (error) {
@@ -232,16 +232,16 @@ export class CanonCameraAPI {
 					if (response) {
 
 						if (response.statusCode === 200) {
-							const image = new Buffer(body, "binary").toString("base64");
+							const image = new Buffer(body, 'binary').toString('base64');
 							resolve(image);
 						}
 						else {
-							Logger.Instance.WriteDebug("Failed to delete");
+							Logger.Instance.WriteDebug('Failed to delete');
 							reject();
 						}
 					}
 					else {
-						Logger.Instance.WriteDebug("Failed to get delete response");
+						Logger.Instance.WriteDebug('Failed to get delete response');
 						reject();
 					}
 				});
@@ -272,12 +272,12 @@ export class CanonCameraAPI {
 							resolve(isDeleted);
 						}
 						else {
-							Logger.Instance.WriteDebug(response.statusCode + "Failed to delete");
+							Logger.Instance.WriteDebug(response.statusCode + 'Failed to delete');
 							reject();
 						}
 					}
 					else {
-						Logger.Instance.WriteDebug("Failed to get delete response");
+						Logger.Instance.WriteDebug('Failed to get delete response');
 						reject();
 					}
 				});

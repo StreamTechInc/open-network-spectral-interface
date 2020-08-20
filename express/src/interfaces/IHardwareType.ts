@@ -1,4 +1,4 @@
-import { IHardware } from "./IHardware";
+import { IHardware } from './IHardware';
 
 export interface IHardwareType {
 	/**

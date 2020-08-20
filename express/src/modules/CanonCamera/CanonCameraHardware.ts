@@ -1,14 +1,14 @@
-import { IHardwareType } from "../../interfaces/IHardwareType";
-import { CanonCameraDevice } from "./CanonCameraDevice";
-import { CanonCameraAPI } from "./CanonCameraAPI";
-import { Logger } from "../../common/logger";
+import { IHardwareType } from '../../interfaces/IHardwareType';
+import { CanonCameraDevice } from './CanonCameraDevice';
+import { CanonCameraAPI } from './CanonCameraAPI';
+import { Logger } from '../../common/logger';
 
 export class CanonCameraHardware implements IHardwareType {
 
 	private _devices: Array<CanonCameraDevice> = new Array<CanonCameraDevice>();
 
 	public async GetDevices(): Promise<Array<CanonCameraDevice>> {
-		Logger.Instance.WriteDebug("Start CanonCameraHardware.GetDevices");
+		Logger.Instance.WriteDebug('Start CanonCameraHardware.GetDevices');
 
 		return new Promise<Array<CanonCameraDevice>>(async (resolve, reject) => {
 				try {
@@ -32,7 +32,7 @@ export class CanonCameraHardware implements IHardwareType {
 	}
 
 	public GetDeviceById(id: string) {
-		Logger.Instance.WriteDebug("Start CanonCameraHardware.GetDeviceById: " + id);
+		Logger.Instance.WriteDebug('Start CanonCameraHardware.GetDeviceById: ' + id);
 		let foundDevice: CanonCameraDevice = undefined;
 
 		try {

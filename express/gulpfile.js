@@ -3,7 +3,8 @@ var clean = require('gulp-clean');
 
 var filesToMove = [
 	'./src/views/**/*.*',
-	'./src/modules/**/*.dll'
+	'./src/modules/**/*.dll',
+	'./src/modules/**/*.exe'
 ]
 
 gulp.task('move', function () {
@@ -17,3 +18,7 @@ gulp.task('clean', function () {
 		.pipe(clean());
 });
 
+gulp.task('move-web', function () {
+	gulp.src(filesToMove, { base: 'src' }).pipe(gulp.dest('./dist'));
+	gulp.src(['index.html'], { base: '.' }).pipe(gulp.dest('./dist'));
+});

@@ -1,7 +1,7 @@
-import { IProperty } from "../interfaces/IProperty";
-import { HardwareResponse } from "../models/hardware-response";
-import { Logger } from "./logger";
-import * as fs from "fs";
+import { IProperty } from '../interfaces/IProperty';
+import { HardwareResponse } from '../models/hardware-response';
+import { Logger } from './logger';
+import * as fs from 'fs';
 
 export class Helpers {
 	/**
@@ -28,30 +28,30 @@ export class Helpers {
 
 		if (newProperty.value !== undefined && newProperty.value.length > 0) {
 			if (this.TestDataType(existingProperty.dataType, newProperty.value)) {
-				if (existingProperty.dataType === "int" || existingProperty.dataType === "double") {
+				if (existingProperty.dataType === 'int' || existingProperty.dataType === 'double') {
 					// Following only need if a number
 					const castValue = +newProperty.value;
-					
+
 					if (this.TestMinMax(castValue, existingProperty.minValue, existingProperty.maxValue)) {
 						if (this.TestIncrement(castValue, existingProperty.increment)) {
 							isValid.success = true;
 						}
 						else {
-							isValid.data = "Value not incremented by set value.";
+							isValid.data = 'Value not incremented by set value.';
 							isValid.success = false;
 						}
 					}
 					else {
-						isValid.data = "Value outside of bounds";
+						isValid.data = 'Value outside of bounds';
 						isValid.success = false;
 					}
 				}
-				else if (existingProperty.dataType === "string") {
+				else if (existingProperty.dataType === 'string') {
 					if (newProperty.value.length <= existingProperty.maxLength) {
 						isValid.success = true;
 					}
 					else {
-						isValid.data = "Value length exceeds max length";
+						isValid.data = 'Value length exceeds max length';
 						isValid.success = false;
 					}
 				}
@@ -62,12 +62,12 @@ export class Helpers {
 				}
 			}
 			else {
-				isValid.data = "Value not in expected format. Expecting " + existingProperty.dataType;
+				isValid.data = 'Value not in expected format. Expecting ' + existingProperty.dataType;
 				isValid.success = false;
 			}
 		}
 		else {
-			isValid.data = "Must send actual value to set.";
+			isValid.data = 'Must send actual value to set.';
 			isValid.success = false;
 		}
 
@@ -77,22 +77,22 @@ export class Helpers {
 	public TestDataType(expectedType: string, newValue: string): boolean {
 		let isValid = false;
 
-		if (expectedType === "int" || expectedType === "double") {
+		if (expectedType === 'int' || expectedType === 'double') {
 			if (!isNaN(Number(newValue))) {
 				isValid = true;
 			}
 		}
-		else if (expectedType === "enum") {
+		else if (expectedType === 'enum') {
 			// TODO: validate enum
 		}
-		else if (expectedType === "bool") {
-			isValid = newValue.toLowerCase() === "true" || newValue.toLowerCase() === "false";
+		else if (expectedType === 'bool') {
+			isValid = newValue.toLowerCase() === 'true' || newValue.toLowerCase() === 'false';
 		}
-		else if (expectedType === "string") {
+		else if (expectedType === 'string') {
 			// Must be string 
 			isValid = true;
 		}
-		
+
 		return isValid;
 	}
 
@@ -109,7 +109,7 @@ export class Helpers {
 	 * String Helpers
 	 */
 	public ConvertByteArrayToString = (buffer: Buffer): string => {
-		let returnString = "";
+		let returnString = '';
 
 		for (let index = 0; index < buffer.length; index++) {
 			const value = buffer[index];
@@ -131,7 +131,7 @@ export class Helpers {
 
 		try {
 			if (filename === undefined || filename.length === 0) {
-				fileResponse.data = "No filename provided";
+				fileResponse.data = 'No filename provided';
 				Logger.Instance.WriteDebug(fileResponse.data);
 			}
 			else {
@@ -140,7 +140,33 @@ export class Helpers {
 					Logger.Instance.WriteDebug(fileResponse.data);
 				}
 				else {
-					fileResponse.data = JSON.parse(fs.readFileSync(filename, "utf8"));
+					fileResponse.data = JSON.parse(fs.readFileSync(filename, 'utf8'));
+					fileResponse.success = true;
+				}
+			}
+		} catch (error) {
+			fileResponse.data = error;
+		}
+
+		return fileResponse;
+	}
+
+	public ReadImageFile(filename: string): HardwareResponse {
+		const fileResponse: HardwareResponse = new HardwareResponse();
+		fileResponse.success = false;
+
+		try {
+			if (filename === undefined || filename.length === 0) {
+				fileResponse.data = 'No filename provided';
+				Logger.Instance.WriteDebug(fileResponse.data);
+			}
+			else {
+				if (!fs.existsSync(filename)) {
+					fileResponse.data = 'File "' + filename + '" does not exist';
+					Logger.Instance.WriteDebug(fileResponse.data);
+				}
+				else {
+					fileResponse.data = fs.readFileSync(filename, { encoding: 'base64' });
 					fileResponse.success = true;
 				}
 			}
@@ -157,7 +183,7 @@ export class Helpers {
 
 		try {
 			if (filepath === undefined || filepath.length === 0) {
-				fileResponse.data = "No filepath provided.";
+				fileResponse.data = 'No filepath provided.';
 			}
 			else {
 				const fileDataArray = new Array();
@@ -169,6 +195,30 @@ export class Helpers {
 				});
 
 				fileResponse.data = fileDataArray;
+				fileResponse.success = true;
+			}
+		} catch (error) {
+			fileResponse.data = error;
+		}
+
+		return fileResponse;
+	}
+
+	public ReadFilenamesInDirectory(filepath: string): HardwareResponse {
+		const fileResponse: HardwareResponse = new HardwareResponse();
+		fileResponse.success = false;
+
+		try {
+			if (filepath === undefined || filepath.length === 0) {
+				fileResponse.data = 'No filepath provided.';
+			}
+			else {
+				const filenameArray = new Array();
+				fs.readdirSync(filepath).forEach(file => {
+					filenameArray.push(file);
+				});
+
+				fileResponse.data = filenameArray;
 				fileResponse.success = true;
 			}
 		} catch (error) {

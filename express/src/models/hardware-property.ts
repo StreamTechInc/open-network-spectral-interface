@@ -1,4 +1,4 @@
-import { IProperty } from "../interfaces/IProperty";
+import { IProperty } from '../interfaces/IProperty';
 
 export class HardwareProperty implements IProperty {
 	id: string;
