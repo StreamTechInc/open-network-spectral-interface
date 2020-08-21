@@ -1,11 +1,12 @@
-import { IHardwareType } from "../interfaces/IHardwareType";
+import { IHardwareType } from '../interfaces/IHardwareType';
 
 /* Start Module Imports */
 
-import { SeaBreezeHardware } from "./SeaBreeze/SeaBreezeHardware";
-import { SoftSpecHardware } from "./SoftSpec/SoftSpecHardware";
-import { SpectroScanHardware } from "./SpectroScan/SpectroScanHardware";
-import { CanonCameraHardware } from "./CanonCamera/CanonCameraHardware";
+import { SeaBreezeHardware } from './SeaBreeze/SeaBreezeHardware';
+import { SoftSpecHardware } from './SoftSpec/SoftSpecHardware';
+import { SpectroScanHardware } from './SpectroScan/SpectroScanHardware';
+import { CanonCameraHardware } from './CanonCamera/CanonCameraHardware';
+import { SoftCameraHardware } from './SoftCamera/SoftCameraHardware';
 
 /* End Module Imports */
 
@@ -32,9 +33,10 @@ export class HardwareTypes {
 		/* Start IHardwareType Initialization */
 
 		this.AvailableHardwareTypes.push(new SeaBreezeHardware());
-		this.AvailableHardwareTypes.push(new SoftSpecHardware());
+		// this.AvailableHardwareTypes.push(new SoftSpecHardware());
 		this.AvailableHardwareTypes.push(new SpectroScanHardware());
 		this.AvailableHardwareTypes.push(new CanonCameraHardware());
+		// this.AvailableHardwareTypes.push(new SoftCameraHardware());
 
 		/* End IHardwareType Initialization */
 	}

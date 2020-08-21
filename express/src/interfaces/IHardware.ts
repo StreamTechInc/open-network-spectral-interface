@@ -1,8 +1,8 @@
-import { ICaptureData } from "./ICaptureData";
-import { IStatus } from "./IStatus";
-import { ISubscription } from "./ISubscription";
-import { Guid } from "guid-typescript";
-import { IProperty } from "./IProperty";
+import { ICaptureData } from './ICaptureData';
+import { IStatus } from './IStatus';
+import { ISubscription } from './ISubscription';
+import { Guid } from 'guid-typescript';
+import { IProperty } from './IProperty';
 
 /**
  * Hardware interface all types of hardware must implement

@@ -1,6 +1,6 @@
 {
   "name": "open-network-spectral-interface",
-  "version": "1.0.19",
+  "version": "1.0.21",
   "description": "Embedded API for controlling hardware",
   "productName": "Open Network Spectral Interface",
   "main": "main.js",

@@ -1,8 +1,8 @@
-import { IHardwareType } from "../../interfaces/IHardwareType";
-import { Logger } from "../../common/logger";
-import { SeaBreezeAPI } from "./SeaBreezeAPI";
-import { SeaBreezeDevice } from "./SeaBreezeDevice";
-import { resolve } from "dns";
+import { IHardwareType } from '../../interfaces/IHardwareType';
+import { Logger } from '../../common/logger';
+import { SeaBreezeAPI } from './SeaBreezeAPI';
+import { SeaBreezeDevice } from './SeaBreezeDevice';
+import { resolve } from 'dns';
 
 export class SeaBreezeHardware implements IHardwareType {
 
@@ -15,7 +15,7 @@ export class SeaBreezeHardware implements IHardwareType {
 	 * Public Functions
 	 */
 	public GetDevices(): Promise<Array<SeaBreezeDevice>> {
-		Logger.Instance.WriteDebug("Start SeaBreezeHardware.GetDevices");
+		Logger.Instance.WriteDebug('Start SeaBreezeHardware.GetDevices');
 
 		return new Promise<Array<SeaBreezeDevice>>((resolve, reject) => {
 			try {
@@ -58,7 +58,7 @@ export class SeaBreezeHardware implements IHardwareType {
 	}
 
 	public GetDeviceById(id: string): SeaBreezeDevice {
-		Logger.Instance.WriteDebug("Start SeaBreezeHardware.GetDeviceById: " + id);
+		Logger.Instance.WriteDebug('Start SeaBreezeHardware.GetDeviceById: ' + id);
 
 		let foundDevice: SeaBreezeDevice = undefined;
 

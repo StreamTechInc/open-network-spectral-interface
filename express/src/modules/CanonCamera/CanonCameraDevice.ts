@@ -1,11 +1,11 @@
-import { IHardware } from "../../interfaces/IHardware";
-import { Guid } from "guid-typescript";
-import { HardwareProperty } from "../../models/hardware-property";
-import { IStatus } from "../../interfaces/IStatus";
-import { ISubscription } from "../../interfaces/ISubscription";
-import { Logger } from "../../common/logger";
-import { CanonCameraAPI } from "./CanonCameraAPI";
-import { CanonCameraCaptureData } from "./models/canoncamera-capture-data";
+import { IHardware } from '../../interfaces/IHardware';
+import { Guid } from 'guid-typescript';
+import { HardwareProperty } from '../../models/hardware-property';
+import { IStatus } from '../../interfaces/IStatus';
+import { ISubscription } from '../../interfaces/ISubscription';
+import { Logger } from '../../common/logger';
+import { CanonCameraAPI } from './CanonCameraAPI';
+import { CanonCameraCaptureData } from './models/canoncamera-capture-data';
 
 export class CanonCameraDevice implements IHardware {
 	/**
@@ -14,7 +14,7 @@ export class CanonCameraDevice implements IHardware {
 	public id: Guid;
 	public modelName: string;
 	public serial: string;
-	public type: string = "Canon Camera";
+	public type: string = 'Canon Camera';
 
 	/**
 	 * Private Variables
@@ -56,10 +56,10 @@ export class CanonCameraDevice implements IHardware {
 
 			try {
 				switch (key) {
-					case "zoom":
+					case 'zoom':
 						property = await this.GetZoomProperty();
 						break;
-					case "auto_focus":
+					case 'auto_focus':
 						property = this.GetAutoFocusProperty();
 						break;
 					default:
@@ -81,11 +81,11 @@ export class CanonCameraDevice implements IHardware {
 
 			try {
 				switch (setting.id) {
-					case "zoom":
+					case 'zoom':
 						property = await CanonCameraAPI.Instance.SetZoomValue(+setting.value);
 						break;
-					case "auto_focus":
-						property = this.SetAutoFocusProperty(setting.value === "true");
+					case 'auto_focus':
+						property = this.SetAutoFocusProperty(setting.value === 'true');
 						break;
 					default:
 						property = undefined;
@@ -151,9 +151,9 @@ export class CanonCameraDevice implements IHardware {
 		return new Promise<HardwareProperty>(async (resolve, reject) => {
 			const zoomProperty: HardwareProperty = new HardwareProperty();
 			try {
-				zoomProperty.id = "zoom";
-				zoomProperty.userReadableName = "zoom";
-				zoomProperty.dataType = "int";
+				zoomProperty.id = 'zoom';
+				zoomProperty.userReadableName = 'zoom';
+				zoomProperty.dataType = 'int';
 				zoomProperty.order = 1;
 				zoomProperty.increment = 1;
 				zoomProperty.minValue = 0;
@@ -164,7 +164,7 @@ export class CanonCameraDevice implements IHardware {
 					resolve(zoomProperty);
 				}
 				else {
-					reject("Failed to get zoom value");
+					reject('Failed to get zoom value');
 				}
 			}
 			catch (error) {
@@ -176,9 +176,9 @@ export class CanonCameraDevice implements IHardware {
 	private GetAutoFocusProperty(): HardwareProperty {
 		const property: HardwareProperty = new HardwareProperty();
 
-		property.id = "auto_focus";
-		property.userReadableName = "Auto Focus";
-		property.dataType = "bool";
+		property.id = 'auto_focus';
+		property.userReadableName = 'Auto Focus';
+		property.dataType = 'bool';
 		property.order = 2;
 		property.increment = null;
 		property.minValue = null;

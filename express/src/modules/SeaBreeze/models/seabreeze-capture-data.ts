@@ -1,4 +1,4 @@
-import { ICaptureData } from "../../../interfaces/ICaptureData";
+import { ICaptureData } from '../../../interfaces/ICaptureData';
 
 export class SeaBreezeCaptureData implements ICaptureData {
 	public wavelength: number;

@@ -1,12 +1,12 @@
-import { IHardware } from "../../interfaces/IHardware";
-import { IStatus } from "../../interfaces/IStatus";
-import { ISubscription } from "../../interfaces/ISubscription";
-import { Guid } from "guid-typescript";
-import { Logger } from "../../common/logger";
-import { HardwareProperty } from "../../models/hardware-property";
-import { SeaBreezeAPI } from "./SeaBreezeAPI";
-import { Helpers } from "../../common/helpers";
-import { SeaBreezeCaptureData } from "./models/seabreeze-capture-data";
+import { IHardware } from '../../interfaces/IHardware';
+import { IStatus } from '../../interfaces/IStatus';
+import { ISubscription } from '../../interfaces/ISubscription';
+import { Guid } from 'guid-typescript';
+import { Logger } from '../../common/logger';
+import { HardwareProperty } from '../../models/hardware-property';
+import { SeaBreezeAPI } from './SeaBreezeAPI';
+import { Helpers } from '../../common/helpers';
+import { SeaBreezeCaptureData } from './models/seabreeze-capture-data';
 
 export class SeaBreezeDevice implements IHardware {
 	/**
@@ -15,7 +15,7 @@ export class SeaBreezeDevice implements IHardware {
 	public id: Guid;
 	public modelName: string;
 	public serial: string;
-	public type: string = "Seabreeze Spectrometer";
+	public type: string = 'Seabreeze Spectrometer';
 	public apiID: number;
 
 	/**
@@ -76,13 +76,13 @@ export class SeaBreezeDevice implements IHardware {
 
 			try {
 				switch (key) {
-					case "integration_time":
+					case 'integration_time':
 						property = this.GetIntegrationTimeProperty();
 						break;
-					case "boxcar":
+					case 'boxcar':
 						property = this.GetBoxcarProperty();
 						break;
-					case "scan_average":
+					case 'scan_average':
 						property = this.GetScanAverageProperty();
 						break;
 					default:
@@ -104,13 +104,13 @@ export class SeaBreezeDevice implements IHardware {
 
 			try {
 				switch (setting.id) {
-					case "integration_time":
+					case 'integration_time':
 						property = this.SetIntegrationTimeProperty(+setting.value);
 						break;
-					case "boxcar":
+					case 'boxcar':
 						property = this.SetBoxcarProperty(+setting.value);
 						break;
-					case "scan_average":
+					case 'scan_average':
 						property = this.SetScanAverageProperty(+setting.value);
 						break;
 					default:
@@ -180,9 +180,9 @@ export class SeaBreezeDevice implements IHardware {
 		const property: HardwareProperty = new HardwareProperty();
 
 		// Fill out some known values
-		property.id = "integration_time";
-		property.userReadableName = "Integration Time";
-		property.dataType = "double";
+		property.id = 'integration_time';
+		property.userReadableName = 'Integration Time';
+		property.dataType = 'double';
 		property.order = 1;
 		property.increment = 0.1;
 
@@ -206,12 +206,12 @@ export class SeaBreezeDevice implements IHardware {
 		const property: HardwareProperty = this.GetIntegrationTimeProperty();
 
 		if (SeaBreezeAPI.Instance.SetIntegrationTimeMicro(this.apiID, newValue)) {
-			Logger.Instance.WriteDebug("Prop set");
+			Logger.Instance.WriteDebug('Prop set');
 			this._integrationTime = newValue;
 			property.value = this._integrationTime.toString();
 		}
 		else {
-			throw new Error("Integration failed to set. Error: " + SeaBreezeAPI.Instance.LastErrorString);
+			throw new Error('Integration failed to set. Error: ' + SeaBreezeAPI.Instance.LastErrorString);
 		}
 
 		return property;
@@ -221,9 +221,9 @@ export class SeaBreezeDevice implements IHardware {
 		const property: HardwareProperty = new HardwareProperty();
 
 		// Fill out some known values
-		property.id = "boxcar";
-		property.userReadableName = "Boxcar";
-		property.dataType = "int";
+		property.id = 'boxcar';
+		property.userReadableName = 'Boxcar';
+		property.dataType = 'int';
 		property.order = 2;
 		property.increment = 1;
 		property.minValue = 1;
@@ -248,9 +248,9 @@ export class SeaBreezeDevice implements IHardware {
 		const property: HardwareProperty = new HardwareProperty();
 
 		// Fill out some known values
-		property.id = "scan_average";
-		property.userReadableName = "Scan Averaging";
-		property.dataType = "int";
+		property.id = 'scan_average';
+		property.userReadableName = 'Scan Averaging';
+		property.dataType = 'int';
 		property.order = 3;
 		property.increment = 1;
 		property.minValue = 1;
