@@ -14,12 +14,12 @@ export class SoftCameraDevice implements IHardware {
 	public id: Guid;
 	public modelName: string;
 	public serial: string;
-	public type: string = 'SoftCamera';
+	public type: string = 'Software Camera';
 
 	/**
 	 * Private Member Variables
 	 */
-	private _datasetPath: string = 'D:\\RGB Images\\';
+	private _datasetPath: string = 'D:\\Images\\';
 	private _datasetIndex: number = 0;
 
 	/**
@@ -119,8 +119,9 @@ export class SoftCameraDevice implements IHardware {
 
 						if (fileResponse && fileResponse.success) {							
 							const imageData: SoftCameraCaptureData = new SoftCameraCaptureData();
-							imageData.base64ImageData = fileResponse.data;
-	
+							imageData.imageData = fileResponse.data;
+							this._datasetIndex++;
+							
 							capturedData.push(imageData);
 						}
 						else {
