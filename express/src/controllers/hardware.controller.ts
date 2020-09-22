@@ -286,6 +286,7 @@ export class HardwareController {
 					}
 				}, (captureError) => {
 					if (!isTimedOut) {
+						console.log('capture error', captureError);
 						hardwareResponse.success = false;
 						hardwareResponse.data = captureError;
 						response.status(400);
