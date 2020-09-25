@@ -11,6 +11,7 @@ import * as childProcess from 'child_process';
 import * as path from 'path';
 import { NanoFTIRCaptureOutput } from './models/nanoFTIR-capture-output';
 import { Config } from '../../common/config';
+import { response } from 'express';
 
 export class SpectroScanDevice implements IHardware {
 	/**
@@ -271,13 +272,18 @@ export class SpectroScanDevice implements IHardware {
 					break;
 				}
 				else {
+					// If we get the 'saturation' error just quick now because a retry won't fix that
+					if (returnCode === 9) {
+						break;
+					}
+					
 					retryCount++;
 				}
 
 			} while (retryCount < 5);
 
-			if (retryCount === 5 && !success) {
-				reject(new Error(`Failed ${retryCount} times to capture data`));
+			if (!success) {
+				reject(new Error(this.GetErrorString(returnCode)));
 			}
 		});
 	}
@@ -324,22 +330,15 @@ export class SpectroScanDevice implements IHardware {
 		switch (errorCode) {
 			case 9:
 				// Detector Saturation
-				break;
-			case 11:
-				// No Light
-
-				break;
-			case 13:
-				// Failed to load DLL
-
+				errorMessage = 'Detector is saturated by light. Reduce the light level and try again.';
 				break;
 			case 14:
 				// Connection Failure
 				errorMessage = 'Failed to connect to device. Please ensure it is connected to computer and try again.';
 				break;
 			default:
-				// Error codes 1-8, 10, 12, 15-16 get default messaging
-				errorMessage = 'Unknown error has occurred.';
+				// Error codes 1-8, 10-13, 15-16 get default messaging
+				errorMessage = 'Failed to capture scan. Please try again.';
 				break;
 		}
 
