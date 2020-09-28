@@ -1,3 +1,4 @@
+var path = require('path');
 var gulp = require('gulp');
 var resourcePath = 'dist/open-network-spectral-interface-win32-x64/resources';
 
@@ -25,5 +26,5 @@ gulp.task('move-dlls-windows', function () {
 	gulp.src(['../express/src/modules/SpectroScan/ftd2xx64.dll']).pipe(gulp.dest(resourcePath))
 	gulp.src(['../express/src/modules/SpectroScan/nanoFTIR_V11a_x64.dll']).pipe(gulp.dest(resourcePath))
 	gulp.src(['../express/src/modules/SpectroScan/Newtonsoft.Json.dll']).pipe(gulp.dest(resourcePath))
-	gulp.src(filesToMove).pipe(gulp.dest(resourcePath))
+	gulp.src(filesToMove).pipe(gulp.dest(path.join(resourcePath, 'FTIRCapture')))
 });
