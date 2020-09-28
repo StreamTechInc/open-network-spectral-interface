@@ -4,7 +4,14 @@ var clean = require('gulp-clean');
 var filesToMove = [
 	'./src/views/**/*.*',
 	'./src/modules/**/*.dll',
-	'./src/modules/**/*.exe'
+	'./src/modules/**/*.exe',
+	'./src/modules/**/*.h',
+	'./src/modules/**/*.aliases',
+	'./src/modules/**/*.ini',
+	'./src/modules/**/*.lib',
+	'./src/modules/**/*.idl',
+	'./src/modules/**/*.c',
+	'./src/modules/**/*.lvlib'
 ]
 
 gulp.task('move', function () {

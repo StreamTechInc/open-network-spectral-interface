@@ -284,10 +284,11 @@ export class HardwareController {
 						response.send(JSON.stringify(hardwareResponse));
 						Logger.Instance.WriteDebug('End getCapture/' + id);
 					}
-				}, (captureError) => {
+				}, (captureError: Error) => {
 					if (!isTimedOut) {
 						hardwareResponse.success = false;
-						hardwareResponse.data = captureError;
+						hardwareResponse.data = captureError.message;
+
 						response.status(400);
 						response.send(JSON.stringify(hardwareResponse));
 						Logger.Instance.WriteDebug('End getCapture/' + id);
