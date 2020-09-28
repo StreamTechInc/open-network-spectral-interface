@@ -11,6 +11,7 @@ import * as childProcess from 'child_process';
 import * as path from 'path';
 import { NanoFTIRCaptureOutput } from './models/nanoFTIR-capture-output';
 import { Config } from '../../common/config';
+import { response } from 'express';
 
 export class SpectroScanDevice implements IHardware {
 	/**
@@ -250,18 +251,19 @@ export class SpectroScanDevice implements IHardware {
 		return new Promise<Array<SpectroScanCaptureData>>(async (resolve, reject) => {
 			let retryCount: number = 0;
 			let success: boolean = false;
+			let returnCode: number = 0;
 
 			do {
-				const returnCode: number = await this.NanoFTIRCapture();
+				const basePath = path.join(Config.SpectroScanPath, 'FTIRCapture');
+				returnCode = await this.NanoFTIRCapture(basePath);
 				success = returnCode === 0;
 
 				if (success) {
 					const fileHandler: FileHandler = new FileHandler();
-					const fileData: NanoFTIRCaptureOutput = fileHandler.ReadFile(path.join(Config.SpectroScanPath, 'processed_spectrum.json'));
+					const fileData: Array<SpectroScanCaptureData> = fileHandler.ReadFile(path.join(basePath, 'processed_spectrum.json'));
 
 					if (fileData) {
-						this.comPort = fileData.comPort;
-						resolve(fileData.scanData);
+						resolve(fileData);
 					}
 					else {
 						reject(new Error('Failed to parse data from file'));
@@ -270,40 +272,49 @@ export class SpectroScanDevice implements IHardware {
 					break;
 				}
 				else {
+					// If we get the 'saturation' error just quick now because a retry won't fix that
+					if (returnCode === 9) {
+						break;
+					}
+					
 					retryCount++;
 				}
 
 			} while (retryCount < 5);
 
-			if (retryCount === 5 && !success) {
-				reject(new Error(`Failed ${retryCount} times to capture data`));
+			if (!success) {
+				reject(new Error(this.GetErrorString(returnCode)));
 			}
 		});
 	}
 
-	private async NanoFTIRCapture(): Promise<number> {
+	private async NanoFTIRCapture(basePath: string): Promise<number> {
 		return new Promise<number>(async (resolve, reject) => {
 			try {
-				const scriptPath = path.join(Config.SpectroScanPath, 'NanoFTIRCapture.exe');
-				const captureProcess = childProcess.spawn(scriptPath, [this._scanAverage.toString(), this.comPort.toString(), Config.SpectroScanPath]);
+				const scriptPath = path.join(basePath, 'NanoFTIRCaptureCPP.exe');
+				const captureProcess = childProcess.spawn(scriptPath, [this._scanAverage.toString(), basePath]);
 
 				captureProcess.on('error', (error) => {
 					Logger.Instance.WriteError(error);
+					captureProcess.kill();
 					reject(error);
 				});
 
 				captureProcess.on('uncaughtException', (error) => {
 					Logger.Instance.WriteError(error);
+					captureProcess.kill();
 					reject(error);
 				});
 
 				captureProcess.stderr.on('error', (error) => {
 					Logger.Instance.WriteError(error);
+					captureProcess.kill();
 					reject(error);
 				});
 
 				captureProcess.on('exit', (code) => {
 					Logger.Instance.WriteDebug('NanoFTIR capture app exit code: ' + code);
+					captureProcess.kill();
 					resolve(code);
 				});
 			} catch (error) {
@@ -311,6 +322,27 @@ export class SpectroScanDevice implements IHardware {
 				reject(error);
 			}
 		});
+	}
+
+	private GetErrorString(errorCode: number): string {
+		let errorMessage: string = null;
+
+		switch (errorCode) {
+			case 9:
+				// Detector Saturation
+				errorMessage = 'Detector is saturated by light. Reduce the light level and try again.';
+				break;
+			case 14:
+				// Connection Failure
+				errorMessage = 'Failed to connect to device. Please ensure it is connected to computer and try again.';
+				break;
+			default:
+				// Error codes 1-8, 10-13, 15-16 get default messaging
+				errorMessage = 'Failed to capture scan. Please try again.';
+				break;
+		}
+
+		return errorMessage;
 	}
 }
 
