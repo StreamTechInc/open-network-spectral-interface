@@ -13,6 +13,6 @@
 		"dotenv": "^6.1.0",
 		"electron-packager": "^12.2.0",
 		"electron-winstaller": "^2.7.0",
-		"gulp": "^3.9.1"
+		"gulp": "^4.0.2"
 	}
 }
